@@ -22,7 +22,7 @@ description: Quantitative Ecologist
 navbar-links:
   Research:
     - Spatio-Temporal Microbial Ecology: "NCOG"
-    - Empirical Dynamic Modelling (EDM): "edm"
+ #   - Empirical Dynamic Modelling (EDM): "edm"
   Publications: "pubs"
   CV: "cv"
   About Me: "aboutme"
