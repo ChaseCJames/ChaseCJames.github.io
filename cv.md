@@ -36,9 +36,10 @@ Giron-Nava, Alfredo, **Chase C. James**, Andrew F. Johnson, David Dannecker, Bet
 
 ### Graduate Student Mentoring
 
+**2018-present** Vitul Agarwal "Portfolio effect and the predictability of phytoplankton population dynamics"
+
 **2018-2019** Jarrod Ver Steeg "Marine Protected Area (MPA) Watch Data Analysis and Outreach: Identifying Human Use Patterns and Distributing Findings for Management and Public Education in Southern California"
 
-**2018-present** Vitul Agarwal "Portfolio effect and the predictability of phytoplankton population dynamics"
 
 ### Classroom Teaching Experience
 
