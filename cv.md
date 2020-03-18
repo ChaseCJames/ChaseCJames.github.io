@@ -6,29 +6,22 @@ title: Chase James
 ### Education
 
 **2014** B.S. General Biology, Unversity of California, San Diego
-
 **2016** M.S. Biology, University of California, San Diego
 
 ### Presentations
 
 **2020**
-
 **James, Chase C.** Andrew D. Barton, Lisa A. Zeigler, Robert H. Lampe, Ariel Rabines, Anne Schulberg, Hong Zheng, Ralf Goericke, Kelly D. Goodwin, and Andrew E. Allen. Environmental gradients shape microbial community structure and biodiversity in the California Current Ecosystem. Poster presented at Ocean Sciences Meeting 2020, San Diego, California. 
 
-
 **2019**
-
 **James, Chase C.** Andrew D. Barton, Lisa A. Zeigler, Robert H. Lampe, Ariel Rabines, Anne Schulberg, Hong Zheng, Ralf Goericke, Kelly D. Goodwin, and Andrew E. Allen. The Structure and Diversity of Prokaryotic and Eukaryotic Plankton Communities Within the Southern California Bight(2014-2018). Presentated at the 2019 Scripps Student Symposium, San Diego, California. 
 
-
 **2018**
-
 **James, Chase C.**, Andrew Allen. Recurrent Physical-Chemical and Ecological Seascapes within the California Current Ecosystem. Presented at the 2018 CalCOFI Conference, San Diego, California.
 
 **James, Chase C.**, Alfredo Giron-Nava, Andrew F. Johnson, David Dannecker, Bethany Kolody, Adrienne Lee, Maitreyi Nagarkar et al. Do food webs capture important interactions: a survey of ecosystems. Presented at the Ecological Society of America Meeting, New Orleans, Lousiana.
 
 **2017**
-
 **James, Chase C.**, Alfredo Giron-Nava, Andrew F. Johnson, David Dannecker, Bethany Kolody, Adrienne Lee, Maitreyi Nagarkar et al.
 From deserts to plankton: developing and exploring interaction webs built from the dynamics up. Presented at the 2017 Scripps Student Symposium, San Diego, California.
 
@@ -44,5 +37,4 @@ Giron-Nava, Alfredo, **Chase C. James**, Andrew F. Johnson, David Dannecker, Bet
 ### Classroom Teaching Experience
 
 **2020** *Teaching Assistant*, SIO 134: Introduction to Biological Oceanography
-
 **2014** *Teaching Assistant*, BIEB 166: Animal Behavior and Communication
