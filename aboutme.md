@@ -1,7 +1,7 @@
 ---
 layout: page
 title: About me
-subtitle: Scientist/Sports Addict/Outdoor Adventurer
+subtitle: Scientist/Outdoor Adventurer
 ---
 
 ### Why I became a scientist
