@@ -2,7 +2,7 @@
 layout: page
 title: PactMedia
 bigimg:
- - "/img/yosemite.jpg"
+ - "/img/cactus.JPG"
 ---
 
 At [PactMedia](https://pactmedia.org/) I work as a Data Science and Analytics Lead. 
