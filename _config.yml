@@ -22,8 +22,8 @@ description: Quantitative Ecologist
 navbar-links:
   Research/Work:
     - Spatio-Temporal Microbial Ecology: "NCOG"
-    - MarFishEco (Fisheries Consultancy): "MarFishEco"
-    - PactMedia (Digital Design): "PactMedia"
+    - MarFishEco: "MarFishEco"
+    - PactMedia: "PactMedia"
  #   - Empirical Dynamic Modelling (EDM): "edm"
   Publications: "pubs"
   CV: "cv"
