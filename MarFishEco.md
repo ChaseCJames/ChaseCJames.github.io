@@ -1,6 +1,6 @@
 ---
 layout: page
-title: MarFishEco (Data Visualization Lead)
+title: MarFishEco
 bigimg:
  - "/img/peru.jpg"
 ---

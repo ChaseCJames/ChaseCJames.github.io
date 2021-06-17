@@ -1,6 +1,6 @@
 ---
 layout: page
-title: PactMedia (Data Science and Analytics Lead)
+title: PactMedia
 bigimg:
  - "/img/yosemite.jpg"
 ---
