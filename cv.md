@@ -6,6 +6,7 @@ title: Chase James
 ### Education
 
 **2014** B.S. General Biology, Unversity of California, San Diego
+
 **2016** M.S. Biology, University of California, San Diego
 
 ### Presentations
