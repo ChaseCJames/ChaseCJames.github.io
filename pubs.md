@@ -5,7 +5,7 @@ subtitle:
 ---
 
 ### 2022
-**James, Chase C.**, Andrew D. Barton, Lisa Zeigler Allen, Robert H. Lampe, Ariel Rabines, Anne Schulberg, Hong Zheng, Ralf Goericke, Kelly D. Goodwin, and Andrew E. Allen. "Influence of nutrient supply on plankton microbiome biodiversity and distribution in a coastal upwelling region." Nature Communications 13, no. 1 (2022): 1-13.[https://doi.org/10.1038/s41467-022-30139-4](https://doi.org/10.1038/s41467-022-30139-4)
+**James, Chase C.**, Andrew D. Barton, Lisa Zeigler Allen, Robert H. Lampe, Ariel Rabines, Anne Schulberg, Hong Zheng, Ralf Goericke, Kelly D. Goodwin, and Andrew E. Allen. "Influence of nutrient supply on plankton microbiome biodiversity and distribution in a coastal upwelling region." Nature Communications 13, no. 1 (2022): 1-13. [https://doi.org/10.1038/s41467-022-30139-4](https://doi.org/10.1038/s41467-022-30139-4)
 
 **James, Chase C.**, Daniel Sánchez, Leopoldo Cruz-López, and James Nieh. "Fighting ability and the toxicity of raiding pheromone in an obligate kleptoparasite, the stingless bee Lestrimelitta niitkib." Behavioral Ecology and Sociobiology 76, no. 3 (2022): 1-12. [https://doi.org/10.1007/s00265-022-03129-1](https://doi.org/10.1007/s00265-022-03129-1)
 
