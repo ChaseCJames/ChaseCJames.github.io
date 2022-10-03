@@ -9,6 +9,8 @@ title: Chase James
 
 **2016** M.S. Biology, University of California, San Diego
 
+**2022** PhD Oceanography, University of California, San Diego
+
 ### Presentations
 
 **2020**
@@ -49,6 +51,9 @@ Giron-Nava, Alfredo, **Chase C. James**, Andrew F. Johnson, David Dannecker, Bet
 **2014** *Teaching Assistant*, BIEB 166: Animal Behavior and Communication
 
 ### Other Activities
-**2021** *CalCOFI Spring Break Hackathon*, Lead and Developed a Spring Break Hackathon for UCSD undergraduates, pairing Computer Science and Marine Biology students to produce data visualizations for CalCOFI's new website.
+
+**2022** *Marine Microbes Gordon Research Seminar Co-Chair*, Organized and helped to run the weekend seminar for early career scientists as part of the 2022 Marine Microbes Gordon Research Conference in Les Diablerets, Switzerland.
+
+**2021** *CalCOFI Spring Break Hackathon*, Lead and developed a Spring Break Hackathon for UCSD undergraduates, pairing Computer Science and Marine Biology students to produce data visualizations for CalCOFI's new website.
 
 **2020** *R Programming Bootcamp for Incoming SIO Graduate Students*, Helped develop a R Crash Course/Bootcamp for incoming SIO graduate stduents. 
