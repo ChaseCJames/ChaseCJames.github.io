@@ -50,7 +50,6 @@
   <div class="footer-inner">
     <div>
       <div class="footer-brand">Chase James</div>
-      <div class="footer-tagline">Quantitative Ecologist/Biological Oceanographer/Data Analyst &middot; USC</div>
     </div>
     <div class="footer-links">
       <!-- Email -->
