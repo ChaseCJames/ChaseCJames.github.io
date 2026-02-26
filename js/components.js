@@ -24,6 +24,7 @@
   <div class="nav-inner">
     <a href="index.html" class="nav-logo">Chase James</a>
     <ul class="nav-links">
+      <li><a href="about.html"${activeClass('about.html')}>About</a></li>
       <li><a href="research.html"${activeClass('research.html')}>Research</a></li>
       <li><a href="publications.html"${activeClass('publications.html')}>Publications</a></li>
       <li><a href="cv.html"${activeClass('cv.html')}>CV</a></li>
@@ -37,6 +38,7 @@
   </div>
   <ul class="nav-mobile" id="nav-mobile">
     <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
     <li><a href="research.html">Research</a></li>
     <li><a href="publications.html">Publications</a></li>
     <li><a href="cv.html">CV</a></li>
