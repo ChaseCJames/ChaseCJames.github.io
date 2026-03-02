@@ -48,6 +48,36 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  // ── Contact email copy popover ─────────────────────────────
+  const contactBtn = document.getElementById('contact-btn');
+  const contactPopover = document.getElementById('contact-popover');
+  const contactCopy = document.getElementById('contact-copy');
+
+  if (contactBtn && contactPopover) {
+    contactBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      const opening = contactPopover.hidden;
+      contactPopover.hidden = !opening;
+      contactBtn.setAttribute('aria-expanded', opening);
+    });
+
+    if (contactCopy) {
+      contactCopy.addEventListener('click', function () {
+        navigator.clipboard.writeText('cjames80@usc.edu').then(function () {
+          contactCopy.textContent = 'Copied!';
+          setTimeout(function () { contactCopy.textContent = 'Copy'; }, 2000);
+        });
+      });
+    }
+
+    document.addEventListener('click', function (e) {
+      if (!contactBtn.contains(e.target) && !contactPopover.contains(e.target)) {
+        contactPopover.hidden = true;
+        contactBtn.setAttribute('aria-expanded', false);
+      }
+    });
+  }
+
   // ── Smooth scroll for anchor links ────────────────────────
   document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
     anchor.addEventListener('click', function (e) {
