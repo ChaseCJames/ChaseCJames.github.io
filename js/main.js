@@ -79,7 +79,9 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   // ── Scroll fade-in animations ──────────────────────────────
-  var fadeEls = document.querySelectorAll('.project-section, .pub-year-group, .card, .cv-section');
+  var fadeEls = document.querySelectorAll(
+    '#research, #publications, .project-section, .pub-year-group, .cv-section, .about-magazine'
+  );
   if ('IntersectionObserver' in window) {
     fadeEls.forEach(function (el) { el.classList.add('fade-in'); });
     var fadeObserver = new IntersectionObserver(function (entries) {
@@ -89,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
           fadeObserver.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.08 });
+    }, { threshold: 0.1 });
     fadeEls.forEach(function (el) { fadeObserver.observe(el); });
   }
 
