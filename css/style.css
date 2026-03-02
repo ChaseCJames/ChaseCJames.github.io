@@ -229,6 +229,9 @@ section.alt {
   color: var(--primary);
 }
 
+.contact-popover[hidden] {
+  display: none;
+}
 .contact-popover {
   position: absolute;
   top: calc(100% + 10px);
