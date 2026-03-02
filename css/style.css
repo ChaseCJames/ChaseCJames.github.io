@@ -761,7 +761,7 @@ section.alt {
 
 /* ── Research Page (detail) ───────────────────────────────── */
 .project-section {
-  padding: 3.5rem 0;
+  padding: 1.25rem 0;
   border-bottom: 1px solid var(--border);
 }
 
@@ -1118,4 +1118,15 @@ section.alt {
   .research-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+/* ── Scroll fade-in animations ────────────────────────────── */
+.fade-in {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: none;
 }

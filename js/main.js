@@ -78,6 +78,21 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  // ── Scroll fade-in animations ──────────────────────────────
+  var fadeEls = document.querySelectorAll('.project-section, .pub-year-group, .card, .cv-section');
+  if ('IntersectionObserver' in window) {
+    fadeEls.forEach(function (el) { el.classList.add('fade-in'); });
+    var fadeObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          fadeObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    fadeEls.forEach(function (el) { fadeObserver.observe(el); });
+  }
+
   // ── Smooth scroll for anchor links ────────────────────────
   document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
     anchor.addEventListener('click', function (e) {
