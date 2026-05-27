@@ -214,14 +214,15 @@ function ensembleSVG(phase) {
   xs.forEach((x, i) => {
     if (i > 0) inner += dashedPath(`M ${xs[i-1]+44} ${cy} L ${x-44} ${cy}`);
     const sel = i === selectedAgent;
-    const fillC   = sel ? '#fdf6ec' : paper;
-    const strokeC = sel ? amber     : ink;
-    const strokeW = sel ? '2.4'     : '1.2';
-    const numCol  = sel ? amber     : amber2;
+    const fillC   = sel ? marine    : paper;
+    const strokeC = sel ? marine2   : ink;
+    const strokeW = sel ? '2'       : '1.2';
+    const numCol  = sel ? '#fff'    : amber2;
+    const nameCol = sel ? '#fff'    : ink;
     inner += `<g onclick="selectAgent(${i})" style="cursor:pointer" role="button">
       <circle cx="${x}" cy="${cy}" r="44" fill="${fillC}" stroke="${strokeC}" stroke-width="${strokeW}"/>
       <text x="${x}" y="${cy-8}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="${numCol}" letter-spacing=".08em">${String(i+1).padStart(2,'0')}</text>
-      <text x="${x}" y="${cy+10}" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="13" font-weight="600" fill="${ink}">${e.agents[i]}</text>
+      <text x="${x}" y="${cy+10}" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="13" font-weight="600" fill="${nameCol}">${e.agents[i]}</text>
     </g>`;
   });
 

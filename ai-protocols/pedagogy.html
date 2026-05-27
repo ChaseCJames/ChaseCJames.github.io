@@ -10,8 +10,22 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="shared.css">
   <style>
-    .skill-row { cursor: pointer; }
+    .skill-row { cursor: pointer; transition: transform .15s, box-shadow .15s, background .15s; }
     .skill-row:hover { opacity: .88; }
+    .skill-row.open {
+      background: var(--ink);
+      color: var(--paper);
+      margin: 0 -16px; padding: 8px 16px;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(13,32,26,.22);
+    }
+    .skill-row.open .skill-name  { color: var(--paper); }
+    .skill-row.open .skill-why   { color: #c8d2ca; }
+    .skill-row.open .skill-practice { color: #c8d2ca; }
+    .skill-row.open .skill-practice-label { color: var(--amber); }
+    .skill-row.open .skill-cadence { background: rgba(200,210,202,.1); border-color: rgba(200,210,202,.2); color: #a8c4b8; }
+    .skill-row.open .skill-cadence-label { color: #6a8a70; }
+    .skill-row.open .skill-n { color: var(--amber); }
     .skill-name-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
     .skill-toggle { font-family: var(--ff-mono); font-size: 12px; color: var(--amber); flex-shrink: 0; }
     .skill-body { margin-top: 6px; }
@@ -208,6 +222,7 @@ function toggleSkill(row) {
   const open   = !body.hidden;
   body.hidden        = open;
   toggle.textContent = open ? '▸' : '▾';
+  row.classList.toggle('open', !open);
 }
 </script>
 

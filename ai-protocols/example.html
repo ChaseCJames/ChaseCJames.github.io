@@ -11,11 +11,22 @@
   <link rel="stylesheet" href="shared.css">
   <style>
     /* clickable stack layers */
-    .stack-layer { cursor: pointer; transition: opacity .15s; border-top: 1px solid var(--rule2); padding: 8px 0; }
+    .stack-layer { cursor: pointer; transition: transform .15s, box-shadow .15s, background .15s; border-top: 1px solid var(--rule2); padding: 8px 0; }
     .stack-layer:first-child { border-top: none; }
-    .stack-layer:hover { opacity: .86; }
-    .stack-layer.active-layer { background: rgba(200,210,202,.08); margin: 0 -8px; padding: 8px 8px; border-radius: 2px; }
-    .stack-layer.active-layer .layer-idx { color: var(--amber); border-color: var(--amber); }
+    .stack-layer:hover { opacity: .88; }
+    .stack-layer.active-layer {
+      background: var(--ink);
+      color: var(--paper);
+      margin: 0 -10px; padding: 8px 10px;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(13,32,26,.24);
+      border-top-color: transparent;
+    }
+    .stack-layer.active-layer .layer-idx  { color: var(--amber); border-color: var(--amber); background: transparent !important; }
+    .stack-layer.active-layer .layer-name { color: var(--paper); }
+    .stack-layer.active-layer .layer-note { color: #c8d2ca; }
+    .stack-layer.active-layer .chip       { background: rgba(200,210,202,.12); color: #c8d2ca; border-color: rgba(200,210,202,.25); }
+    .stack-layer.active-layer .layer-glyph { color: var(--paper) !important; }
 
     /* snippet panel */
     .snippet-panel { padding: 10px 12px; background: #0e1a15; border: 1px solid rgba(200,210,202,.18); border-left: 3px solid var(--amber); }

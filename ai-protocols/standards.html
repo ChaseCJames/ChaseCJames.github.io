@@ -29,10 +29,18 @@
     .scope-tag { font-family: var(--ff-mono); font-size: 10px; letter-spacing: .16em; font-weight: 700; }
 
     /* scope level interactivity */
-    .scope-outer, .scope-project, .scope-tool { transition: opacity .15s; }
-    .scope-clickable { cursor: pointer; border-radius: 2px; }
-    .scope-clickable:hover .scope-row { opacity: .82; }
-    .scope-clickable.active-scope > .scope-row { background: rgba(200,210,202,.12); margin: 0 -4px; padding: 2px 4px; border-radius: 2px; }
+    .scope-clickable { cursor: pointer; transition: transform .15s, box-shadow .15s; }
+    .scope-clickable:hover { opacity: .88; }
+    .scope-clickable.active-scope {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(13,32,26,.22);
+    }
+    .scope-clickable.active-scope > .scope-row {
+      background: var(--ink);
+      margin: 0 -6px; padding: 3px 6px; border-radius: 2px;
+    }
+    .scope-clickable.active-scope > .scope-row .scope-tag { color: var(--amber) !important; }
+    .scope-clickable.active-scope > .scope-row .scope-file { color: #c8d2ca; }
 
     /* scope detail snippet */
     .scope-detail { margin-top: 12px; min-height: 100px; }
