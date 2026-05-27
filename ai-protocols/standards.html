@@ -53,7 +53,7 @@
 </nav>
 
 <header class="ap-header">
-  <div class="ap-eyebrow">01 · substrate</div>
+  <div class="ap-eyebrow">01 · standards</div>
   <h1>Standards are <span class="accent">what every project + session inherits.</span></h1>
   <p class="lede">Standards are the documents and machinery implemented within every project and the resources a fresh agent session inherits before it does anything. They make the lab's commitments legible to humans and machines in the same place. Where workflows describe what to do for a specific kind of work, standards describe what is always true.</p>
 </header>
@@ -98,6 +98,24 @@
         <p style="margin-top:8px;font-family:var(--ff-mono);font-size:10.5px;color:var(--mute);font-style:italic">
           when standards conflict, the more specific one wins. deviations are noted explicitly.
         </p>
+      </div>
+
+      <!-- Provenance tags -->
+      <div style="margin-top:14px">
+        <div class="fig-head" style="margin-bottom:6px">
+          <span class="label">Parameter provenance tags</span>
+          <span class="label-mute">inline, per parameter</span>
+        </div>
+        <p style="font-size:11.5px;color:var(--ink2);margin:0 0 8px;line-height:1.5">
+          Track where every decision in your code came from. Did you choose a parameter yourself? Does it have a literature source? Was it fitted to data — and if so, by what method? Or did the agent choose it based on your conversation? These tags make that visible at a glance.
+        </p>
+        <div>
+          <div class="prov-row"><span class="prov-tag">[literature]</span><span class="prov-val">Value from a cited source; include author + year.</span></div>
+          <div class="prov-row"><span class="prov-tag">[fitted]</span><span class="prov-val">Fit to experimental data; note which dataset and fitting method (e.g. MLE, least squares, Bayesian posterior).</span></div>
+          <div class="prov-row"><span class="prov-tag">[assumed]</span><span class="prov-val">No source; agent judgment — flag for human review before any long-running job.</span></div>
+          <div class="prov-row"><span class="prov-tag">[agent-chosen]</span><span class="prov-val">Deliberate agent decision; reasoning stated nearby in the script.</span></div>
+          <div class="prov-row"><span class="prov-tag">[user-specified]</span><span class="prov-val">Explicitly provided by the human during the session.</span></div>
+        </div>
       </div>
 
       <!-- Reasoning contract -->
@@ -187,24 +205,6 @@
           </div>
         </div>
 
-      </div>
-    </div>
-
-    <!-- Provenance tags -->
-    <div class="panel-light">
-      <div class="fig-head">
-        <span class="label">Parameter provenance tags</span>
-        <span class="label-mute">inline, per parameter</span>
-      </div>
-      <p style="font-size:11.5px;color:var(--ink2);margin:6px 0 8px;line-height:1.5">
-        Track where every decision in your code came from. Did you choose a parameter yourself? Does it have a literature source? Was it fitted to data — and if so, by what method? Or did the agent choose it based on your conversation? These tags make that visible at a glance.
-      </p>
-      <div>
-        <div class="prov-row"><span class="prov-tag">[literature]</span><span class="prov-val">Value from a cited source; include author + year.</span></div>
-        <div class="prov-row"><span class="prov-tag">[fitted]</span><span class="prov-val">Fit to experimental data; note which dataset and fitting method (e.g. MLE, least squares, Bayesian posterior).</span></div>
-        <div class="prov-row"><span class="prov-tag">[assumed]</span><span class="prov-val">No source; agent judgment — flag for human review before any long-running job.</span></div>
-        <div class="prov-row"><span class="prov-tag">[agent-chosen]</span><span class="prov-val">Deliberate agent decision; reasoning stated nearby in the script.</span></div>
-        <div class="prov-row"><span class="prov-tag">[user-specified]</span><span class="prov-val">Explicitly provided by the human during the session.</span></div>
       </div>
     </div>
 
