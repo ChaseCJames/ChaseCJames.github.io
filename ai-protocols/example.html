@@ -36,6 +36,13 @@
     .snippet-body .cm { color: var(--mute); }
     .snippet-prompt { font-family: var(--ff-mono); font-size: 10.5px; color: var(--mute); font-style: italic; padding: 12px 0 4px; text-align: center; }
 
+    /* mobile inline snippet — hidden on desktop, shown inside left panel on mobile */
+    #snippet-inline { display: none; margin-top: 10px; }
+    @media (max-width: 900px) {
+      #snippet-panel { display: none; }
+      #snippet-inline.has-content { display: block; }
+    }
+
     /* mobile: stack layer boxes need more breathing room */
     @media (max-width: 600px) {
       .stack-layer { padding: 10px 14px; }
@@ -171,6 +178,9 @@
           principle: inheritance. each layer refines the layer above; the more specific layer wins on conflict.
         </p>
       </div>
+
+      <!-- mobile-only snippet; shown here on narrow screens, hidden on desktop -->
+      <div id="snippet-inline" class="snippet-panel"></div>
     </div>
 
     <div class="stat-strip">
@@ -363,23 +373,36 @@ If deviance &gt; 0.30 → test interaction with station depth zone.`
 
 let activeLayer = null;
 
+function setSnippetContent(s) {
+  const inline = document.getElementById('snippet-inline');
+  if (s) {
+    const body = `<div class="snippet-file">${s.file}</div><div class="snippet-body">${s.html}</div>`;
+    document.getElementById('snippet-layer-label').textContent = s.label;
+    document.getElementById('snippet-content').innerHTML = body;
+    inline.innerHTML =
+      `<div class="fig-head" style="margin-bottom:6px"><span class="label">File snippet</span><span class="label-mute">${s.label}</span></div>` + body;
+    inline.classList.add('has-content');
+  } else {
+    document.getElementById('snippet-layer-label').textContent = '—';
+    document.getElementById('snippet-content').innerHTML =
+      '<p class="snippet-prompt">← click a layer to see an example file</p>';
+    inline.innerHTML = '';
+    inline.classList.remove('has-content');
+  }
+}
+
 function selectLayer(id) {
   if (activeLayer === id) {
     activeLayer = null;
     ['l1','l2','l3','l4'].forEach(l =>
       document.getElementById('layer-'+l).classList.remove('active-layer'));
-    document.getElementById('snippet-layer-label').textContent = '—';
-    document.getElementById('snippet-content').innerHTML =
-      '<p class="snippet-prompt">← click a layer to see an example file</p>';
+    setSnippetContent(null);
     return;
   }
   activeLayer = id;
   ['l1','l2','l3','l4'].forEach(l =>
     document.getElementById('layer-'+l).classList.toggle('active-layer', l === id));
-  const s = SNIPPETS[id];
-  document.getElementById('snippet-layer-label').textContent = s.label;
-  document.getElementById('snippet-content').innerHTML =
-    `<div class="snippet-file">${s.file}</div><div class="snippet-body">${s.html}</div>`;
+  setSnippetContent(SNIPPETS[id]);
 }
 </script>
 
