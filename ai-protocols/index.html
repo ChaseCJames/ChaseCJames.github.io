@@ -9,8 +9,23 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="shared.css">
+  <style>
+    #loop-tooltip {
+      position: fixed; display: none; z-index: 200;
+      background: var(--ink); color: var(--paper);
+      border: 1px solid rgba(200,210,202,.2); border-left: 3px solid var(--amber);
+      padding: 8px 12px; max-width: 230px;
+      font-size: 11.5px; line-height: 1.5; pointer-events: none;
+    }
+    .loop-node { cursor: pointer; }
+    .loop-node:hover circle { filter: brightness(1.25); }
+    .loop-node:hover text:last-child { font-weight: 700; }
+    /* Fig 0.1 label larger */
+    .home-right-head .label-mute { font-size: 13px; }
+  </style>
 </head>
 <body>
+<div id="loop-tooltip"></div>
 
 <nav class="ap-nav" aria-label="AI Protocols sections">
   <a href="../index.html" class="ap-nav-brand" title="Back to chasecjames.github.io">
@@ -27,7 +42,7 @@
     <a href="standards.html" class="ap-nav-tab">01_standards</a>
     <a href="workflows.html" class="ap-nav-tab">02_workflows</a>
     <a href="ethics.html"    class="ap-nav-tab">03_ethics</a>
-    <a href="pedagogy.html"  class="ap-nav-tab">04_teaching</a>
+    <a href="teaching.html"  class="ap-nav-tab">04_teaching</a>
     <a href="example.html"   class="ap-nav-tab">05_example</a>
   </div>
   <div class="ap-nav-meta">Dr. James · 2026</div>
@@ -66,21 +81,31 @@
         <path d="M 356 50 Q 376 50 376 70 Q 376 90 356 90 L 20 90 Q 0 90 0 70 Q 0 50 20 50"
               fill="none" stroke="#0d5a4a" stroke-width="1" stroke-dasharray="3 3" marker-end="url(#loopArrow)"/>
         <text x="188" y="104" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#0d5a4a" letter-spacing="1">← iterate</text>
-        <circle cx="20"  cy="50" r="13" fill="#0d5a4a" stroke="#062f26" stroke-width="1.2"/>
-        <text x="20"  y="54" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600" fill="#fff">1</text>
-        <text x="20"  y="24" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="13" font-weight="600" fill="#13201a">Ask</text>
-        <circle cx="104" cy="50" r="13" fill="#3a7a64" stroke="#1f4a3a" stroke-width="1.2"/>
-        <text x="104" y="54" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600" fill="#fff">2</text>
-        <text x="104" y="24" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="13" font-weight="600" fill="#13201a">Design</text>
-        <circle cx="188" cy="50" r="13" fill="#7a8a4a" stroke="#4c5a2a" stroke-width="1.2"/>
-        <text x="188" y="54" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600" fill="#fff">3</text>
-        <text x="188" y="24" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="13" font-weight="600" fill="#13201a">Run</text>
-        <circle cx="272" cy="50" r="13" fill="#a87a30" stroke="#7a541d" stroke-width="1.2"/>
-        <text x="272" y="54" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600" fill="#fff">4</text>
-        <text x="272" y="24" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="13" font-weight="600" fill="#13201a">Read</text>
-        <circle cx="356" cy="50" r="13" fill="#b8741c" stroke="#8a4f0d" stroke-width="1.2"/>
-        <text x="356" y="54" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600" fill="#fff">5</text>
-        <text x="356" y="24" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="13" font-weight="600" fill="#13201a">Decide</text>
+        <g class="loop-node" data-n="0">
+          <circle cx="20"  cy="50" r="13" fill="#0d5a4a" stroke="#062f26" stroke-width="1.2"/>
+          <text x="20"  y="54" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600" fill="#fff">1</text>
+          <text x="20"  y="24" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="13" font-weight="600" fill="#13201a">Ask</text>
+        </g>
+        <g class="loop-node" data-n="1">
+          <circle cx="104" cy="50" r="13" fill="#3a7a64" stroke="#1f4a3a" stroke-width="1.2"/>
+          <text x="104" y="54" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600" fill="#fff">2</text>
+          <text x="104" y="24" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="13" font-weight="600" fill="#13201a">Design</text>
+        </g>
+        <g class="loop-node" data-n="2">
+          <circle cx="188" cy="50" r="13" fill="#7a8a4a" stroke="#4c5a2a" stroke-width="1.2"/>
+          <text x="188" y="54" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600" fill="#fff">3</text>
+          <text x="188" y="24" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="13" font-weight="600" fill="#13201a">Run</text>
+        </g>
+        <g class="loop-node" data-n="3">
+          <circle cx="272" cy="50" r="13" fill="#a87a30" stroke="#7a541d" stroke-width="1.2"/>
+          <text x="272" y="54" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600" fill="#fff">4</text>
+          <text x="272" y="24" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="13" font-weight="600" fill="#13201a">Read</text>
+        </g>
+        <g class="loop-node" data-n="4">
+          <circle cx="356" cy="50" r="13" fill="#b8741c" stroke="#8a4f0d" stroke-width="1.2"/>
+          <text x="356" y="54" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600" fill="#fff">5</text>
+          <text x="356" y="24" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="13" font-weight="600" fill="#13201a">Decide</text>
+        </g>
       </svg>
     </div>
 
@@ -112,12 +137,13 @@
   <div class="home-right c-grid">
     <div class="home-right-head">
       <span class="label">Fig 0.1 · architecture</span>
-      <span class="label-mute">click any section to navigate</span>
+      <span class="label-mute">click a section to read more</span>
     </div>
     <style>
-      .arch-link { cursor: pointer; }
-      .arch-link:hover rect.arch-bg { stroke: #0d5a4a; stroke-width: 2.2; }
-      .arch-link:hover text { fill-opacity: .85; }
+      .arch-link { cursor: pointer; transition: filter .18s; }
+      .arch-link:hover { filter: drop-shadow(0 6px 14px rgba(13,32,26,.22)); }
+      .arch-link:hover rect.arch-bg { stroke: #0d5a4a; stroke-width: 2.8; }
+      .arch-link:active { filter: drop-shadow(0 2px 6px rgba(13,32,26,.3)); }
     </style>
     <svg viewBox="0 0 760 610" class="arch-svg" aria-label="Framework architecture">
       <defs>
@@ -183,7 +209,7 @@
       </a>
 
       <!-- Teaching block -->
-      <a href="pedagogy.html" class="arch-link">
+      <a href="teaching.html" class="arch-link">
         <rect class="arch-bg" x="385" y="485" width="335" height="105" fill="#f4f1e8" stroke="#13201a" stroke-width="1.4"/>
         <text x="403" y="510" font-family="JetBrains Mono,monospace" font-size="11" fill="#8a4f0d" letter-spacing="2">04 / TRAINING</text>
         <text x="403" y="538" font-family="Inter Tight,sans-serif" font-size="22" font-weight="700" fill="#13201a">Teaching</text>
@@ -201,5 +227,41 @@
   <span>James, C. C. (2026). AI Protocols: a framework for human + agent scientific work.</span>
 </footer>
 
+<script>
+const LOOP_BLURBS = [
+  { label: 'Ask',    text: 'Form the question. Define what a result would actually look like. Scientific judgment at its peak — the agent cannot choose the question for you.' },
+  { label: 'Design', text: 'Translate the question into a testable structure. Variables, controls, sample size, predicted outcomes. Agent assists; human architects.' },
+  { label: 'Run',    text: 'Execute the experiment or analysis. The high-automation phase — agents handle the plumbing while the human watches for anomalies.' },
+  { label: 'Read',   text: 'Interpret the output before reading any summary. Look at the data yourself. The skill most at risk when agents do too much.' },
+  { label: 'Decide', text: 'What does the result mean? Does it answer the question? What comes next? Novel judgment — cannot be delegated.' },
+];
+const tip = document.getElementById('loop-tooltip');
+let tipNode = null;
+function showTip(node, b, x, y) {
+  tipNode = node;
+  tip.innerHTML = `<span style="font-family:var(--ff-mono);font-size:10px;color:var(--amber);letter-spacing:.1em;font-weight:700">0${+node.dataset.n+1} · ${b.label.toUpperCase()}</span><br>${b.text}`;
+  tip.style.left = Math.max(4, Math.min(x, window.innerWidth  - 250)) + 'px';
+  tip.style.top  = Math.max(4, Math.min(y, window.innerHeight - 130)) + 'px';
+  tip.style.display = 'block';
+}
+document.querySelectorAll('.loop-node').forEach(node => {
+  const b = LOOP_BLURBS[+node.dataset.n];
+  node.addEventListener('mouseenter', e => { showTip(node, b, e.clientX + 14, e.clientY + 14); });
+  node.addEventListener('mousemove',  e => { if (tipNode === node) moveTip(e); });
+  node.addEventListener('mouseleave', () => { tipNode = null; tip.style.display = 'none'; });
+  node.addEventListener('click', e => {
+    if (tipNode === node) { tipNode = null; tip.style.display = 'none'; return; }
+    const r = node.getBoundingClientRect();
+    const ty = r.top > 150 ? r.top - 140 : r.bottom + 10;
+    showTip(node, b, r.left, ty);
+    setTimeout(() => { if (tipNode === node) { tipNode = null; tip.style.display = 'none'; } }, 4000);
+  });
+});
+function moveTip(e) {
+  const x = e.clientX + 14, y = e.clientY + 14;
+  tip.style.left = Math.max(4, Math.min(x, window.innerWidth  - 250)) + 'px';
+  tip.style.top  = Math.max(4, Math.min(y, window.innerHeight - 130)) + 'px';
+}
+</script>
 </body>
 </html>

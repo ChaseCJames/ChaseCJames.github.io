@@ -17,7 +17,7 @@
       align-items: start;
     }
     .mach-row:hover { opacity: .88; }
-    .mach-toggle { font-family: var(--ff-mono); font-size: 12px; color: var(--amber); justify-self: end; padding-top: 1px; }
+    .mach-toggle { font-family: var(--ff-mono); font-size: 20px; color: var(--amber); justify-self: end; line-height: 1; }
     .mach-example {
       padding: 8px 10px 10px 10px;
       background: rgba(200,210,202,.1);
@@ -29,26 +29,32 @@
     .scope-tag { font-family: var(--ff-mono); font-size: 10px; letter-spacing: .16em; font-weight: 700; }
 
     /* scope level interactivity */
-    .scope-clickable { cursor: pointer; transition: transform .15s, box-shadow .15s; }
-    .scope-clickable:hover { opacity: .88; }
+    .scope-clickable { cursor: pointer; transition: transform .15s, box-shadow .15s, background .15s, outline .15s; border-radius: 3px; }
+    .scope-clickable:hover:not(.active-scope):not(.has-active-child) {
+      background: rgba(13,90,74,.09);
+      outline: 1.5px solid rgba(13,90,74,.28);
+    }
     .scope-clickable.active-scope {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 14px rgba(13,32,26,.22);
-    }
-    .scope-clickable.active-scope > .scope-row {
       background: var(--ink);
-      margin: 0 -6px; padding: 3px 6px; border-radius: 2px;
+      padding: 5px 7px; margin: 0 -7px;
+      border-radius: 3px;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(13,32,26,.24);
     }
-    .scope-clickable.active-scope > .scope-row .scope-tag { color: var(--amber) !important; }
-    .scope-clickable.active-scope > .scope-row .scope-file { color: #c8d2ca; }
+    .scope-clickable.active-scope .scope-tag   { color: var(--amber) !important; }
+    .scope-clickable.active-scope .scope-title { color: var(--paper); }
+    .scope-clickable.active-scope .scope-desc  { color: #c8d2ca; }
+    .scope-clickable.active-scope .scope-file  { color: #c8d2ca; }
+    /* suppress outer-box hover when inner scope is active */
+    .scope-clickable.has-active-child:hover { background: none !important; outline: none !important; }
 
     /* scope detail snippet */
     .scope-detail { margin-top: 12px; min-height: 100px; }
-    .scope-snippet { background: #0e1a15; border: 1px solid rgba(200,210,202,.2); border-left: 3px solid var(--amber); padding: 10px 12px; font-family: var(--ff-mono); font-size: 10.5px; color: #c8d2ca; line-height: 1.65; white-space: pre-wrap; }
+    .scope-snippet { background: var(--paper2); border: 1px solid var(--rule); border-left: 3px solid var(--amber); padding: 10px 12px; font-family: var(--ff-mono); font-size: 10.5px; color: var(--ink2); line-height: 1.65; white-space: pre-wrap; }
     .scope-snippet-file { font-family: var(--ff-mono); font-size: 10px; color: var(--amber2); letter-spacing: .1em; margin-bottom: 6px; }
     .scope-prompt { font-family: var(--ff-mono); font-size: 10.5px; color: var(--mute); font-style: italic; padding: 14px 0 4px; }
-    .scope-snippet .hl { color: var(--amber); font-weight: 600; }
-    .scope-snippet .cm { color: #6a8a70; }
+    .scope-snippet .hl { color: var(--marine); font-weight: 600; }
+    .scope-snippet .cm { color: var(--mute); }
   </style>
 </head>
 <body>
@@ -68,7 +74,7 @@
     <a href="standards.html" class="ap-nav-tab active" aria-current="page">01_standards</a>
     <a href="workflows.html" class="ap-nav-tab">02_workflows</a>
     <a href="ethics.html"    class="ap-nav-tab">03_ethics</a>
-    <a href="pedagogy.html"  class="ap-nav-tab">04_teaching</a>
+    <a href="teaching.html"  class="ap-nav-tab">04_teaching</a>
     <a href="example.html"   class="ap-nav-tab">05_example</a>
   </div>
   <div class="ap-nav-meta">Dr. James · 2026</div>
@@ -252,31 +258,33 @@ const SCOPE_CONTENT = {
 <span class="cm"># flag count, expected outputs. Pause for human sign-off.</span>
 
 <span class="hl">## Style defaults</span>
-snake_case variables · ISO 8601 dates · SI units
-figures: 300 dpi, colour-blind-safe palette`
+figures: 300 dpi · colour-blind-safe palette · ISO 8601 dates`
   },
   project: {
-    file: 'coral-bleaching/AGENTS.md  (project-level)',
+    file: 'calcofi-plankton-microbiome/AGENTS.md  (project-level)',
     color: '#0d5a4a',
-    text: `<span class="hl"># Project: coral-bleaching</span>
+    text: `<span class="hl"># Project: calcofi-plankton-microbiome</span>
+<span class="cm"># Inherits all lab-wide standards. Overrides noted explicitly.</span>
 
 <span class="hl">## Active hypothesis</span>
-SST anomalies &gt; 2 °C for 8+ weeks predict bleaching
-severity (target R² &gt; 0.7). <span class="cm"># status: calibration in progress</span>
+Nitrate flux at upwelling fronts drives shifts in plankton
+microbiome alpha-diversity (target R² &gt; 0.65).
+<span class="cm"># status: amplicon QC complete · calibration in progress</span>
 
 <span class="hl">## Data sources</span>
-SST:       NOAA CoralTemp v3.1, 5 km, 1985–2025
-Bleaching: ReefBase survey records  n = 4,847
+Nutrients:  CalCOFI/NCOG CTD + water chemistry · 2018–2024
+Microbiome: 16S amplicon (V4) · n = 847 ASVs · 127 stations
+Upwelling:  BEUTI · NOAA PFEL · biologically effective upwelling
 
 <span class="hl">## Glossary</span>
-DHW  degree heating weeks = Σ ΔT/wk where ΔT &gt; MMM
-MMM  maximum monthly mean (NOAA baseline)
-CBASS  coral bleaching automated stress system
+NCOG   NOAA CalCOFI Genomics Project (data provider)
+ASV    amplicon sequence variant
+BEUTI  biologically effective upwelling transport index
 
 <span class="hl">## Repo structure</span>
-data/raw/      <span class="cm"># never modified after ingest</span>
+data/raw/      <span class="cm"># read-only after ingest</span>
 data/processed/
-models/        <span class="cm"># versioned by date tag</span>
+models/        <span class="cm"># versioned YYYY-MM-DD_tag</span>
 results/YYYY-MM-DD_&lt;tag&gt;/
 docs/planning/ · docs/lab_notebook/`
   },
@@ -308,17 +316,26 @@ export:     300 dpi PNG + SVG source beside each figure`
 let activeScope = null;
 
 function selectScope(id) {
+  const ids = ['lab', 'project', 'tool'];
   if (activeScope === id) {
     activeScope = null;
-    ['lab', 'project', 'tool'].forEach(s =>
-      document.getElementById('scope-'+s).classList.remove('active-scope'));
+    ids.forEach(s => document.getElementById('scope-'+s).classList.remove('active-scope','has-active-child'));
     document.getElementById('scope-detail').innerHTML =
       '<p class="scope-prompt">← click a scope level above to see example file contents</p>';
     return;
   }
   activeScope = id;
-  ['lab', 'project', 'tool'].forEach(s =>
-    document.getElementById('scope-'+s).classList.toggle('active-scope', s === id));
+  ids.forEach(s => {
+    const el = document.getElementById('scope-'+s);
+    el.classList.remove('active-scope','has-active-child');
+    el.classList.toggle('active-scope', s === id);
+  });
+  if (id === 'tool') {
+    document.getElementById('scope-project').classList.add('has-active-child');
+    document.getElementById('scope-lab').classList.add('has-active-child');
+  } else if (id === 'project') {
+    document.getElementById('scope-lab').classList.add('has-active-child');
+  }
   const c = SCOPE_CONTENT[id];
   document.getElementById('scope-detail').innerHTML =
     `<div class="scope-snippet-file" style="color:${c.color}">${c.file}</div>

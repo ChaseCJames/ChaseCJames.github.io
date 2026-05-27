@@ -30,9 +30,10 @@
     .skill-toggle { font-family: var(--ff-mono); font-size: 20px; color: var(--amber); flex-shrink: 0; line-height: 1; }
     .skill-body { margin-top: 6px; }
     .skill-practice-label { font-weight: 700; }
-    /* compact rows */
+    /* compact rows + prevent panel from stretching to match right column */
     .skill-row { gap: 10px; padding: 6px 0; }
     .skill-cadence { padding: 4px 8px; }
+    .ap-cols.ap-cols--wide { align-items: start; }
     /* icon color when open */
     .skill-row.open .skill-glyph svg line,
     .skill-row.open .skill-glyph svg path,
@@ -57,7 +58,7 @@
     <a href="standards.html" class="ap-nav-tab">01_standards</a>
     <a href="workflows.html" class="ap-nav-tab">02_workflows</a>
     <a href="ethics.html"    class="ap-nav-tab">03_ethics</a>
-    <a href="pedagogy.html"  class="ap-nav-tab active" aria-current="page">04_teaching</a>
+    <a href="teaching.html"  class="ap-nav-tab active" aria-current="page">04_teaching</a>
     <a href="example.html"   class="ap-nav-tab">05_example</a>
   </div>
   <div class="ap-nav-meta">Dr. James · 2026</div>

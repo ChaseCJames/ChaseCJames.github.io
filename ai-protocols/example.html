@@ -28,17 +28,31 @@
     .stack-layer.active-layer .chip       { background: rgba(200,210,202,.12); color: #c8d2ca; border-color: rgba(200,210,202,.25); }
     .stack-layer.active-layer .layer-glyph { color: var(--paper) !important; }
 
-    /* snippet panel */
-    .snippet-panel { padding: 10px 12px; background: #0e1a15; border: 1px solid rgba(200,210,202,.18); border-left: 3px solid var(--amber); }
+    /* snippet panel — light background */
+    .snippet-panel { padding: 10px 12px; background: var(--paper2); border: 1px solid var(--rule); border-left: 3px solid var(--amber); }
     .snippet-file { font-family: var(--ff-mono); font-size: 10px; color: var(--amber2); letter-spacing: .1em; margin-bottom: 6px; }
-    .snippet-body { font-family: var(--ff-mono); font-size: 10.5px; color: #c8d2ca; line-height: 1.65; white-space: pre-wrap; }
-    .snippet-body .hl { color: var(--amber); font-weight: 600; }
-    .snippet-body .cm { color: #5a7a60; }
+    .snippet-body { font-family: var(--ff-mono); font-size: 10.5px; color: var(--ink2); line-height: 1.65; white-space: pre-wrap; }
+    .snippet-body .hl { color: var(--marine); font-weight: 600; }
+    .snippet-body .cm { color: var(--mute); }
     .snippet-prompt { font-family: var(--ff-mono); font-size: 10.5px; color: var(--mute); font-style: italic; padding: 12px 0 4px; text-align: center; }
 
     /* mach rows in example */
-    .ex-mach-row { display: grid; grid-template-columns: 70px 1fr; gap: 8px; padding: 5px 0; border-top: 1px solid var(--rule2); }
+    .ex-mach-row { display: grid; grid-template-columns: 70px 1fr; gap: 8px; padding: 5px 0; border-top: 1px solid var(--rule2); cursor: default; transition: background .14s; border-radius: 2px; }
     .ex-mach-row:first-child { border-top: none; }
+    .ex-mach-row:hover { background: rgba(13,32,26,.06); }
+
+    /* WIP hover */
+    .wip-row { cursor: default; transition: background .14s; border-radius: 2px; padding-left: 4px; padding-right: 4px; }
+    .wip-row:hover { background: var(--paper2); }
+    .wip-row:hover .wip-k { color: var(--marine); }
+
+    /* stat box hover */
+    .stat-box { cursor: default; transition: background .15s, transform .15s; }
+    .stat-box:hover { background: var(--ink); transform: translateY(-2px); }
+    .stat-box:hover .stat-k { color: #9aa7a0; }
+    .stat-box:hover .stat-v { color: var(--paper); }
+    .stat-box:hover .stat-n { color: #c8d2ca; }
+
   </style>
 </head>
 <body>
@@ -58,7 +72,7 @@
     <a href="standards.html" class="ap-nav-tab">01_standards</a>
     <a href="workflows.html" class="ap-nav-tab">02_workflows</a>
     <a href="ethics.html"    class="ap-nav-tab">03_ethics</a>
-    <a href="pedagogy.html"  class="ap-nav-tab">04_teaching</a>
+    <a href="teaching.html"  class="ap-nav-tab">04_teaching</a>
     <a href="example.html"   class="ap-nav-tab active" aria-current="page">05_example</a>
   </div>
   <div class="ap-nav-meta">Dr. James · 2026</div>
@@ -237,7 +251,7 @@
 
 <footer class="ap-footer">
   <span>anonymized worked example</span>
-  <span>← <a href="pedagogy.html">teaching</a> · <a href="index.html">back to framework</a></span>
+  <span>← <a href="teaching.html">teaching</a> · <a href="index.html">back to framework</a></span>
 </footer>
 
 <script>
@@ -263,27 +277,28 @@ const SNIPPETS = {
 <span class="cm"># expected outputs · pause for human sign-off.</span>
 
 <span class="hl">## Style</span>
-snake_case · ISO 8601 dates · SI units
-300 dpi figures · colour-blind-safe palette`
+figures: 300 dpi · colour-blind-safe palette · ISO 8601 dates`
   },
   l2: {
     label: 'L2 · per-project',
-    file:  'coral-bleaching/AGENTS.md',
-    html: `<span class="hl"># Project: coral-bleaching</span>
+    file:  'calcofi-plankton-microbiome/AGENTS.md',
+    html: `<span class="hl"># Project: calcofi-plankton-microbiome</span>
 <span class="cm"># Inherits all lab-wide standards. Overrides noted explicitly.</span>
 
 <span class="hl">## Active hypothesis</span>
-SST anomalies &gt; 2 °C for 8+ consecutive weeks predict
-bleaching severity (target R² &gt; 0.7).
-Status: model calibration in progress · 2026-05-22
+Nitrate flux at upwelling fronts drives shifts in plankton
+microbiome alpha-diversity (target R² &gt; 0.65).
+Status: amplicon QC complete · calibration in progress · 2026-05-27
 
 <span class="hl">## Data</span>
-SST:       NOAA CoralTemp v3.1 · 5 km · 1985–2025
-Bleaching: ReefBase survey records · n = 4,847
+Nutrients:  CalCOFI/NCOG CTD + water chemistry · 2018–2024
+Microbiome: 16S amplicon (V4) · n = 847 ASVs · 127 stations
+Upwelling:  BEUTI · NOAA PFEL · biologically effective upwelling
 
 <span class="hl">## Glossary</span>
-DHW   degree heating weeks  = Σ ΔT/wk where ΔT &gt; MMM
-MMM   maximum monthly mean (NOAA 1985–2012 baseline)
+NCOG   NOAA CalCOFI Genomics Project (data provider)
+ASV    amplicon sequence variant
+BEUTI  biologically effective upwelling transport index
 
 <span class="hl">## Repo</span>
 data/raw/       <span class="cm"># read-only after ingest</span>
@@ -293,48 +308,48 @@ docs/planning/  docs/lab_notebook/`
   },
   l3: {
     label: 'L3 · workflow template',
-    file:  'julia_run_template.jl',
+    file:  'r_diversity_template.R',
     html: `<span class="hl">## ── script header (required) ────────────────────────────</span>
-<span class="cm"># Project:   coral-bleaching</span>
-<span class="cm"># Purpose:   fit DHW–bleaching severity model (logistic)</span>
-<span class="cm"># Author:    C. James · 2026-05-22</span>
+<span class="cm"># Project:   calcofi-plankton-microbiome</span>
+<span class="cm"># Purpose:   model BEUTI effects on ASV alpha-diversity</span>
+<span class="cm"># Author:    C. James · 2026-05-27</span>
 <span class="cm"># Agent:     claude-sonnet-4-6  (planning + draft)</span>
-<span class="cm"># Inputs:    data/processed/dhw_bleaching_merged.csv</span>
-<span class="cm"># Outputs:   results/2026-05-22_logistic/  (model + figs)</span>
+<span class="cm"># Inputs:    data/processed/calcofi_asv_nutrients_merged.csv</span>
+<span class="cm"># Outputs:   results/2026-05-27_diversity_glm/  (model + figs)</span>
 
 <span class="hl">## ── parameters ───────────────────────────────────────────</span>
-threshold  = 2.0   <span class="cm"># [literature] Hoegh-Guldberg 1999</span>
-n_weeks    = 8     <span class="cm"># [assumed]    flag: review before HPC submit</span>
-train_frac = 0.75  <span class="cm"># [agent-chosen] reasoning: standard split for n&gt;1000</span>
+beuti_lag  = 14    <span class="cm"># [literature] Jacox et al. 2018</span>
+min_reads  = 1000  <span class="cm"># [assumed]    flag: review before HPC submit</span>
+train_frac = 0.75  <span class="cm"># [agent-chosen] reasoning: standard split for n&gt;500</span>
 
 <span class="hl">## ── pre-flight summary ───────────────────────────────────</span>
 <span class="cm"># [assumed] count: 1  →  human sign-off required before submit</span>`
   },
   l4: {
     label: 'L4 · memory',
-    file:  'docs/planning/2026-05-22_model_calibration.md',
-    html: `<span class="hl"># Planning note · 2026-05-22 · model calibration</span>
+    file:  'docs/planning/2026-05-27_diversity_model.md',
+    html: `<span class="hl"># Planning note · 2026-05-27 · diversity model</span>
 
 <span class="hl">## Goal for this session</span>
-Fit logistic DHW–bleaching model. Evaluate whether 8-week
-threshold improves AUC over 4-week baseline.
+Fit GLM of BEUTI (lagged 14 d) on Shannon alpha-diversity.
+Evaluate whether upwelling timing predicts microbiome shifts.
 
 <span class="hl">## Parameters in play</span>
-threshold  2.0 °C  [literature] Hoegh-Guldberg 1999
-n_weeks    8       [assumed]    — needs sensitivity test
-train_frac 0.75    [agent-chosen]
+beuti_lag   14 d   [literature] Jacox et al. 2018
+min_reads   1000   [assumed]    — needs sensitivity check
+train_frac  0.75   [agent-chosen]
 
 <span class="hl">## What changed from last run</span>
-Switched from linear to logistic — data are binary.
-Added ReefBase 2023–2025 records (n += 312).
+Added BEUTI as primary covariate; removed raw SST.
+Switched from linear to GLM (Poisson family, log link).
 
 <span class="hl">## To watch in results</span>
-- AUC on holdout &gt; 0.82 (prior best)
-- Calibration curve: any systematic over/under-prediction?
-- n_weeks sensitivity: does 4 vs 8 matter much?
+- Deviance explained &gt; 0.30 (prior SST model: 0.18)
+- Partial plots: BEUTI vs. H' at each station cluster
+- Residual autocorrelation by cruise date
 
 <span class="hl">## Pick up next session</span>
-If AUC &gt; 0.82 → run full HPC sweep over threshold ∈ [1,3].`
+If deviance &gt; 0.30 → test interaction with station depth zone.`
   }
 };
 

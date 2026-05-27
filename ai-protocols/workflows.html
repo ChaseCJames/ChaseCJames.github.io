@@ -11,11 +11,14 @@
   <link rel="stylesheet" href="shared.css">
   <style>
     .agent-hint { font-family: var(--ff-mono); font-size: 10.5px; color: var(--mute); text-align: center; padding: 12px 0 4px; letter-spacing: .04em; }
-    .agent-roles { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 8px; margin-top: 10px; }
-    .agent-role-card { background: var(--paper2); border: 1px solid var(--rule); padding: 8px 10px; }
+    .agent-roles { display: flex; justify-content: center; margin-top: 10px; }
+    .agent-role-card { background: var(--paper2); border: 1px solid var(--rule); padding: 8px 10px; max-width: 320px; width: 100%; }
     .agent-role-card.selected { border-color: var(--amber); border-width: 2px; background: #fdf6ec; }
     .agent-role-name { font-family: var(--ff-mono); font-size: 10px; color: var(--amber2); letter-spacing: .12em; margin-bottom: 4px; font-weight: 600; }
     .agent-role-desc { font-size: 11.5px; color: var(--ink2); line-height: 1.45; }
+    .pipe-stage-panel { margin-top: 10px; padding: 8px 12px; background: var(--paper2); border: 1px solid var(--rule); border-left: 3px solid var(--amber); }
+    .pipe-stage-name { font-family: var(--ff-mono); font-size: 10px; color: var(--amber2); letter-spacing: .1em; margin-bottom: 4px; font-weight: 600; }
+    .pipe-stage-desc { font-size: 12px; color: var(--ink2); line-height: 1.45; }
   </style>
 </head>
 <body>
@@ -35,7 +38,7 @@
     <a href="standards.html" class="ap-nav-tab">01_standards</a>
     <a href="workflows.html" class="ap-nav-tab active" aria-current="page">02_workflows</a>
     <a href="ethics.html"    class="ap-nav-tab">03_ethics</a>
-    <a href="pedagogy.html"  class="ap-nav-tab">04_teaching</a>
+    <a href="teaching.html"  class="ap-nav-tab">04_teaching</a>
     <a href="example.html"   class="ap-nav-tab">05_example</a>
   </div>
   <div class="ap-nav-meta">Dr. James · 2026</div>
@@ -157,7 +160,7 @@ const ENSEMBLES = {
   write: {
     agents: ['Drafter', 'Auditor'],
     agentRoles: [
-      'Drafts methods and results sections from notes, code, and figures. Follows the human\'s narrative outline.',
+      'Drafts figures or assists with organizational structure of the manuscript; works from the human\'s notes, code, and outline — not methods or results sections.',
       'Checks every citation, claim, and figure against the source. Flags unsupported or overstated statements.'
     ],
     human: 'drives the narrative: writes abstract, intro framing, and discussion unaided first — then brings in the agent as an assistant for structure and audit; the human owns the argument',
@@ -180,8 +183,19 @@ const ENSEMBLES = {
   },
 };
 
-let active        = 'hypo';
-let selectedAgent = -1;
+let active            = 'hypo';
+let selectedAgent     = -1;
+let selectedPipeStage = -1;
+
+const PIPE_STAGE_DESC = [
+  { name: 'Sample intake',  desc: 'Per-sample IDs and cryptographic hashes are recorded at ingest. The provenance chain starts here — no sample enters without a logged identifier and a baseline hash.' },
+  { name: 'Metadata',       desc: 'Deterministic annotation: cruise ID, station number, cast depth, and sampling date-time attached to each sample record. No agentic decisions at this stage.' },
+  { name: 'Orchestrator',   desc: 'Applies the transform sequence defined by the human before the run. Logs every parameter choice and its provenance tag as it executes — decisions are traceable end-to-end.' },
+  { name: 'QC reviewer',    desc: 'Agentic branch point. Evaluates each sample against pre-written QC criteria. PASS advances to Validator; FAIL quarantines the sample and alerts the human immediately. Criteria written before the run, not after seeing the data.' },
+  { name: 'Validator',      desc: 'Final check before release. Confirms all samples have valid outputs, complete manifests, and consistent IDs and hashes end-to-end. Nothing ships without a clean Validator pass.' },
+  { name: 'Release',        desc: 'Downstream-ready output with full manifest. Data becomes read-only from this point; any reprocessing requires a new dated run with versioned outputs.' },
+  { name: 'Quarantine',     desc: 'Samples that fail QC are isolated here — no further transforms applied. The human reviews each quarantined sample and decides: reprocess with adjusted parameters, or discard. The quarantine log is preserved as part of the run manifest.' },
+];
 
 function ensembleSVG(phase) {
   const e = ENSEMBLES[phase];
@@ -252,6 +266,15 @@ function ensembleSVG(phase) {
   return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:220px">${inner}</svg>`;
 }
 
+function pipeStageHTML() {
+  if (selectedPipeStage < 0 || selectedPipeStage >= PIPE_STAGE_DESC.length) return '';
+  const s = PIPE_STAGE_DESC[selectedPipeStage];
+  return `<div class="pipe-stage-panel">
+    <div class="pipe-stage-name">${s.name.toUpperCase()}</div>
+    <div class="pipe-stage-desc">${s.desc}</div>
+  </div>`;
+}
+
 function agentRolesHTML(phase) {
   const e = ENSEMBLES[phase];
   if (selectedAgent < 0 || selectedAgent >= e.agents.length) {
@@ -292,18 +315,27 @@ function pipelineSVG() {
 
   stages.forEach((s, i) => {
     const next = stages[i + 1];
+    const sel  = i === selectedPipeStage;
+    const strokeC = sel ? amber : strokeFor(s.type);
+    const strokeW = sel ? '2.2' : '1.2';
     if (next) inner += `<line x1="${s.x+s.w}" y1="${yMain}" x2="${next.x-2}" y2="${yMain}" stroke="${marine}" stroke-width="1.2" marker-end="url(#aS)"/>`;
-    inner += `<rect x="${s.x}" y="${yMain-22}" width="${s.w}" height="44" fill="${fillFor(s.type)}" stroke="${strokeFor(s.type)}" stroke-width="1.2"/>
+    inner += `<g onclick="selectPipeStage(${i})" style="cursor:pointer">
+      <rect x="${s.x}" y="${yMain-22}" width="${s.w}" height="44" fill="${fillFor(s.type)}" stroke="${strokeC}" stroke-width="${strokeW}"/>
       <text x="${s.x+s.w/2}" y="${yMain-4}" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="12.5" font-weight="600" fill="${ink}">${s.label}</text>
-      <text x="${s.x+s.w/2}" y="${yMain+12}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="${s.type==='ag'?amber2:mute}" letter-spacing=".04em">${s.sub}</text>`;
+      <text x="${s.x+s.w/2}" y="${yMain+12}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="${s.type==='ag'?amber2:mute}" letter-spacing=".04em">${s.sub}</text>
+    </g>`;
   });
+
+  inner += `<text x="350" y="258" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#9aa7a0" letter-spacing=".06em">click a stage to learn its role</text>`;
 
   inner += `<text x="464" y="${yMain-42}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="${marine}" letter-spacing=".08em">PASS</text>
     <path d="M 408 ${yMain+22} L 408 190 L 508 190" fill="none" stroke="#b73d28" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#aR)"/>
     <text x="420" y="${yMain+50}" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#b73d28" letter-spacing=".08em">FAIL</text>
-    <rect x="514" y="175" width="130" height="36" fill="#efd9d2" stroke="#b73d28" stroke-width="1.2"/>
-    <text x="579" y="191" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="11.5" font-weight="600" fill="#7a2418">Quarantine</text>
-    <text x="579" y="203" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#7a2418">+ alert human</text>
+    <g onclick="selectPipeStage(6)" style="cursor:pointer">
+      <rect x="514" y="175" width="130" height="36" fill="#efd9d2" stroke="${selectedPipeStage===6?'#7a2418':'#b73d28'}" stroke-width="${selectedPipeStage===6?'2.5':'1.2'}"/>
+      <text x="579" y="191" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="11.5" font-weight="600" fill="#7a2418">Quarantine</text>
+      <text x="579" y="203" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#7a2418">+ alert human</text>
+    </g>
     <rect x="30" y="170" width="360" height="80" fill="none" stroke="${marine}" stroke-width="0.8" stroke-dasharray="2 3"/>
     <text x="42" y="188" font-family="JetBrains Mono,monospace" font-size="10" fill="${marine}" letter-spacing=".08em">HUMAN GOVERNANCE · BEFORE THE RUN</text>
     <text x="42" y="206" font-family="Inter Tight,sans-serif" font-size="10.5" fill="${ink2}">① write QC criteria up front</text>
@@ -341,7 +373,9 @@ function renderDiagram() {
   document.getElementById('fig-label').textContent  = `Fig 2.${idx+1} · ${m.phase.toLowerCase()} ensemble`;
   document.getElementById('flow-label').textContent = `flow: ${e.flow}`;
   document.getElementById('diagram-area').innerHTML =
-    (active === 'pipe' ? pipelineSVG() : ensembleSVG(active)) + agentRolesHTML(active);
+    active === 'pipe'
+      ? pipelineSVG() + pipeStageHTML()
+      : ensembleSVG(active) + agentRolesHTML(active);
   document.getElementById('card-against').textContent = e.against;
   document.getElementById('card-concern').textContent = `concern: ${m.concern.toLowerCase()}`;
   document.getElementById('card-human').innerHTML =
@@ -354,9 +388,15 @@ function selectAgent(i) {
   renderDiagram();
 }
 
+function selectPipeStage(i) {
+  selectedPipeStage = (selectedPipeStage === i) ? -1 : i;
+  renderDiagram();
+}
+
 function select(id) {
-  active        = id;
-  selectedAgent = -1;
+  active            = id;
+  selectedAgent     = -1;
+  selectedPipeStage = -1;
   renderPhaseRow();
   renderDiagram();
 }
