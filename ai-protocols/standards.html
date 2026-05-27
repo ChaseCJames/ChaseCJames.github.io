@@ -9,6 +9,25 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="shared.css">
+  <style>
+    .mach-item { border-top: 1px solid rgba(200,210,202,.18); }
+    .mach-row  {
+      display: grid; grid-template-columns: 120px 1fr 20px;
+      padding: 8px 0; gap: 8px; cursor: pointer;
+      align-items: start;
+    }
+    .mach-row:hover { opacity: .88; }
+    .mach-toggle { font-family: var(--ff-mono); font-size: 12px; color: var(--amber); justify-self: end; padding-top: 1px; }
+    .mach-example {
+      padding: 8px 10px 10px 10px;
+      background: rgba(200,210,202,.1);
+      border-left: 2px solid var(--amber);
+      margin: 0 0 8px 0;
+      font-size: 11.5px; color: #c8d2ca; line-height: 1.5;
+    }
+    .mach-example strong { color: var(--amber); }
+    .scope-tag { font-family: var(--ff-mono); font-size: 10px; letter-spacing: .16em; font-weight: 700; }
+  </style>
 </head>
 <body>
 
@@ -110,11 +129,11 @@
   <!-- RIGHT: machinery + provenance + pre-flight gate -->
   <div style="display:flex;flex-direction:column;gap:12px">
 
-    <!-- Machinery — dark block -->
+    <!-- Machinery — dark block with accordion dropdowns -->
     <div class="panel-dark">
       <div class="fig-head">
         <span class="label" style="color:var(--amber)">01.2 · machinery</span>
-        <span style="font-family:var(--ff-mono);font-size:10px;color:#9aa7a0;font-style:italic">infrastructure, not governance</span>
+        <span style="font-family:var(--ff-mono);font-size:10px;color:#9aa7a0;font-style:italic">click each to expand an example</span>
       </div>
       <div style="font-family:var(--ff-display);font-size:20px;font-weight:600;margin-top:4px;letter-spacing:-0.012em">
         Hooks · skills · pipelines · memory
@@ -123,22 +142,51 @@
         Persistent mechanisms that fire across sessions. Warrant heavier review than declarative rules — a misconfigured hook fires on every session for every lab member until it is fixed.
       </div>
       <div style="margin-top:10px">
-        <div class="machinery-row">
-          <span class="machinery-key">01_hooks</span>
-          <span class="machinery-val">Fire automatically on events. Lint, redact, log, attach provenance. Deterministic, cheap, visible, reversible.</span>
+
+        <div class="mach-item">
+          <div class="mach-row" onclick="toggleMach(this)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleMach(this)">
+            <span class="machinery-key">01_hooks</span>
+            <span class="machinery-val">Fire automatically on events. Lint, redact, log, attach provenance. Deterministic, cheap, visible, reversible.</span>
+            <span class="mach-toggle">▸</span>
+          </div>
+          <div class="mach-example" hidden>
+            <strong>Example:</strong> A pre-session hook that checks any script flagged for HPC submission for <code>[assumed]</code> parameter tags and pauses with a summary — "3 assumed parameters found: line 14 (decay rate), line 22 (threshold), line 41 (burn-in). Confirm before submitting." The human sees the flags; the script doesn't run until they respond.
+          </div>
         </div>
-        <div class="machinery-row">
-          <span class="machinery-key">02_skills</span>
-          <span class="machinery-val">Named, reusable capabilities. A daily-notebook skill walks modified files and emits a per-project summary.</span>
+
+        <div class="mach-item">
+          <div class="mach-row" onclick="toggleMach(this)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleMach(this)">
+            <span class="machinery-key">02_skills</span>
+            <span class="machinery-val">Named, reusable capabilities. A daily-notebook skill walks modified files and emits a per-project summary.</span>
+            <span class="mach-toggle">▸</span>
+          </div>
+          <div class="mach-example" hidden>
+            <strong>Example:</strong> <code>/lab-notebook</code> — run at end of day. Walks all files modified in the session, extracts decisions and outputs, writes a dated entry to <code>docs/lab_notebook/YYYY-MM-DD.md</code>: what changed, what was decided and why, what to pick up next session. Takes ~30 seconds; produces an audit trail that actually gets written.
+          </div>
         </div>
-        <div class="machinery-row">
-          <span class="machinery-key">03_api_workflows</span>
-          <span class="machinery-val">Long-running, non-interactive pipelines with checkpoints. The agent writes; deterministic code runs.</span>
+
+        <div class="mach-item">
+          <div class="mach-row" onclick="toggleMach(this)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleMach(this)">
+            <span class="machinery-key">03_api_workflows</span>
+            <span class="machinery-val">Long-running, non-interactive pipelines with checkpoints. The agent writes; deterministic code runs.</span>
+            <span class="mach-toggle">▸</span>
+          </div>
+          <div class="mach-example" hidden>
+            <strong>Example:</strong> A multi-step HPC pipeline: agent generates a SLURM script with provenance tags → human reviews and signs off → agent submits → agent polls for completion → agent parses outputs and writes a summary → results saved to <code>results/YYYY-MM-DD_run/</code> with a manifest. Each step is a checkpoint; the human can inspect or intervene at any stage.
+          </div>
         </div>
-        <div class="machinery-row">
-          <span class="machinery-key">04_memory</span>
-          <span class="machinery-val">Dated planning notes and lab-notebook entries. Dense enough to be useful, light enough to actually get written.</span>
+
+        <div class="mach-item">
+          <div class="mach-row" onclick="toggleMach(this)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleMach(this)">
+            <span class="machinery-key">04_memory</span>
+            <span class="machinery-val">Dated planning notes and lab-notebook entries. Dense enough to be useful, light enough to actually get written.</span>
+            <span class="mach-toggle">▸</span>
+          </div>
+          <div class="mach-example" hidden>
+            <strong>Example:</strong> <code>docs/planning/2026-05-26_model_calibration.md</code> — created at start of session. Records: goal for this session, parameters in play (with sources), what changed from last run and why, what to watch for in results. Written by the agent from the conversation, reviewed by the human before saving. Becomes the context a fresh agent session reads on day 2.
+          </div>
         </div>
+
       </div>
     </div>
 
@@ -148,12 +196,15 @@
         <span class="label">Parameter provenance tags</span>
         <span class="label-mute">inline, per parameter</span>
       </div>
-      <div style="margin-top:6px">
+      <p style="font-size:11.5px;color:var(--ink2);margin:6px 0 8px;line-height:1.5">
+        Track where every decision in your code came from. Did you choose a parameter yourself? Does it have a literature source? Was it fitted to data — and if so, by what method? Or did the agent choose it based on your conversation? These tags make that visible at a glance.
+      </p>
+      <div>
         <div class="prov-row"><span class="prov-tag">[literature]</span><span class="prov-val">Value from a cited source; include author + year.</span></div>
-        <div class="prov-row"><span class="prov-tag">[fitted]</span><span class="prov-val">Fit to experimental data; note which dataset.</span></div>
-        <div class="prov-row"><span class="prov-tag">[assumed]</span><span class="prov-val">No source; agent judgment — flag for human review.</span></div>
-        <div class="prov-row"><span class="prov-tag">[agent-chosen]</span><span class="prov-val">Deliberate agent decision; reasoning stated nearby.</span></div>
-        <div class="prov-row"><span class="prov-tag">[user-specified]</span><span class="prov-val">Explicitly provided by the human.</span></div>
+        <div class="prov-row"><span class="prov-tag">[fitted]</span><span class="prov-val">Fit to experimental data; note which dataset and fitting method (e.g. MLE, least squares, Bayesian posterior).</span></div>
+        <div class="prov-row"><span class="prov-tag">[assumed]</span><span class="prov-val">No source; agent judgment — flag for human review before any long-running job.</span></div>
+        <div class="prov-row"><span class="prov-tag">[agent-chosen]</span><span class="prov-val">Deliberate agent decision; reasoning stated nearby in the script.</span></div>
+        <div class="prov-row"><span class="prov-tag">[user-specified]</span><span class="prov-val">Explicitly provided by the human during the session.</span></div>
       </div>
     </div>
 
@@ -173,6 +224,16 @@
   <span>← <a href="index.html">framework</a></span>
   <span>next: <a href="workflows.html">workflows →</a></span>
 </footer>
+
+<script>
+function toggleMach(row) {
+  const example = row.parentElement.querySelector('.mach-example');
+  const toggle  = row.querySelector('.mach-toggle');
+  const open    = !example.hidden;
+  example.hidden = open;
+  toggle.textContent = open ? '▸' : '▾';
+}
+</script>
 
 </body>
 </html>

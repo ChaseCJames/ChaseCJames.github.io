@@ -9,6 +9,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="shared.css">
+  <style>
+    .agent-roles { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 8px; margin-top: 10px; }
+    .agent-role-card { background: var(--paper2); border: 1px solid var(--rule); padding: 8px 10px; }
+    .agent-role-name { font-family: var(--ff-mono); font-size: 10px; color: var(--amber2); letter-spacing: .12em; margin-bottom: 4px; font-weight: 600; }
+    .agent-role-desc { font-size: 11.5px; color: var(--ink2); line-height: 1.45; }
+  </style>
 </head>
 <body>
 
@@ -63,7 +69,6 @@
   <div class="wf-card">
     <h3>Human role</h3>
     <p class="wf-card-body" id="card-human"></p>
-    <p class="wf-card-sub">the human is in the ensemble, not a customer of it.</p>
   </div>
   <div class="wf-card">
     <h3>Notes</h3>
@@ -78,101 +83,188 @@
 
 <script>
 const MATRIX = [
-  { id: 'hypo',  phase: 'Hypothesis generation',     n: 3, concern: 'Genuine novelty vs. rearranged priors' },
-  { id: 'exp',   phase: 'Experimental design',       n: 2, concern: 'Feasibility, alignment, testability' },
-  { id: 'stats', phase: 'Model development & stats', n: 3, concern: 'Parameter provenance, reconciliation' },
-  { id: 'debug', phase: 'Debugging',                 n: 2, concern: 'Root cause vs. symptom' },
+  { id: 'hypo',  phase: 'Hypothesis generation',       n: 3, concern: 'Genuine novelty vs. rearranged priors' },
+  { id: 'exp',   phase: 'Experimental design',         n: 2, concern: 'Feasibility, alignment, testability' },
+  { id: 'stats', phase: 'Model development & stats',   n: 3, concern: 'Parameter provenance, reconciliation' },
+  { id: 'debug', phase: 'Debugging',                   n: 2, concern: 'Root cause vs. symptom' },
   { id: 'rev',   phase: 'Results review & contrarian', n: 4, concern: 'Adversarial scrutiny, falsifiers' },
-  { id: 'write', phase: 'Writing & figures',         n: 2, concern: 'Claim — figure — citation alignment' },
-  { id: 'pipe',  phase: 'High-throughput data',      n: 4, concern: 'Pipeline-stage roles, QC gating' },
+  { id: 'write', phase: 'Writing & figures',           n: 2, concern: 'Claim — figure — citation alignment' },
+  { id: 'pipe',  phase: 'High-throughput data',        n: 4, concern: 'Pipeline-stage roles, QC gating' },
 ];
 
 const ENSEMBLES = {
-  hypo:  { agents: ['Generator', 'Contrarian', 'Grounder'], human: 'selects what is worth testing',
-           against: 'AI-flavored hypotheses — plausible rearrangements of known ideas.',
-           flow: 'series', notes: ['variety > polish', 'no shared chain-of-thought', 'every citation unverified until human reads it'] },
-  exp:   { agents: ['Designer', 'Reviewer'], human: 'commits to the experiment',
-           against: 'Designs that look plausible but cannot actually test the hypothesis.',
-           flow: 'pair', notes: ['alignment table required', 'feasibility before novelty'] },
-  stats: { agents: ['Implementer', 'Reviewer', 'Reconciler'], human: 'reads the pre-flight summary, signs off',
-           against: 'Parameter choices without provenance; results that the script header cannot reconstruct.',
-           flow: 'series', notes: ['per-parameter provenance tags', 'pre-flight gate before any HPC submit'] },
-  debug: { agents: ['Diagnostician', 'Fresh-context'], human: 'enforces the two-iteration rule',
-           against: 'Symptom-patching — fixes that make the error disappear without explaining why.',
-           flow: 'escalation', notes: ['max 2 iterations before escalation', 'fresh context should be a different model family'] },
-  rev:   { agents: ['Reviewer', 'Contrarian', 'Synthesizer', 'Auditor'], human: 'decides what is claimable',
-           against: 'Confirmation-shaped review. Agents that find ways to read results as supportive.',
-           flow: 'adversarial', notes: ['contrarian sees no primary output', 'synthesizer ignores stylistic disagreement, names load-bearing ones'] },
-  write: { agents: ['Drafter', 'Auditor'], human: 'writes abstract, intro framing, discussion unaided',
-           against: 'Confident-sounding prose that smooths over what the data actually show.',
-           flow: 'pair', notes: ['every citation verified by hand', 'discussion is the human\'s voice'] },
-  pipe:  { agents: ['Tracker', 'Orchestrator', 'QC reviewer', 'Validator'], human: 'writes QC criteria before the run; reviews edge cases',
-           against: 'Per-sample drift; pipelines that complete without anyone reading the QC; sample swaps.',
-           flow: 'branching pipeline', notes: ['deterministic per-sample transforms', 'agentic only at parameter & QC stages', 'every transform preserves sample ID + a hash check'] },
+  hypo: {
+    agents: ['Generator', 'Contrarian', 'Grounder'],
+    agentRoles: [
+      'Generates diverse candidate hypotheses drawing on broad literature — no constraints on plausibility at this stage.',
+      'Attacks each hypothesis: finds counter-evidence, alternative explanations, confounders, and missing controls.',
+      'Checks mechanistic plausibility; flags hypotheses with no testable observational signature.'
+    ],
+    human: 'iterates on paths forward, brings domain intuition and scientific judgment agents lack, and selects what is genuinely worth testing — the novel choice that drives the work',
+    against: 'AI-flavored hypotheses — plausible rearrangements of known ideas with no genuine novelty.',
+    flow: 'series',
+    notes: ['variety > polish at this stage', 'no shared chain-of-thought between agents', 'every citation unverified until human reads it']
+  },
+  exp: {
+    agents: ['Designer', 'Reviewer'],
+    agentRoles: [
+      'Proposes experimental design: variables, controls, sample size, timeline, and predicted outcomes.',
+      'Checks feasibility, identifies confounders, tests alignment with the original hypothesis.'
+    ],
+    human: 'the architect — has the conceptual plan and the scientific intuition behind it; tests the plan against the Designer\'s feasibility analysis; commits to the experiment and its constraints',
+    against: 'Designs that look plausible on paper but cannot actually test the hypothesis.',
+    flow: 'pair',
+    notes: ['alignment table required before moving forward', 'feasibility before novelty', 'human signs off before any resource commitment']
+  },
+  stats: {
+    agents: ['Implementer', 'Reviewer', 'Reconciler'],
+    agentRoles: [
+      'Writes model code with provenance tags on every parameter — [literature], [fitted], [assumed], or [agent-chosen].',
+      'Checks code against the model spec; tests edge cases and boundary conditions independently.',
+      'Compares Implementer and Reviewer outputs; flags load-bearing disagreements for human review.'
+    ],
+    human: 'reads the pre-flight summary, brings scientific judgment to flagged assumptions, and signs off — no long-running job starts without human approval',
+    against: 'Parameter choices without provenance; results a fresh reader cannot reconstruct from the script header.',
+    flow: 'series',
+    notes: ['per-parameter provenance tags required', 'pre-flight gate before any HPC submit', 'human sees [assumed] flag count before approving']
+  },
+  debug: {
+    agents: ['Diagnostician', 'Fresh-context'],
+    agentRoles: [
+      'Diagnoses root cause: reads the error, traces execution, forms and tests a hypothesis. Hard limit: 2 iterations.',
+      'Restarts from a clean slate — different model family preferred. No access to prior chain-of-thought, to avoid anchoring on failed attempts.'
+    ],
+    human: 'enforces the two-iteration rule; after 2 passes → Fresh-context agent (different model family); if still unresolved after fresh context: human steps in directly to trace root cause',
+    against: 'Symptom-patching — fixes that make the error disappear without explaining why.',
+    flow: 'escalation',
+    notes: ['max 2 iterations per agent before escalating', 'fresh-context agent uses a different model family', 'if still unresolved: human steps in directly', 'root cause must be stated before any fix is accepted']
+  },
+  rev: {
+    agents: ['Reviewer', 'Contrarian', 'Synthesizer', 'Auditor'],
+    agentRoles: [
+      'Reads results with the primary hypothesis in mind. Summarizes what the data show.',
+      'Reads results without seeing Reviewer output. Finds weaknesses, alternative explanations, and what the data fail to show.',
+      'Reads both above; identifies load-bearing disagreements; ignores stylistic ones.',
+      'Checks every citation, every claim, and every figure label against the source data.'
+    ],
+    human: 'decides what is actually claimable — novel interpretive judgment requiring domain expertise that cannot be delegated; the human draws the scientific conclusion',
+    against: 'Confirmation-shaped review — agents that find ways to read results as supportive.',
+    flow: 'adversarial',
+    notes: ['Contrarian sees no primary output', 'Synthesizer ignores stylistic disagreement, names load-bearing ones', 'every claim human-verified before submission']
+  },
+  write: {
+    agents: ['Drafter', 'Auditor'],
+    agentRoles: [
+      'Drafts methods and results sections from notes, code, and figures. Follows the human\'s narrative outline.',
+      'Checks every citation, claim, and figure against the source. Flags unsupported or overstated statements.'
+    ],
+    human: 'drives the narrative: writes abstract, intro framing, and discussion unaided first — then brings in the agent as an assistant for structure and audit; the human owns the argument',
+    against: 'Confident-sounding prose that smooths over what the data actually show.',
+    flow: 'pair',
+    notes: ['human writes key sections unaided first, no agent', 'every citation verified by hand', 'discussion is the human\'s voice — agent edits, does not draft']
+  },
+  pipe: {
+    agents: ['Tracker', 'Orchestrator', 'QC reviewer', 'Validator'],
+    agentRoles: [
+      'Monitors per-sample progress; logs sample IDs and hashes at each stage.',
+      'Coordinates the transform sequence; applies parameter choices; logs all decisions.',
+      'Branches on QC results: PASS continues to Validator; FAIL → quarantine + alert human.',
+      'Final check before release: confirms all samples have valid outputs and complete manifests.'
+    ],
+    human: 'writes QC criteria before the run; reviews edge cases; data stays agent-readable, not agent-writable',
+    against: 'Per-sample drift; pipelines that complete without anyone reading the QC; sample swaps.',
+    flow: 'branching pipeline',
+    notes: ['deterministic per-sample transforms', 'agentic only at parameter and QC stages', 'every transform preserves sample ID and a hash check']
+  },
 };
 
-let active = 'rev';
+let active = 'hypo';
 
 function ensembleSVG(phase) {
   const e = ENSEMBLES[phase];
   const w = 700, h = 220, cy = 110;
-  const humanX = w - 60;
   const n = e.agents.length;
-  const xs = e.agents.map((_, i) => 130 + i * (n < 2 ? 0 : (w - 260) / (n - 1)));
-  const marine = '#0d5a4a', ink = '#13201a', amber = '#b8741c', amber2 = '#8a4f0d', paper = '#f4f1e8', paper2 = '#ece6d6', marine2 = '#062f26';
 
-  const arrow = (d, dashed, color) =>
-    `<path d="${d}" fill="none" stroke="${color || marine}" stroke-width="1.2"${dashed ? ' stroke-dasharray="4 4" class="c-flow"' : ''}/>`;
+  // Center agents symmetrically between two HUMAN boxes
+  const spacing = n < 2 ? 0 : Math.min(130, 360 / (n - 1));
+  const groupSpan = (n - 1) * spacing;
+  const agentStart = 350 - groupSpan / 2;
+  const xs = e.agents.map((_, i) => agentStart + i * spacing);
+
+  const leftHumanX  = 60;
+  const rightHumanX = 640;
+  const marine = '#0d5a4a', ink = '#13201a', amber = '#b8741c', amber2 = '#8a4f0d',
+        paper = '#f4f1e8', marine2 = '#062f26';
+
+  const dashedPath = (d) =>
+    `<path d="${d}" fill="none" stroke="${marine}" stroke-width="1.2" stroke-dasharray="4 4" class="c-flow"/>`;
 
   let inner = '';
 
-  // Source box
-  inner += `<rect x="20" y="${cy-22}" width="80" height="44" fill="${paper2}" stroke="${ink}" stroke-width="1"/>
-    <text x="60" y="${cy-4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10.5" fill="${amber2}" letter-spacing="1.5">INPUT</text>
-    <text x="60" y="${cy+12}" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="11" fill="${ink}">artifact</text>`;
+  // Left HUMAN box
+  inner += `<rect x="${leftHumanX-26}" y="${cy-26}" width="52" height="52" fill="${marine}" stroke="${marine2}" stroke-width="1.4"/>
+    <rect x="${leftHumanX-18}" y="${cy-18}" width="36" height="36" fill="none" stroke="#fff" stroke-width="1"/>
+    <text x="${leftHumanX}" y="${cy+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">HUMAN</text>`;
 
-  // Agent circles
+  // Dashed line: left HUMAN → first agent
+  inner += dashedPath(`M ${leftHumanX+26} ${cy} L ${xs[0]-44} ${cy}`);
+
+  // Agent circles + inter-agent dashed lines
   xs.forEach((x, i) => {
-    const fromX = i === 0 ? 100 : xs[i-1] + 44;
-    inner += arrow(`M ${fromX} ${cy} L ${x-44} ${cy}`, true);
+    if (i > 0) inner += dashedPath(`M ${xs[i-1]+44} ${cy} L ${x-44} ${cy}`);
     inner += `<circle cx="${x}" cy="${cy}" r="44" fill="${paper}" stroke="${ink}" stroke-width="1.2"/>
-      <text x="${x}" y="${cy-8}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10.5" fill="${amber2}">AGENT_${i+1}</text>
-      <text x="${x}" y="${cy+10}" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="13.5" font-weight="600" fill="${ink}">${e.agents[i]}</text>`;
+      <text x="${x}" y="${cy-8}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="${amber2}" letter-spacing=".08em">${String(i+1).padStart(2,'0')}</text>
+      <text x="${x}" y="${cy+10}" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="13" font-weight="600" fill="${ink}">${e.agents[i]}</text>`;
   });
 
-  // To human
-  inner += arrow(`M ${xs[n-1]+44} ${cy} L ${humanX-26} ${cy}`, true);
-  inner += `<rect x="${humanX-26}" y="${cy-26}" width="52" height="52" fill="${marine}" stroke="${marine2}" stroke-width="1.4"/>
-    <rect x="${humanX-18}" y="${cy-18}" width="36" height="36" fill="none" stroke="#fff" stroke-width="1"/>
-    <text x="${humanX}" y="${cy+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">HUMAN</text>`;
+  // Dashed line: last agent → right HUMAN (visible gap)
+  inner += dashedPath(`M ${xs[n-1]+44} ${cy} L ${rightHumanX-26} ${cy}`);
 
-  // Adversarial annotation
+  // Right HUMAN box
+  inner += `<rect x="${rightHumanX-26}" y="${cy-26}" width="52" height="52" fill="${marine}" stroke="${marine2}" stroke-width="1.4"/>
+    <rect x="${rightHumanX-18}" y="${cy-18}" width="36" height="36" fill="none" stroke="#fff" stroke-width="1"/>
+    <text x="${rightHumanX}" y="${cy+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">HUMAN</text>`;
+
+  // Adversarial annotation (rev)
   if (phase === 'rev' && n > 1) {
-    inner += `<path d="M ${xs[0]} ${cy-44} Q ${xs[0]} 30 ${xs[1]} 30 T ${xs[1]} ${cy-44}" fill="none" stroke="${amber}" stroke-width="1" stroke-dasharray="2 3"/>
-      <text x="${(xs[0]+xs[1])/2}" y="22" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="${amber2}">no shared context</text>`;
+    inner += `<path d="M ${xs[0]} ${cy-44} Q ${xs[0]} 28 ${xs[1]} 28 T ${xs[1]} ${cy-44}" fill="none" stroke="${amber}" stroke-width="1" stroke-dasharray="2 3"/>
+      <text x="${(xs[0]+xs[1])/2}" y="20" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="${amber2}">no shared context</text>`;
   }
-  // Escalation annotation
+
+  // Escalation annotation (debug)
   if (phase === 'debug') {
-    inner += `<path d="M ${xs[0]} ${cy+44} Q ${xs[0]} 195 ${xs[0]+60} 195" fill="none" stroke="${amber}" stroke-width="1" stroke-dasharray="2 3"/>
-      <text x="${xs[0]+70}" y="200" font-family="JetBrains Mono,monospace" font-size="10" fill="${amber2}">after 2 iterations →</text>`;
+    const ex = xs[0];
+    inner += `<path d="M ${ex} ${cy+44} Q ${ex} 195 ${ex+60} 195" fill="none" stroke="${amber}" stroke-width="1" stroke-dasharray="2 3"/>
+      <text x="${ex+72}" y="199" font-family="JetBrains Mono,monospace" font-size="10" fill="${amber2}">after 2 iterations →</text>`;
   }
 
   return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:220px">${inner}</svg>`;
 }
 
+function agentRolesHTML(phase) {
+  const e = ENSEMBLES[phase];
+  return `<div class="agent-roles">${e.agents.map((name, i) =>
+    `<div class="agent-role-card">
+      <div class="agent-role-name">${name.toUpperCase()}</div>
+      <div class="agent-role-desc">${e.agentRoles[i]}</div>
+    </div>`
+  ).join('')}</div>`;
+}
+
 function pipelineSVG() {
-  const marine = '#0d5a4a', ink = '#13201a', amber = '#b8741c', amber2 = '#8a4f0d', paper = '#f4f1e8', paper2 = '#ece6d6', mute = '#6a7468', ink2 = '#243a30';
+  const marine = '#0d5a4a', ink = '#13201a', amber = '#b8741c', amber2 = '#8a4f0d',
+        paper = '#f4f1e8', paper2 = '#ece6d6', mute = '#6a7468', ink2 = '#243a30';
   const yMain = 120;
   const stages = [
-    { x: 30,  w: 90,  label: 'Sample intake', sub: 'IDs + hashes',    type: 'data' },
-    { x: 132, w: 92,  label: 'Metadata',      sub: 'deterministic',   type: 'det'  },
-    { x: 236, w: 110, label: 'Orchestrator',  sub: 'transforms run',  type: 'det'  },
-    { x: 358, w: 100, label: 'QC reviewer',   sub: 'agentic · branch', type: 'ag'  },
-    { x: 470, w: 100, label: 'Validator',     sub: 'agentic',         type: 'ag'  },
-    { x: 582, w: 90,  label: 'Release',       sub: 'to downstream',   type: 'out' },
+    { x: 30,  w: 90,  label: 'Sample intake', sub: 'IDs + hashes',     type: 'data' },
+    { x: 132, w: 92,  label: 'Metadata',       sub: 'deterministic',    type: 'det'  },
+    { x: 236, w: 110, label: 'Orchestrator',   sub: 'transforms run',   type: 'det'  },
+    { x: 358, w: 100, label: 'QC reviewer',    sub: 'agentic · branch', type: 'ag'   },
+    { x: 470, w: 100, label: 'Validator',      sub: 'agentic',          type: 'ag'   },
+    { x: 582, w: 90,  label: 'Release',        sub: 'to downstream',    type: 'out'  },
   ];
-  const fillFor  = t => t === 'ag' ? '#f1dec2' : t === 'out' ? '#e6efe2' : t === 'data' ? paper2 : paper;
-  const strokeFor= t => t === 'ag' ? amber2    : t === 'out' ? '#3a8f5a' : ink;
+  const fillFor   = t => t === 'ag' ? '#f1dec2' : t === 'out' ? '#e6efe2' : t === 'data' ? paper2 : paper;
+  const strokeFor = t => t === 'ag' ? amber2    : t === 'out' ? '#3a8f5a' : ink;
 
   let inner = `
     <defs>
@@ -184,7 +276,7 @@ function pipelineSVG() {
     <text x="344" y="22" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="${amber2}" letter-spacing=".06em">REPROCESS · adjust params</text>`;
 
   stages.forEach((s, i) => {
-    const next = stages[i+1];
+    const next = stages[i + 1];
     if (next) inner += `<line x1="${s.x+s.w}" y1="${yMain}" x2="${next.x-2}" y2="${yMain}" stroke="${marine}" stroke-width="1.2" marker-end="url(#aS)"/>`;
     inner += `<rect x="${s.x}" y="${yMain-22}" width="${s.w}" height="44" fill="${fillFor(s.type)}" stroke="${strokeFor(s.type)}" stroke-width="1.2"/>
       <text x="${s.x+s.w/2}" y="${yMain-4}" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="12.5" font-weight="600" fill="${ink}">${s.label}</text>
@@ -227,17 +319,19 @@ function renderPhaseRow() {
 }
 
 function renderDiagram() {
-  const idx  = MATRIX.findIndex(m => m.id === active);
-  const m    = MATRIX[idx];
-  const e    = ENSEMBLES[active];
+  const idx = MATRIX.findIndex(m => m.id === active);
+  const m   = MATRIX[idx];
+  const e   = ENSEMBLES[active];
 
-  document.getElementById('fig-label').textContent   = `Fig 2.${idx+1} · ${m.phase.toLowerCase()} ensemble`;
-  document.getElementById('flow-label').textContent  = `flow: ${e.flow}`;
-  document.getElementById('diagram-area').innerHTML  = active === 'pipe' ? pipelineSVG() : ensembleSVG(active);
+  document.getElementById('fig-label').textContent  = `Fig 2.${idx+1} · ${m.phase.toLowerCase()} ensemble`;
+  document.getElementById('flow-label').textContent = `flow: ${e.flow}`;
+  document.getElementById('diagram-area').innerHTML =
+    (active === 'pipe' ? pipelineSVG() : ensembleSVG(active)) + agentRolesHTML(active);
   document.getElementById('card-against').textContent = e.against;
   document.getElementById('card-concern').textContent = `concern: ${m.concern.toLowerCase()}`;
-  document.getElementById('card-human').innerHTML    = `<span style="font-family:var(--ff-mono);font-size:11px;color:var(--marine)">›</span> ${e.human}.`;
-  document.getElementById('card-notes').innerHTML   = e.notes.map(n => `<li>${n}</li>`).join('');
+  document.getElementById('card-human').innerHTML =
+    `<span style="font-family:var(--ff-mono);font-size:11px;color:var(--marine)">›</span> ${e.human}.`;
+  document.getElementById('card-notes').innerHTML = e.notes.map(n => `<li>${n}</li>`).join('');
 }
 
 function select(id) { active = id; renderPhaseRow(); renderDiagram(); }
