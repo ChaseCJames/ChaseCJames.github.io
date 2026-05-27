@@ -27,6 +27,20 @@
     }
     .mach-example strong { color: var(--amber); }
     .scope-tag { font-family: var(--ff-mono); font-size: 10px; letter-spacing: .16em; font-weight: 700; }
+
+    /* scope level interactivity */
+    .scope-outer, .scope-project, .scope-tool { transition: opacity .15s; }
+    .scope-clickable { cursor: pointer; border-radius: 2px; }
+    .scope-clickable:hover .scope-row { opacity: .82; }
+    .scope-clickable.active-scope > .scope-row { background: rgba(200,210,202,.12); margin: 0 -4px; padding: 2px 4px; border-radius: 2px; }
+
+    /* scope detail snippet */
+    .scope-detail { margin-top: 12px; min-height: 100px; }
+    .scope-snippet { background: #0e1a15; border: 1px solid rgba(200,210,202,.2); border-left: 3px solid var(--amber); padding: 10px 12px; font-family: var(--ff-mono); font-size: 10.5px; color: #c8d2ca; line-height: 1.65; white-space: pre-wrap; }
+    .scope-snippet-file { font-family: var(--ff-mono); font-size: 10px; color: var(--amber2); letter-spacing: .1em; margin-bottom: 6px; }
+    .scope-prompt { font-family: var(--ff-mono); font-size: 10.5px; color: var(--mute); font-style: italic; padding: 14px 0 4px; }
+    .scope-snippet .hl { color: var(--amber); font-weight: 600; }
+    .scope-snippet .cm { color: #6a8a70; }
   </style>
 </head>
 <body>
@@ -60,16 +74,16 @@
 
 <div class="ap-cols">
 
-  <!-- LEFT: layered scope + reasoning contract -->
+  <!-- LEFT: layered scope + scope detail -->
   <div>
     <div class="panel">
       <div class="fig-head">
         <span class="label">Fig 1.1 · three scopes, by inheritance</span>
-        <span class="label-mute">most specific wins</span>
+        <span class="label-mute">click a level to see what it contains</span>
       </div>
 
       <div class="scope-nest c-grid">
-        <div class="scope-outer">
+        <div class="scope-outer scope-clickable" id="scope-lab" onclick="selectScope('lab')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')selectScope('lab')">
           <div class="scope-row">
             <span class="scope-tag" style="color:var(--amber2)">SCOPE / 01 · LAB-WIDE</span>
             <span class="scope-file">AGENTS.md · STYLE.md</span>
@@ -77,7 +91,7 @@
           <div class="scope-title">Reasoning, style, reproducibility defaults</div>
           <div class="scope-desc">Applies to every project. The most stable layer; changes rarely.</div>
 
-          <div class="scope-project">
+          <div class="scope-project scope-clickable" id="scope-project" onclick="event.stopPropagation();selectScope('project')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')selectScope('project')">
             <div class="scope-row">
               <span class="scope-tag" style="color:var(--marine)">SCOPE / 02 · PROJECT</span>
               <span class="scope-file">&lt;project&gt;/AGENTS.md</span>
@@ -85,7 +99,7 @@
             <div class="scope-title">Hypotheses, datasets, glossary, repo</div>
             <div class="scope-desc">Inherits from lab-wide; overrides where the project genuinely differs.</div>
 
-            <div class="scope-tool">
+            <div class="scope-tool scope-clickable" id="scope-tool" onclick="event.stopPropagation();selectScope('tool')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')selectScope('tool')">
               <div class="scope-row">
                 <span class="scope-tag" style="color:var(--amber2)">SCOPE / 03 · TOOL</span>
                 <span class="scope-file">tool_specific/hpc.md</span>
@@ -100,28 +114,9 @@
         </p>
       </div>
 
-      <!-- Reasoning contract -->
-      <div style="margin-top:14px">
-        <div class="label">The reasoning contract</div>
-        <p style="font-style:italic;color:var(--mute);font-size:12.5px;margin-top:3px">Agents must make their reasoning visible, not just their conclusions.</p>
-        <div class="reasoning-grid">
-          <div class="reasoning-item">
-            <div class="reasoning-key">Decision branches</div>
-            <div class="reasoning-val">Surface all branches considered: "I considered X because Y. I rejected Z because W."</div>
-          </div>
-          <div class="reasoning-item">
-            <div class="reasoning-key">Pivots</div>
-            <div class="reasoning-val">Mid-task revisions are acknowledged explicitly. No silent course corrections.</div>
-          </div>
-          <div class="reasoning-item">
-            <div class="reasoning-key">Uncertainty</div>
-            <div class="reasoning-val">Ask, do not assume. A plausible choice that violates an unstated constraint is worse than asking.</div>
-          </div>
-          <div class="reasoning-item">
-            <div class="reasoning-key">No hidden decisions</div>
-            <div class="reasoning-val">Parameter choices, structural decisions, and interpretations of ambiguous requirements all surface.</div>
-          </div>
-        </div>
+      <!-- Scope detail (replaces reasoning contract) -->
+      <div class="scope-detail" id="scope-detail">
+        <p class="scope-prompt">← click a scope level above to see example file contents</p>
       </div>
     </div>
   </div>
@@ -226,6 +221,102 @@
 </footer>
 
 <script>
+const SCOPE_CONTENT = {
+  lab: {
+    file: 'AGENTS.md  (lab-wide)',
+    color: '#8a4f0d',
+    text: `<span class="hl"># Lab-wide agent standards</span>
+
+<span class="hl">## Reasoning contract</span>
+<span class="cm"># Surface all branches considered before concluding.</span>
+<span class="cm"># Flag uncertainty explicitly — ask rather than assume.</span>
+<span class="cm"># No silent course corrections; acknowledge every pivot.</span>
+
+<span class="hl">## Provenance tags (required on every parameter)</span>
+[literature]   <span class="cm"># cite author + year</span>
+[fitted]       <span class="cm"># note dataset + method (MLE, least squares…)</span>
+[assumed]      <span class="cm"># flag for human review before any HPC submit</span>
+[agent-chosen] <span class="cm"># reasoning stated inline</span>
+[user-specified]
+
+<span class="hl">## Pre-flight gate</span>
+<span class="cm"># Before any long-running job: show purpose, parameters,</span>
+<span class="cm"># flag count, expected outputs. Pause for human sign-off.</span>
+
+<span class="hl">## Style defaults</span>
+snake_case variables · ISO 8601 dates · SI units
+figures: 300 dpi, colour-blind-safe palette`
+  },
+  project: {
+    file: 'coral-bleaching/AGENTS.md  (project-level)',
+    color: '#0d5a4a',
+    text: `<span class="hl"># Project: coral-bleaching</span>
+
+<span class="hl">## Active hypothesis</span>
+SST anomalies &gt; 2 °C for 8+ weeks predict bleaching
+severity (target R² &gt; 0.7). <span class="cm"># status: calibration in progress</span>
+
+<span class="hl">## Data sources</span>
+SST:       NOAA CoralTemp v3.1, 5 km, 1985–2025
+Bleaching: ReefBase survey records  n = 4,847
+
+<span class="hl">## Glossary</span>
+DHW  degree heating weeks = Σ ΔT/wk where ΔT &gt; MMM
+MMM  maximum monthly mean (NOAA baseline)
+CBASS  coral bleaching automated stress system
+
+<span class="hl">## Repo structure</span>
+data/raw/      <span class="cm"># never modified after ingest</span>
+data/processed/
+models/        <span class="cm"># versioned by date tag</span>
+results/YYYY-MM-DD_&lt;tag&gt;/
+docs/planning/ · docs/lab_notebook/`
+  },
+  tool: {
+    file: 'tool_specific/hpc.md  (tool-level)',
+    color: '#8a4f0d',
+    text: `<span class="hl"># HPC etiquette</span>
+
+<span class="hl">## Queue limits (campus cluster)</span>
+Max walltime:  72 h
+Max cores:     256 per job
+Scratch:       /scratch/$USER/   <span class="cm"># purged every 30 days</span>
+Always request 10–20% more memory than expected peak.
+
+<span class="hl">## Environment</span>
+conda activate bio-ml-2026
+<span class="cm"># Do not pip-install into base. New deps → update env.yml.</span>
+
+<span class="hl">## Output paths</span>
+results/YYYY-MM-DD_&lt;tag&gt;/
+  run.log   manifest.json   summary.md
+
+<span class="hl">## Plotting defaults</span>
+matplotlib: figsize=(8,5), dpi=150 for drafts
+export:     300 dpi PNG + SVG source beside each figure`
+  }
+};
+
+let activeScope = null;
+
+function selectScope(id) {
+  if (activeScope === id) {
+    activeScope = null;
+    ['lab', 'project', 'tool'].forEach(s =>
+      document.getElementById('scope-'+s).classList.remove('active-scope'));
+    document.getElementById('scope-detail').innerHTML =
+      '<p class="scope-prompt">← click a scope level above to see example file contents</p>';
+    return;
+  }
+  activeScope = id;
+  ['lab', 'project', 'tool'].forEach(s =>
+    document.getElementById('scope-'+s).classList.toggle('active-scope', s === id));
+  const c = SCOPE_CONTENT[id];
+  document.getElementById('scope-detail').innerHTML =
+    `<div class="scope-snippet-file" style="color:${c.color}">${c.file}</div>
+     <div class="scope-snippet">${c.text}</div>`;
+}
+
 function toggleMach(row) {
   const example = row.parentElement.querySelector('.mach-example');
   const toggle  = row.querySelector('.mach-toggle');

@@ -9,6 +9,26 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="shared.css">
+  <style>
+    /* clickable stack layers */
+    .stack-layer { cursor: pointer; transition: opacity .15s; border-top: 1px solid var(--rule2); padding: 8px 0; }
+    .stack-layer:first-child { border-top: none; }
+    .stack-layer:hover { opacity: .86; }
+    .stack-layer.active-layer { background: rgba(200,210,202,.08); margin: 0 -8px; padding: 8px 8px; border-radius: 2px; }
+    .stack-layer.active-layer .layer-idx { color: var(--amber); border-color: var(--amber); }
+
+    /* snippet panel */
+    .snippet-panel { padding: 10px 12px; background: #0e1a15; border: 1px solid rgba(200,210,202,.18); border-left: 3px solid var(--amber); }
+    .snippet-file { font-family: var(--ff-mono); font-size: 10px; color: var(--amber2); letter-spacing: .1em; margin-bottom: 6px; }
+    .snippet-body { font-family: var(--ff-mono); font-size: 10.5px; color: #c8d2ca; line-height: 1.65; white-space: pre-wrap; }
+    .snippet-body .hl { color: var(--amber); font-weight: 600; }
+    .snippet-body .cm { color: #5a7a60; }
+    .snippet-prompt { font-family: var(--ff-mono); font-size: 10.5px; color: var(--mute); font-style: italic; padding: 12px 0 4px; text-align: center; }
+
+    /* mach rows in example */
+    .ex-mach-row { display: grid; grid-template-columns: 70px 1fr; gap: 8px; padding: 5px 0; border-top: 1px solid var(--rule2); }
+    .ex-mach-row:first-child { border-top: none; }
+  </style>
 </head>
 <body>
 
@@ -41,17 +61,18 @@
 
 <div class="ap-cols ap-cols--wide">
 
-  <!-- LEFT: the stack + machinery in use -->
+  <!-- LEFT: the stack + stats -->
   <div style="display:flex;flex-direction:column;gap:12px">
 
     <div class="panel">
       <div class="fig-head">
         <span class="label">Fig 5.1 · the stack</span>
-        <span class="label-mute">4 layers, by specificity</span>
+        <span class="label-mute">click a layer to see an example file</span>
       </div>
 
       <div class="scope-nest c-grid">
-        <div class="stack-layer">
+
+        <div class="stack-layer" id="layer-l1" onclick="selectLayer('l1')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')selectLayer('l1')">
           <div class="layer-col">
             <div class="layer-idx">L1</div>
             <div class="layer-glyph" style="background:#fff;color:var(--ink)">lab</div>
@@ -67,7 +88,7 @@
           </div>
         </div>
 
-        <div class="stack-layer">
+        <div class="stack-layer" id="layer-l2" onclick="selectLayer('l2')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')selectLayer('l2')">
           <div class="layer-col">
             <div class="layer-idx">L2</div>
             <div class="layer-glyph" style="background:var(--paper2);color:var(--ink)">project</div>
@@ -82,7 +103,7 @@
           </div>
         </div>
 
-        <div class="stack-layer">
+        <div class="stack-layer" id="layer-l3" onclick="selectLayer('l3')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')selectLayer('l3')">
           <div class="layer-col">
             <div class="layer-idx">L3</div>
             <div class="layer-glyph" style="background:#dfd6c0;color:var(--ink)">workflows</div>
@@ -98,7 +119,7 @@
           </div>
         </div>
 
-        <div class="stack-layer" style="margin-bottom:0">
+        <div class="stack-layer" id="layer-l4" onclick="selectLayer('l4')" role="button" tabindex="0" onkeydown="if(event.key==='Enter')selectLayer('l4')">
           <div class="layer-col">
             <div class="layer-idx">L4</div>
             <div class="layer-glyph" style="background:var(--ink);color:var(--paper)">memory</div>
@@ -119,32 +140,6 @@
       </div>
     </div>
 
-    <!-- Machinery in use -->
-    <div class="panel-amber">
-      <div class="fig-head">
-        <span class="label">Machinery in use</span>
-        <span class="label-mute">concrete tooling on top of the stack</span>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;margin-top:6px">
-        <div class="mach-row" style="display:grid;grid-template-columns:70px 1fr;gap:8px">
-          <span class="mach-kind">cli</span><span class="mach-desc">Primary agentic CLI (Claude Code or similar); skills system holds reusable workflows.</span>
-        </div>
-        <div class="mach-row" style="display:grid;grid-template-columns:70px 1fr;gap:8px">
-          <span class="mach-kind">rescue</span><span class="mach-desc">Second AI subscription, different model family, invoked as rescue / review subagent.</span>
-        </div>
-        <div class="mach-row" style="display:grid;grid-template-columns:70px 1fr;gap:8px">
-          <span class="mach-kind">skill</span><span class="mach-desc">Daily lab-notebook skill — walks modified files, emits per-project summary, automatically.</span>
-        </div>
-        <div class="mach-row" style="display:grid;grid-template-columns:70px 1fr;gap:8px">
-          <span class="mach-kind">hook</span><span class="mach-desc">Planning summary auto-saved to docs/planning/ after every planning session; script templates enforce provenance.</span>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- RIGHT: stats + WIP -->
-  <div style="display:flex;flex-direction:column;gap:10px">
-
     <div class="stat-strip">
       <div class="stat-box">
         <div class="stat-k">LAYERS</div>
@@ -163,6 +158,45 @@
       </div>
     </div>
 
+  </div>
+
+  <!-- RIGHT: file snippet + machinery + WIP -->
+  <div style="display:flex;flex-direction:column;gap:12px">
+
+    <!-- File snippet panel (dynamic) -->
+    <div class="panel" id="snippet-panel">
+      <div class="fig-head">
+        <span class="label">File snippet</span>
+        <span class="label-mute" id="snippet-layer-label">—</span>
+      </div>
+      <div id="snippet-content">
+        <p class="snippet-prompt">← click a layer to see an example file</p>
+      </div>
+    </div>
+
+    <!-- Machinery in use -->
+    <div class="panel-amber">
+      <div class="fig-head">
+        <span class="label">Machinery in use</span>
+        <span class="label-mute">concrete tooling on top of the stack</span>
+      </div>
+      <div style="margin-top:6px">
+        <div class="ex-mach-row">
+          <span class="mach-kind">cli</span><span class="mach-desc">Primary agentic CLI (Claude Code or similar); skills system holds reusable workflows.</span>
+        </div>
+        <div class="ex-mach-row">
+          <span class="mach-kind">rescue</span><span class="mach-desc">Second AI subscription, different model family, invoked as rescue / review subagent.</span>
+        </div>
+        <div class="ex-mach-row">
+          <span class="mach-kind">skill</span><span class="mach-desc">Daily lab-notebook skill — walks modified files, emits per-project summary, automatically.</span>
+        </div>
+        <div class="ex-mach-row">
+          <span class="mach-kind">hook</span><span class="mach-desc">Planning summary auto-saved to docs/planning/ after every planning session; script templates enforce provenance.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- WIP -->
     <div class="panel">
       <div class="fig-head">
         <span class="label">Work in progress</span>
@@ -194,6 +228,126 @@
   <span>anonymized worked example</span>
   <span>← <a href="pedagogy.html">teaching</a> · <a href="index.html">back to framework</a></span>
 </footer>
+
+<script>
+const SNIPPETS = {
+  l1: {
+    label: 'L1 · lab-wide',
+    file:  'AGENTS.md',
+    html: `<span class="hl"># Lab-wide agent standards</span>
+
+<span class="hl">## Reasoning contract</span>
+<span class="cm"># Surface all branches. Flag uncertainty. Acknowledge every pivot.</span>
+<span class="cm"># Ask rather than assume. No fix accepted without a stated root cause.</span>
+
+<span class="hl">## Provenance tags (required on every parameter)</span>
+[literature]    <span class="cm"># cite author + year</span>
+[fitted]        <span class="cm"># dataset + method (MLE, least squares, Bayesian posterior)</span>
+[assumed]       <span class="cm"># flag → human review before any HPC submit</span>
+[agent-chosen]  <span class="cm"># reasoning stated inline</span>
+[user-specified]
+
+<span class="hl">## Pre-flight gate</span>
+<span class="cm"># Before any long-running job: purpose · parameters · flag count</span>
+<span class="cm"># expected outputs · pause for human sign-off.</span>
+
+<span class="hl">## Style</span>
+snake_case · ISO 8601 dates · SI units
+300 dpi figures · colour-blind-safe palette`
+  },
+  l2: {
+    label: 'L2 · per-project',
+    file:  'coral-bleaching/AGENTS.md',
+    html: `<span class="hl"># Project: coral-bleaching</span>
+<span class="cm"># Inherits all lab-wide standards. Overrides noted explicitly.</span>
+
+<span class="hl">## Active hypothesis</span>
+SST anomalies &gt; 2 °C for 8+ consecutive weeks predict
+bleaching severity (target R² &gt; 0.7).
+Status: model calibration in progress · 2026-05-22
+
+<span class="hl">## Data</span>
+SST:       NOAA CoralTemp v3.1 · 5 km · 1985–2025
+Bleaching: ReefBase survey records · n = 4,847
+
+<span class="hl">## Glossary</span>
+DHW   degree heating weeks  = Σ ΔT/wk where ΔT &gt; MMM
+MMM   maximum monthly mean (NOAA 1985–2012 baseline)
+
+<span class="hl">## Repo</span>
+data/raw/       <span class="cm"># read-only after ingest</span>
+models/         <span class="cm"># versioned YYYY-MM-DD_tag</span>
+results/YYYY-MM-DD_&lt;tag&gt;/  run.log  manifest.json
+docs/planning/  docs/lab_notebook/`
+  },
+  l3: {
+    label: 'L3 · workflow template',
+    file:  'julia_run_template.jl',
+    html: `<span class="hl">## ── script header (required) ────────────────────────────</span>
+<span class="cm"># Project:   coral-bleaching</span>
+<span class="cm"># Purpose:   fit DHW–bleaching severity model (logistic)</span>
+<span class="cm"># Author:    C. James · 2026-05-22</span>
+<span class="cm"># Agent:     claude-sonnet-4-6  (planning + draft)</span>
+<span class="cm"># Inputs:    data/processed/dhw_bleaching_merged.csv</span>
+<span class="cm"># Outputs:   results/2026-05-22_logistic/  (model + figs)</span>
+
+<span class="hl">## ── parameters ───────────────────────────────────────────</span>
+threshold  = 2.0   <span class="cm"># [literature] Hoegh-Guldberg 1999</span>
+n_weeks    = 8     <span class="cm"># [assumed]    flag: review before HPC submit</span>
+train_frac = 0.75  <span class="cm"># [agent-chosen] reasoning: standard split for n&gt;1000</span>
+
+<span class="hl">## ── pre-flight summary ───────────────────────────────────</span>
+<span class="cm"># [assumed] count: 1  →  human sign-off required before submit</span>`
+  },
+  l4: {
+    label: 'L4 · memory',
+    file:  'docs/planning/2026-05-22_model_calibration.md',
+    html: `<span class="hl"># Planning note · 2026-05-22 · model calibration</span>
+
+<span class="hl">## Goal for this session</span>
+Fit logistic DHW–bleaching model. Evaluate whether 8-week
+threshold improves AUC over 4-week baseline.
+
+<span class="hl">## Parameters in play</span>
+threshold  2.0 °C  [literature] Hoegh-Guldberg 1999
+n_weeks    8       [assumed]    — needs sensitivity test
+train_frac 0.75    [agent-chosen]
+
+<span class="hl">## What changed from last run</span>
+Switched from linear to logistic — data are binary.
+Added ReefBase 2023–2025 records (n += 312).
+
+<span class="hl">## To watch in results</span>
+- AUC on holdout &gt; 0.82 (prior best)
+- Calibration curve: any systematic over/under-prediction?
+- n_weeks sensitivity: does 4 vs 8 matter much?
+
+<span class="hl">## Pick up next session</span>
+If AUC &gt; 0.82 → run full HPC sweep over threshold ∈ [1,3].`
+  }
+};
+
+let activeLayer = null;
+
+function selectLayer(id) {
+  if (activeLayer === id) {
+    activeLayer = null;
+    ['l1','l2','l3','l4'].forEach(l =>
+      document.getElementById('layer-'+l).classList.remove('active-layer'));
+    document.getElementById('snippet-layer-label').textContent = '—';
+    document.getElementById('snippet-content').innerHTML =
+      '<p class="snippet-prompt">← click a layer to see an example file</p>';
+    return;
+  }
+  activeLayer = id;
+  ['l1','l2','l3','l4'].forEach(l =>
+    document.getElementById('layer-'+l).classList.toggle('active-layer', l === id));
+  const s = SNIPPETS[id];
+  document.getElementById('snippet-layer-label').textContent = s.label;
+  document.getElementById('snippet-content').innerHTML =
+    `<div class="snippet-file">${s.file}</div><div class="snippet-body">${s.html}</div>`;
+}
+</script>
 
 </body>
 </html>

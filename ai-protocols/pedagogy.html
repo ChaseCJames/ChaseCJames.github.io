@@ -9,6 +9,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="shared.css">
+  <style>
+    .skill-row { cursor: pointer; }
+    .skill-row:hover { opacity: .88; }
+    .skill-name-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+    .skill-toggle { font-family: var(--ff-mono); font-size: 12px; color: var(--amber); flex-shrink: 0; }
+    .skill-body { margin-top: 6px; }
+  </style>
 </head>
 <body>
 
@@ -41,15 +48,15 @@
 
 <div class="ap-cols ap-cols--wide">
 
-  <!-- LEFT: skills to preserve -->
+  <!-- LEFT: skills to preserve (accordion) -->
   <div class="panel">
     <div class="fig-head">
       <span class="label">Skills to preserve through unaided practice</span>
-      <span class="label-mute">ranked by atrophy risk</span>
+      <span class="label-mute">click each to expand · ranked by atrophy risk</span>
     </div>
 
     <!-- Debugging -->
-    <div class="skill-row">
+    <div class="skill-row" onclick="toggleSkill(this)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleSkill(this)">
       <div class="skill-glyph">
         <span class="skill-n">01</span>
         <svg width="32" height="32" viewBox="0 0 32 32">
@@ -58,15 +65,20 @@
         </svg>
       </div>
       <div>
-        <div class="skill-name">Debugging with attention</div>
-        <div class="skill-why">The risk is not whether you use the agent — it is whether fixes land invisibly. The skill is reading each change and understanding why it works.</div>
-        <div class="skill-practice"><span class="skill-practice-label">PRACTICE</span>Keep a protocol with the agent: symptom → hypothesis → what changed → root cause. No fix accepted before the root cause is stated.</div>
+        <div class="skill-name-row">
+          <div class="skill-name">Debugging with attention</div>
+          <span class="skill-toggle">▸</span>
+        </div>
+        <div class="skill-body" hidden>
+          <div class="skill-why">The risk is not whether you use the agent — it is whether fixes land invisibly. The skill is reading each change and understanding why it works.</div>
+          <div class="skill-practice"><span class="skill-practice-label">PRACTICE</span>Keep a protocol with the agent: symptom → hypothesis → what changed → root cause. No fix accepted before the root cause is stated.</div>
+        </div>
       </div>
       <div class="skill-cadence"><span class="skill-cadence-label">CADENCE</span>Every session</div>
     </div>
 
     <!-- Reading -->
-    <div class="skill-row">
+    <div class="skill-row" onclick="toggleSkill(this)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleSkill(this)">
       <div class="skill-glyph">
         <span class="skill-n">02</span>
         <svg width="32" height="32" viewBox="0 0 32 32">
@@ -77,15 +89,20 @@
         </svg>
       </div>
       <div>
-        <div class="skill-name">Reading code from scratch</div>
-        <div class="skill-why">The ability to read unfamiliar code is what lets you evaluate agent output critically.</div>
-        <div class="skill-practice"><span class="skill-practice-label">PRACTICE</span>Read a substantial unfamiliar script. Write a brief summary. Only then, optionally, compare to what an agent says.</div>
+        <div class="skill-name-row">
+          <div class="skill-name">Reading code from scratch</div>
+          <span class="skill-toggle">▸</span>
+        </div>
+        <div class="skill-body" hidden>
+          <div class="skill-why">The ability to read unfamiliar code is what lets you evaluate agent output critically.</div>
+          <div class="skill-practice"><span class="skill-practice-label">PRACTICE</span>Read a substantial unfamiliar script. Write a brief summary. Only then, optionally, compare to what an agent says.</div>
+        </div>
       </div>
       <div class="skill-cadence"><span class="skill-cadence-label">CADENCE</span>Monthly</div>
     </div>
 
     <!-- Stats -->
-    <div class="skill-row">
+    <div class="skill-row" onclick="toggleSkill(this)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleSkill(this)">
       <div class="skill-glyph">
         <span class="skill-n">03</span>
         <svg width="32" height="32" viewBox="0 0 32 32">
@@ -97,15 +114,20 @@
         </svg>
       </div>
       <div>
-        <div class="skill-name">Foundational stats on paper</div>
-        <div class="skill-why">Statistical reasoning is the scientific skill most easily faked by an agent and most consequential when faked.</div>
-        <div class="skill-practice"><span class="skill-practice-label">PRACTICE</span>For your highest-stakes analysis of the year, do the calculation yourself first. If your answer is wrong, that is information.</div>
+        <div class="skill-name-row">
+          <div class="skill-name">Foundational stats on paper</div>
+          <span class="skill-toggle">▸</span>
+        </div>
+        <div class="skill-body" hidden>
+          <div class="skill-why">Statistical reasoning is the scientific skill most easily faked by an agent and most consequential when faked.</div>
+          <div class="skill-practice"><span class="skill-practice-label">PRACTICE</span>For your highest-stakes analysis of the year, do the calculation yourself first. If your answer is wrong, that is information.</div>
+        </div>
       </div>
       <div class="skill-cadence"><span class="skill-cadence-label">CADENCE</span>Annually, high-stakes</div>
     </div>
 
     <!-- Writing -->
-    <div class="skill-row">
+    <div class="skill-row" onclick="toggleSkill(this)" role="button" tabindex="0" onkeydown="if(event.key==='Enter')toggleSkill(this)">
       <div class="skill-glyph">
         <span class="skill-n">04</span>
         <svg width="32" height="32" viewBox="0 0 32 32">
@@ -117,9 +139,14 @@
         </svg>
       </div>
       <div>
-        <div class="skill-name">Writing the high-stakes paragraphs</div>
-        <div class="skill-why">Letting the agent draft your discussion is letting the agent decide what your work means.</div>
-        <div class="skill-practice"><span class="skill-practice-label">PRACTICE</span>Draft abstract, intro framing, and discussion yourself first — no agent, no chat history. Iterate with the agent after, but only once your own thoughts are on the page.</div>
+        <div class="skill-name-row">
+          <div class="skill-name">Writing the high-stakes paragraphs</div>
+          <span class="skill-toggle">▸</span>
+        </div>
+        <div class="skill-body" hidden>
+          <div class="skill-why">Letting the agent draft your discussion is letting the agent decide what your work means.</div>
+          <div class="skill-practice"><span class="skill-practice-label">PRACTICE</span>Draft abstract, intro framing, and discussion yourself first — no agent, no chat history. Iterate with the agent after, but only once your own thoughts are on the page.</div>
+        </div>
       </div>
       <div class="skill-cadence"><span class="skill-cadence-label">CADENCE</span>Per manuscript</div>
     </div>
@@ -173,6 +200,16 @@
   <span>← <a href="ethics.html">ethics</a></span>
   <span>next: <a href="example.html">example →</a></span>
 </footer>
+
+<script>
+function toggleSkill(row) {
+  const body   = row.querySelector('.skill-body');
+  const toggle = row.querySelector('.skill-toggle');
+  const open   = !body.hidden;
+  body.hidden        = open;
+  toggle.textContent = open ? '▸' : '▾';
+}
+</script>
 
 </body>
 </html>
