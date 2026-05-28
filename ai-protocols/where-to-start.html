@@ -103,12 +103,18 @@
     .mind-fig svg { width: 100%; height: auto; display: block; }
 
     @media (max-width: 900px) {
+      .shift-section { padding: 12px 20px 0 !important; }
       .shift-band { grid-template-columns: 1fr; }
-      .shift-arrow { transform: rotate(90deg); padding: 6px 0; }
+      .shift-arrow { transform: rotate(90deg); padding: 4px 0; }
       .stage-rail { flex-wrap: wrap; }
-      .stage-btn  { flex: 1 1 40%; }
+      .stage-btn  { flex: 1 1 44%; }
       .habit-row  { grid-template-columns: 1fr; gap: 2px; }
       .routes     { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .stage-btn  { flex: 1 1 100%; }
+      .snippet    { font-size: 10px; }
+      .shift-name { font-size: 16px; }
     }
   </style>
 </head>
@@ -143,7 +149,7 @@
 </header>
 
 <!-- THE SHIFT -->
-<div style="padding:14px 40px 0">
+<div class="shift-section" style="padding:14px 40px 0">
   <div class="fig-head">
     <span class="label">Fig 6.1 · the shift</span>
     <span class="label-mute">same models — the difference is access and autonomy</span>
