@@ -288,13 +288,24 @@ EXAMPLE every statistical analysis emits a PDF explaining the test, its paramete
       '<div class="shift-card shift-from">' +
         '<div class="shift-head"><span class="shift-name">Chat</span><span class="shift-sub">Claude.ai · ChatGPT</span></div>' +
         '<div class="shift-rows">' +
-          '<div class="shift-li"><span class="shift-bullet">·</span><span>You describe the problem in a text box</span></div>' +
-          '<div class="shift-li"><span class="shift-bullet">·</span><span>The model returns code as text</span></div>' +
-          '<div class="shift-li"><span class="shift-bullet">·</span><span>You copy-paste into your editor by hand</span></div>' +
-          '<div class="shift-li"><span class="shift-bullet">·</span><span>You run it, then paste errors back</span></div>' +
-          '<div class="shift-li"><span class="shift-bullet">·</span><span>The model never sees your files or terminal</span></div>' +
-          '<div class="shift-li"><span class="shift-bullet">·</span><span>Context is only what you remember to paste</span></div>' +
+          '<div class="shift-li"><span class="shift-bullet">·</span><span>Type a question, get text back</span></div>' +
+          '<div class="shift-li"><span class="shift-bullet">·</span><span>Copy-paste code into your editor</span></div>' +
+          '<div class="shift-li"><span class="shift-bullet">·</span><span>Run it; paste errors back yourself</span></div>' +
+          '<div class="shift-li"><span class="shift-bullet">·</span><span>Model never sees your files</span></div>' +
         '</div>' +
+        '<svg viewBox="0 0 220 85" style="width:100%;margin-top:8px;display:block" aria-hidden="true">' +
+          '<rect x="1" y="1" width="218" height="72" rx="4" fill="#ece6d6" stroke="#13201a" stroke-width="1"/>' +
+          '<circle cx="11" cy="10" r="2" fill="#6a7468"/><circle cx="19" cy="10" r="2" fill="#6a7468"/><circle cx="27" cy="10" r="2" fill="#6a7468"/>' +
+          '<text x="110" y="13" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7.5" fill="#6a7468">Claude.ai</text>' +
+          '<line x1="1" y1="18" x2="219" y2="18" stroke="#cfc6b0" stroke-width="0.8"/>' +
+          '<rect x="8" y="24" width="120" height="18" rx="3" fill="#f4f1e8" stroke="#cfc6b0" stroke-width="0.8"/>' +
+          '<line x1="14" y1="30" x2="118" y2="30" stroke="#6a7468" stroke-width="1"/>' +
+          '<line x1="14" y1="37" x2="95" y2="37" stroke="#6a7468" stroke-width="1"/>' +
+          '<rect x="8" y="48" width="140" height="18" rx="3" fill="#1a7a60"/>' +
+          '<line x1="14" y1="54" x2="138" y2="54" stroke="#f4f1e8" stroke-width="1" opacity="0.8"/>' +
+          '<line x1="14" y1="61" x2="110" y2="61" stroke="#f4f1e8" stroke-width="1" opacity="0.8"/>' +
+          '<text x="110" y="80" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7.5" fill="#6a7468" letter-spacing="0.5">you relay · copy · paste · run</text>' +
+        '</svg>' +
       '</div>' +
       '<div class="shift-arrow">' +
         '<svg width="56" height="40" viewBox="0 0 56 40" aria-hidden="true">' +
@@ -305,13 +316,22 @@ EXAMPLE every statistical analysis emits a PDF explaining the test, its paramete
       '<div class="shift-card shift-to">' +
         '<div class="shift-head"><span class="shift-name">Agent</span><span class="shift-sub">Claude Code · Codex</span></div>' +
         '<div class="shift-rows">' +
-          '<div class="shift-li"><span class="shift-bullet">›</span><span>You state a goal in the project itself</span></div>' +
-          '<div class="shift-li"><span class="shift-bullet">›</span><span>The agent edits your files directly — you review diffs</span></div>' +
-          '<div class="shift-li"><span class="shift-bullet">›</span><span>It runs commands and reads the output</span></div>' +
-          '<div class="shift-li"><span class="shift-bullet">›</span><span>It iterates on errors without you relaying them</span></div>' +
-          '<div class="shift-li"><span class="shift-bullet">›</span><span>It can navigate the whole repository</span></div>' +
-          '<div class="shift-li"><span class="shift-bullet">›</span><span>Context is the live state of your project</span></div>' +
+          '<div class="shift-li"><span class="shift-bullet">›</span><span>State a goal; agent edits files directly</span></div>' +
+          '<div class="shift-li"><span class="shift-bullet">›</span><span>Review the diff, not just text</span></div>' +
+          '<div class="shift-li"><span class="shift-bullet">›</span><span>Runs commands, handles errors itself</span></div>' +
+          '<div class="shift-li"><span class="shift-bullet">›</span><span>Your whole project is its context</span></div>' +
         '</div>' +
+        '<svg viewBox="0 0 220 85" style="width:100%;margin-top:8px;display:block" aria-hidden="true">' +
+          '<rect x="1" y="1" width="218" height="72" rx="4" fill="#f4f1e8" stroke="#13201a" stroke-width="1"/>' +
+          '<text x="10" y="14" font-family="JetBrains Mono,monospace" font-size="9" font-weight="700" fill="#13201a">project/</text>' +
+          '<line x1="1" y1="20" x2="219" y2="20" stroke="#cfc6b0" stroke-width="0.8"/>' +
+          '<text x="10" y="34" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#6a7468">├─ data.csv</text>' +
+          '<rect x="5" y="38" width="180" height="12" fill="#1a7a60" opacity="0.12"/>' +
+          '<text x="10" y="48" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#243a30">├─ analysis.py</text>' +
+          '<rect x="130" y="39" width="4" height="10" fill="#1a7a60" class="c-blink"/>' +
+          '<text x="10" y="63" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#b8741c">└─ AGENTS.md</text>' +
+          '<text x="110" y="80" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7.5" fill="#6a7468" letter-spacing="0.5">agent reads · edits · runs directly</text>' +
+        '</svg>' +
       '</div>' +
     '</div>' +
     '<span class="routes-note">same models — the difference is access and autonomy</span>';
