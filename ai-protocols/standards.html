@@ -46,27 +46,20 @@
       transform: translateY(-2px);
       box-shadow: 0 4px 14px rgba(13,32,26,.24);
     }
-    .scope-clickable.active-scope .scope-tag   { color: var(--amber) !important; }
-    .scope-clickable.active-scope .scope-title { color: var(--paper); }
-    .scope-clickable.active-scope .scope-desc  { color: #c8d2ca; }
-    .scope-clickable.active-scope .scope-file  { color: #c8d2ca; }
-    /* when outer (lab) is active, fade inner boxes so only lab reads as selected */
+    /* only color the active box's own direct content, not nested levels */
+    .scope-clickable.active-scope > .scope-row > .scope-tag  { color: var(--amber) !important; }
+    .scope-clickable.active-scope > .scope-row > .scope-file { color: #c8d2ca; }
+    .scope-clickable.active-scope > .scope-title { color: var(--paper); }
+    .scope-clickable.active-scope > .scope-desc  { color: #c8d2ca; }
+    /* restore inner scope boxes to their normal colors when an ancestor is active */
     .scope-clickable.active-scope .scope-project {
-      border-color: rgba(200,210,202,.3) !important;
-      background: rgba(255,255,255,.06) !important;
+      border-color: var(--marine) !important;
+      background: var(--paper2) !important;
     }
-    .scope-clickable.active-scope .scope-project .scope-title,
-    .scope-clickable.active-scope .scope-project .scope-desc,
-    .scope-clickable.active-scope .scope-project .scope-file,
-    .scope-clickable.active-scope .scope-project .scope-tag { color: #9aa7a0 !important; }
     .scope-clickable.active-scope .scope-tool {
-      border-color: rgba(200,210,202,.15) !important;
-      background: rgba(255,255,255,.03) !important;
+      border-color: var(--amber2) !important;
+      background: var(--paper) !important;
     }
-    .scope-clickable.active-scope .scope-tool .scope-title,
-    .scope-clickable.active-scope .scope-tool .scope-desc,
-    .scope-clickable.active-scope .scope-tool .scope-file,
-    .scope-clickable.active-scope .scope-tool .scope-tag { color: #6a8478 !important; }
     /* suppress hover and de-emphasise border when ancestor has active child */
     .scope-clickable.has-active-child { border-color: var(--rule2) !important; }
     .scope-clickable.has-active-child:hover { background: none !important; outline: none !important; transform: none !important; }
