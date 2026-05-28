@@ -144,6 +144,11 @@ button { font-family: inherit; cursor: pointer; }
 .panel-dash   { border: 1px dashed var(--rule); background: var(--paper2); padding: 12px 14px; }
 .panel-amber  { border: 1px dashed var(--amber); background: var(--paper); padding: 10px 12px; }
 
+/* ── Amber on dark-green backdrops → bold for legibility ── */
+.panel-dark .label                { font-weight: 700; }
+.posture-block .posture-label     { font-weight: 700; }
+.phase-btn.active .pn             { font-weight: 700; }
+
 /* ── Fig header (label row above diagrams) ── */
 .fig-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
 .fig-head .label-mute {
