@@ -27,8 +27,8 @@
   <a href="index.html" class="ap-nav-brand" title="AI Protocols · framework">
     <svg width="26" height="26" viewBox="0 0 28 28" aria-hidden="true">
       <rect x="1" y="1" width="26" height="26" fill="none" stroke="#13201a" stroke-width="1.3"/>
-      <line x1="14" y1="1" x2="14" y2="27" stroke="#0d5a4a" stroke-width="1"/>
-      <line x1="1"  y1="14" x2="27" y2="14" stroke="#0d5a4a" stroke-width="1"/>
+      <line x1="14" y1="1" x2="14" y2="27" stroke="#1a7a60" stroke-width="1"/>
+      <line x1="1"  y1="14" x2="27" y2="14" stroke="#1a7a60" stroke-width="1"/>
       <circle cx="14" cy="14" r="4" fill="#b8741c"/>
     </svg>
     <span class="ap-brand-text">ai-protocols<span>/v0.1</span></span>
@@ -201,7 +201,64 @@ const PIPE_STAGE_DESC = [
   { name: 'Quarantine',     desc: 'Samples that fail QC are isolated here — no further transforms applied. The human reviews each quarantined sample and decides: reprocess with adjusted parameters, or discard. The quarantine log is preserved as part of the run manifest.' },
 ];
 
+function debugEnsembleSVG() {
+  const w = 700, h = 240, cy = 95;
+  const marine = '#1a7a60', ink = '#13201a', amber = '#b8741c', amber2 = '#8a4f0d',
+        paper = '#f4f1e8', marine2 = '#0a4535';
+  const e = ENSEMBLES['debug'];
+  const leftHumanX = 60, rightHumanX = 640;
+  const diagX = 240, r = 44;
+  const fcX = 490, fcY = 183, fcR = 36;
+
+  const dashed = d => `<path d="${d}" fill="none" stroke="${marine}" stroke-width="1.2" stroke-dasharray="4 4" class="c-flow"/>`;
+
+  const agentG = (i, cx, cy2, radius, label) => {
+    const sel = i === selectedAgent, hov = !sel && i === hoveredAgent;
+    const [fill, stroke, sw, nc, lc] = sel
+      ? [marine, marine2, '2', '#fff', '#fff']
+      : hov
+      ? ['#d4ede8', marine, '2', marine, marine]
+      : [paper, ink, '1.2', amber2, ink];
+    return `<g onclick="selectAgent(${i})" onmouseover="previewAgent(${i})" onmouseout="clearAgentPreview()" style="cursor:pointer" role="button">
+      <circle cx="${cx}" cy="${cy2}" r="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>
+      <text x="${cx}" y="${cy2-6}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="${nc}" letter-spacing=".08em">${String(i+1).padStart(2,'0')}</text>
+      <text x="${cx}" y="${cy2+9}" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="12" font-weight="600" fill="${lc}">${label}</text>
+    </g>`;
+  };
+
+  let inner = '';
+
+  // Left HUMAN
+  inner += `<rect x="${leftHumanX-26}" y="${cy-26}" width="52" height="52" fill="${marine}" stroke="${marine2}" stroke-width="1.4"/>
+    <rect x="${leftHumanX-18}" y="${cy-18}" width="36" height="36" fill="none" stroke="#fff" stroke-width="1"/>
+    <text x="${leftHumanX}" y="${cy+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">HUMAN</text>`;
+
+  // Main flow: left HUMAN → Diagnostician → right HUMAN
+  inner += dashed(`M ${leftHumanX+26} ${cy} L ${diagX-r-2} ${cy}`);
+  inner += agentG(0, diagX, cy, r, e.agents[0]);
+  inner += dashed(`M ${diagX+r+2} ${cy} L ${rightHumanX-26} ${cy}`);
+
+  // Right HUMAN
+  inner += `<rect x="${rightHumanX-26}" y="${cy-26}" width="52" height="52" fill="${marine}" stroke="${marine2}" stroke-width="1.4"/>
+    <rect x="${rightHumanX-18}" y="${cy-18}" width="36" height="36" fill="none" stroke="#fff" stroke-width="1"/>
+    <text x="${rightHumanX}" y="${cy+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">HUMAN</text>`;
+
+  // Escalation: Diagnostician bottom → down → right → Fresh-context
+  inner += `<path d="M ${diagX} ${cy+r} L ${diagX} ${fcY} L ${fcX-fcR-8} ${fcY}" fill="none" stroke="${amber}" stroke-width="1.2" stroke-dasharray="2 3"/>`;
+  inner += `<text x="${diagX+14}" y="${cy+r+18}" font-family="JetBrains Mono,monospace" font-size="9.5" fill="${amber2}">after 2 iterations</text>`;
+  inner += agentG(1, fcX, fcY, fcR, e.agents[1]);
+
+  // Return: Fresh-context → right HUMAN (L-shape)
+  inner += `<path d="M ${fcX+fcR} ${fcY} L ${rightHumanX} ${fcY} L ${rightHumanX} ${cy+26}" fill="none" stroke="${amber}" stroke-width="1.2" stroke-dasharray="2 3"/>`;
+
+  // Hint
+  inner += `<text x="${w/2}" y="${h-6}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#9aa7a0" letter-spacing=".06em">click each agent to see their role</text>`;
+
+  return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:${h}px">${inner}</svg>`;
+}
+
 function ensembleSVG(phase) {
+  if (phase === 'debug') return debugEnsembleSVG();
   const e = ENSEMBLES[phase];
   const w = 700, h = 220, cy = 110;
   const n = e.agents.length;
@@ -261,13 +318,6 @@ function ensembleSVG(phase) {
       <text x="${(xs[0]+xs[1])/2}" y="20" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="${amber2}">no shared context</text>`;
   }
 
-  // Escalation annotation (debug)
-  if (phase === 'debug') {
-    const ex = xs[0];
-    inner += `<path d="M ${ex} ${cy+44} Q ${ex} 190 ${ex+60} 190" fill="none" stroke="${amber}" stroke-width="1" stroke-dasharray="2 3"/>
-      <text x="${ex+72}" y="194" font-family="JetBrains Mono,monospace" font-size="10" fill="${amber2}">after 2 iterations →</text>`;
-  }
-
   return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:220px">${inner}</svg>`;
 }
 
@@ -297,28 +347,47 @@ function agentRolesHTML(phase) {
 
 function pipelineSVG() {
   const marine = '#1a7a60', ink = '#13201a', amber = '#b8741c', amber2 = '#8a4f0d',
-        paper = '#f4f1e8', paper2 = '#ece6d6', mute = '#6a7468', ink2 = '#243a30';
-  const yMain = 120;
+        paper = '#f4f1e8', paper2 = '#ece6d6', mute = '#6a7468', marine2 = '#0a4535';
+  const yMain = 90;
+  const leftHumanX = 35, rightHumanX = 652;
+
   const stages = [
-    { x: 30,  w: 90,  label: 'Sample intake', sub: 'IDs + hashes',     type: 'data' },
-    { x: 132, w: 92,  label: 'Metadata',       sub: 'deterministic',    type: 'det'  },
-    { x: 236, w: 110, label: 'Orchestrator',   sub: 'transforms run',   type: 'det'  },
-    { x: 358, w: 100, label: 'QC reviewer',    sub: 'agentic · branch', type: 'ag'   },
-    { x: 470, w: 100, label: 'Validator',      sub: 'agentic',          type: 'ag'   },
-    { x: 582, w: 90,  label: 'Release',        sub: 'to downstream',    type: 'out'  },
+    { x: 70,  w: 78,  label: 'Sample intake', sub: 'IDs + hashes',     type: 'data' },
+    { x: 158, w: 78,  label: 'Metadata',       sub: 'deterministic',    type: 'det'  },
+    { x: 246, w: 96,  label: 'Orchestrator',   sub: 'transforms run',   type: 'det'  },
+    { x: 352, w: 86,  label: 'QC reviewer',    sub: 'agentic · branch', type: 'ag'   },
+    { x: 448, w: 82,  label: 'Validator',      sub: 'agentic',          type: 'ag'   },
+    { x: 540, w: 72,  label: 'Release',        sub: 'to downstream',    type: 'out'  },
   ];
   const fillFor   = t => t === 'ag' ? '#f1dec2' : t === 'out' ? '#e6efe2' : t === 'data' ? paper2 : paper;
   const strokeFor = t => t === 'ag' ? amber2    : t === 'out' ? '#3a8f5a' : ink;
 
-  let inner = `
-    <defs>
-      <marker id="aS" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="${marine}"/></marker>
-      <marker id="aA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="${amber2}"/></marker>
-      <marker id="aR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#b73d28"/></marker>
-    </defs>
-    <path d="M ${358+50} ${yMain-20} Q 408 30 330 30 Q 280 30 280 ${yMain-20}" fill="none" stroke="${amber2}" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#aA)"/>
-    <text x="344" y="22" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="${amber2}" letter-spacing=".06em">REPROCESS · adjust params</text>`;
+  const qcCX  = stages[3].x + 43;              // 395
+  const orchL = stages[2].x;                   // 246
+  const relR  = stages[5].x + stages[5].w;     // 612
+  const qtX = 360, qtY = 186, qtW = 116, qtH = 44, qtCY = qtY + 22;  // quarantine center (418, 208)
+  const hqX = 546, hqY = qtCY;                 // HUMAN-after-quarantine center
 
+  let inner = `<defs>
+    <marker id="aS" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="${marine}"/></marker>
+    <marker id="aA" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="${amber2}"/></marker>
+    <marker id="aR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#b73d28"/></marker>
+  </defs>`;
+
+  // REPROCESS arc (QC reviewer right → up → Orchestrator left)
+  inner += `<path d="M ${stages[3].x+stages[3].w} ${yMain-22} Q ${stages[3].x+stages[3].w} 14 ${(stages[3].x+stages[3].w+orchL)/2} 14 Q ${orchL} 14 ${orchL} ${yMain-22}" fill="none" stroke="${amber2}" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#aA)"/>
+  <text x="${(stages[3].x+stages[3].w+orchL)/2}" y="9" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="${amber2}" letter-spacing=".06em">REPROCESS · adjust params</text>`;
+
+  // Left HUMAN
+  inner += `<rect x="${leftHumanX-26}" y="${yMain-26}" width="52" height="52" fill="${marine}" stroke="${marine2}" stroke-width="1.4"/>
+  <rect x="${leftHumanX-18}" y="${yMain-18}" width="36" height="36" fill="none" stroke="#fff" stroke-width="1"/>
+  <text x="${leftHumanX}" y="${yMain+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">HUMAN</text>
+  <text x="${leftHumanX}" y="${yMain+38}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="${mute}">sets QC criteria</text>`;
+
+  // Arrow left HUMAN → first stage
+  inner += `<line x1="${leftHumanX+26}" y1="${yMain}" x2="${stages[0].x-2}" y2="${yMain}" stroke="${marine}" stroke-width="1.2" marker-end="url(#aS)"/>`;
+
+  // Pipeline stages
   stages.forEach((s, i) => {
     const next = stages[i + 1];
     const sel  = i === selectedPipeStage;
@@ -327,37 +396,56 @@ function pipelineSVG() {
     if (next) inner += `<line x1="${s.x+s.w}" y1="${yMain}" x2="${next.x-2}" y2="${yMain}" stroke="${marine}" stroke-width="1.2" marker-end="url(#aS)"/>`;
     inner += `<g onclick="selectPipeStage(${i})" onmouseover="previewPipeStage(${i})" onmouseout="clearPipeStagePreview()" style="cursor:pointer">
       <rect x="${s.x}" y="${yMain-22}" width="${s.w}" height="44" fill="${fillFor(s.type)}" stroke="${strokeC}" stroke-width="${strokeW}"/>
-      <text x="${s.x+s.w/2}" y="${yMain-4}" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="12.5" font-weight="600" fill="${ink}">${s.label}</text>
-      <text x="${s.x+s.w/2}" y="${yMain+12}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="${s.type==='ag'?amber2:mute}" letter-spacing=".04em">${s.sub}</text>
+      <text x="${s.x+s.w/2}" y="${yMain-5}" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="12" font-weight="600" fill="${ink}">${s.label}</text>
+      <text x="${s.x+s.w/2}" y="${yMain+11}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="${s.type==='ag'?amber2:mute}" letter-spacing=".04em">${s.sub}</text>
     </g>`;
   });
 
-  inner += `<text x="350" y="258" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#9aa7a0" letter-spacing=".06em">click a stage to learn its role</text>`;
+  // Arrow Release → right HUMAN
+  inner += `<line x1="${relR}" y1="${yMain}" x2="${rightHumanX-26}" y2="${yMain}" stroke="${marine}" stroke-width="1.2" marker-end="url(#aS)"/>`;
 
-  inner += `<text x="464" y="${yMain-42}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="${marine}" letter-spacing=".08em">PASS</text>
-    <path d="M 408 ${yMain+22} L 408 190 L 508 190" fill="none" stroke="#b73d28" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#aR)"/>
-    <text x="420" y="${yMain+50}" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#b73d28" letter-spacing=".08em">FAIL</text>
-    <g onclick="selectPipeStage(6)" onmouseover="previewPipeStage(6)" onmouseout="clearPipeStagePreview()" style="cursor:pointer">
-      <rect x="514" y="175" width="130" height="36" fill="#efd9d2" stroke="${selectedPipeStage===6?'#7a2418':'#b73d28'}" stroke-width="${selectedPipeStage===6?'2.5':'1.2'}"/>
-      <text x="579" y="191" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="11.5" font-weight="600" fill="#7a2418">Quarantine</text>
-      <text x="579" y="203" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#7a2418">+ alert human</text>
-    </g>
-    <rect x="30" y="170" width="360" height="80" fill="none" stroke="${marine}" stroke-width="0.8" stroke-dasharray="2 3"/>
-    <text x="42" y="188" font-family="JetBrains Mono,monospace" font-size="10" fill="${marine}" letter-spacing=".08em">HUMAN GOVERNANCE · BEFORE THE RUN</text>
-    <text x="42" y="206" font-family="Inter Tight,sans-serif" font-size="10.5" fill="${ink2}">① write QC criteria up front</text>
-    <text x="42" y="220" font-family="Inter Tight,sans-serif" font-size="10.5" fill="${ink2}">② sign off on parameter choices for novel configs</text>
-    <text x="42" y="234" font-family="Inter Tight,sans-serif" font-size="10.5" fill="${ink2}">③ review edge cases; data stays agent-readable, not -writable</text>
-    <text x="42" y="247" font-family="JetBrains Mono,monospace" font-size="9" fill="${mute}" font-style="italic">criteria written AFTER seeing data are post-hoc, not QC.</text>
-    <g transform="translate(450 230)">
-      <rect x="0" y="-8" width="14" height="14" fill="${paper}" stroke="${ink}" stroke-width="0.8"/>
-      <text x="20" y="3" font-family="JetBrains Mono,monospace" font-size="9.5" fill="${mute}">deterministic</text>
-      <rect x="98" y="-8" width="14" height="14" fill="#f1dec2" stroke="${amber2}" stroke-width="0.8"/>
-      <text x="118" y="3" font-family="JetBrains Mono,monospace" font-size="9.5" fill="${mute}">agentic</text>
-      <rect x="170" y="-8" width="14" height="14" fill="#e6efe2" stroke="#3a8f5a" stroke-width="0.8"/>
-      <text x="190" y="3" font-family="JetBrains Mono,monospace" font-size="9.5" fill="${mute}">output</text>
-    </g>`;
+  // Right HUMAN (after Release)
+  inner += `<rect x="${rightHumanX-26}" y="${yMain-26}" width="52" height="52" fill="${marine}" stroke="${marine2}" stroke-width="1.4"/>
+  <rect x="${rightHumanX-18}" y="${yMain-18}" width="36" height="36" fill="none" stroke="#fff" stroke-width="1"/>
+  <text x="${rightHumanX}" y="${yMain+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">HUMAN</text>
+  <text x="${rightHumanX}" y="${yMain+38}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="${mute}">reviews output</text>`;
 
-  return `<svg viewBox="0 0 700 260" style="width:100%;height:260px">${inner}</svg>`;
+  // PASS label
+  inner += `<text x="${(stages[3].x+stages[3].w+stages[4].x)/2}" y="${yMain-28}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="${marine}" letter-spacing=".08em">PASS</text>`;
+
+  // FAIL branch (QC reviewer → down → quarantine top)
+  inner += `<path d="M ${qcCX} ${yMain+22} L ${qcCX} ${qtY}" fill="none" stroke="#b73d28" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#aR)"/>
+  <text x="${qcCX+6}" y="${yMain+42}" font-family="JetBrains Mono,monospace" font-size="9" fill="#b73d28" letter-spacing=".08em">FAIL</text>`;
+
+  // Quarantine box
+  inner += `<g onclick="selectPipeStage(6)" onmouseover="previewPipeStage(6)" onmouseout="clearPipeStagePreview()" style="cursor:pointer">
+    <rect x="${qtX}" y="${qtY}" width="${qtW}" height="${qtH}" fill="#efd9d2" stroke="${selectedPipeStage===6?'#7a2418':'#b73d28'}" stroke-width="${selectedPipeStage===6?'2.5':'1.2'}"/>
+    <text x="${qtX+qtW/2}" y="${qtCY-2}" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="12" font-weight="600" fill="#7a2418">Quarantine</text>
+    <text x="${qtX+qtW/2}" y="${qtCY+12}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#7a2418">human decides</text>
+  </g>`;
+
+  // Arrow Quarantine → HUMAN (after quarantine)
+  inner += `<line x1="${qtX+qtW}" y1="${qtCY}" x2="${hqX-26}" y2="${hqY}" stroke="${amber}" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#aA)"/>`;
+
+  // HUMAN after quarantine
+  inner += `<rect x="${hqX-26}" y="${hqY-26}" width="52" height="52" fill="${marine}" stroke="${marine2}" stroke-width="1.4"/>
+  <rect x="${hqX-18}" y="${hqY-18}" width="36" height="36" fill="none" stroke="#fff" stroke-width="1"/>
+  <text x="${hqX}" y="${hqY+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">HUMAN</text>
+  <text x="${hqX}" y="${hqY+38}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="${mute}">reprocess / discard</text>`;
+
+  // Legend
+  inner += `<g transform="translate(30 244)">
+    <rect x="0" y="-8" width="12" height="12" fill="${paper}" stroke="${ink}" stroke-width="0.8"/>
+    <text x="16" y="2" font-family="JetBrains Mono,monospace" font-size="9" fill="${mute}">deterministic</text>
+    <rect x="92" y="-8" width="12" height="12" fill="#f1dec2" stroke="${amber2}" stroke-width="0.8"/>
+    <text x="108" y="2" font-family="JetBrains Mono,monospace" font-size="9" fill="${mute}">agentic</text>
+    <rect x="162" y="-8" width="12" height="12" fill="#e6efe2" stroke="#3a8f5a" stroke-width="0.8"/>
+    <text x="178" y="2" font-family="JetBrains Mono,monospace" font-size="9" fill="${mute}">output</text>
+  </g>`;
+
+  inner += `<text x="400" y="260" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#9aa7a0" letter-spacing=".06em">click a stage to learn its role</text>`;
+
+  return `<svg viewBox="0 0 700 268" style="width:100%;height:268px">${inner}</svg>`;
 }
 
 function renderPhaseRow() {
