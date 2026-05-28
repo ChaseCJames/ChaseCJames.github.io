@@ -192,7 +192,7 @@ let selectedPipeStage  = -1;
 let hoveredPipeStage   = -1;
 
 const PIPE_STAGE_DESC = [
-  { name: 'Sample intake',  desc: 'Per-sample IDs and cryptographic hashes are recorded at ingest. The provenance chain starts here — no sample enters without a logged identifier and a baseline hash.' },
+  { name: 'Sample intake',  desc: 'Per-sample IDs and hashes are recorded at ingest. The provenance chain starts here — no sample enters without a logged identifier and a baseline hash.' },
   { name: 'Metadata',       desc: 'Deterministic annotation: cruise ID, station number, cast depth, and sampling date-time attached to each sample record. No agentic decisions at this stage.' },
   { name: 'Orchestrator',   desc: 'Applies the transform sequence defined by the human before the run. Logs every parameter choice and its provenance tag as it executes — decisions are traceable end-to-end.' },
   { name: 'QC reviewer',    desc: 'Agentic branch point. Evaluates each sample against pre-written QC criteria. PASS advances to Validator; FAIL quarantines the sample and alerts the human immediately. Criteria written before the run, not after seeing the data.' },
