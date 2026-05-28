@@ -159,45 +159,6 @@
       <span class="label-mute">click a stage →</span>
     </div>
 
-    <!-- The shift: chat vs agent -->
-    <div class="shift-band" style="margin-top:8px">
-      <div class="shift-card shift-from">
-        <div class="shift-head">
-          <span class="shift-name">Chat</span>
-          <span class="shift-sub">Claude.ai · ChatGPT</span>
-        </div>
-        <div class="shift-rows">
-          <div class="shift-li"><span class="shift-bullet">·</span><span>You describe the problem in a text box</span></div>
-          <div class="shift-li"><span class="shift-bullet">·</span><span>The model returns code as text</span></div>
-          <div class="shift-li"><span class="shift-bullet">·</span><span>You copy-paste into your editor by hand</span></div>
-          <div class="shift-li"><span class="shift-bullet">·</span><span>You run it, then paste errors back</span></div>
-          <div class="shift-li"><span class="shift-bullet">·</span><span>The model never sees your files or terminal</span></div>
-          <div class="shift-li"><span class="shift-bullet">·</span><span>Context is only what you remember to paste</span></div>
-        </div>
-      </div>
-      <div class="shift-arrow">
-        <svg width="56" height="40" viewBox="0 0 56 40" aria-hidden="true">
-          <line x1="6" y1="20" x2="44" y2="20" stroke="#1a7a60" stroke-width="1.4" class="c-flow"/>
-          <path d="M 40 13 L 50 20 L 40 27" fill="none" stroke="#1a7a60" stroke-width="1.4"/>
-        </svg>
-      </div>
-      <div class="shift-card shift-to">
-        <div class="shift-head">
-          <span class="shift-name">Agent</span>
-          <span class="shift-sub">Claude Code · Codex</span>
-        </div>
-        <div class="shift-rows">
-          <div class="shift-li"><span class="shift-bullet">›</span><span>You state a goal in the project itself</span></div>
-          <div class="shift-li"><span class="shift-bullet">›</span><span>The agent edits your files directly — you review diffs</span></div>
-          <div class="shift-li"><span class="shift-bullet">›</span><span>It runs commands and reads the output</span></div>
-          <div class="shift-li"><span class="shift-bullet">›</span><span>It iterates on errors without you relaying them</span></div>
-          <div class="shift-li"><span class="shift-bullet">›</span><span>It can navigate the whole repository</span></div>
-          <div class="shift-li"><span class="shift-bullet">›</span><span>Context is the live state of your project</span></div>
-        </div>
-      </div>
-    </div>
-    <div style="font-family:var(--ff-mono);font-size:10px;color:var(--mute);font-style:italic;margin:6px 0 12px">same models — the difference is access and autonomy</div>
-
     <div class="stage-rail" id="stage-rail" role="group" aria-label="On-ramp stages"></div>
     <div class="stage-progress"><div class="stage-progress-fill" id="stage-progress-fill"></div></div>
 
@@ -322,6 +283,39 @@ EXAMPLE every statistical analysis emits a PDF explaining the test, its paramete
     '</div>' +
     '<span class="routes-note"><span style="color:var(--amber)">AGENTS.md</span> (or CLAUDE.md) is the same governance layer the <a href="standards.html" style="color:var(--marine);text-decoration:underline">Standards</a> tab describes — plain text the agent reads before acting. Writing your first one is how the framework becomes real in your project.</span>';
 
+  const SHIFT_HTML =
+    '<div class="shift-band" style="margin-top:4px">' +
+      '<div class="shift-card shift-from">' +
+        '<div class="shift-head"><span class="shift-name">Chat</span><span class="shift-sub">Claude.ai · ChatGPT</span></div>' +
+        '<div class="shift-rows">' +
+          '<div class="shift-li"><span class="shift-bullet">·</span><span>You describe the problem in a text box</span></div>' +
+          '<div class="shift-li"><span class="shift-bullet">·</span><span>The model returns code as text</span></div>' +
+          '<div class="shift-li"><span class="shift-bullet">·</span><span>You copy-paste into your editor by hand</span></div>' +
+          '<div class="shift-li"><span class="shift-bullet">·</span><span>You run it, then paste errors back</span></div>' +
+          '<div class="shift-li"><span class="shift-bullet">·</span><span>The model never sees your files or terminal</span></div>' +
+          '<div class="shift-li"><span class="shift-bullet">·</span><span>Context is only what you remember to paste</span></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="shift-arrow">' +
+        '<svg width="56" height="40" viewBox="0 0 56 40" aria-hidden="true">' +
+          '<line x1="6" y1="20" x2="44" y2="20" stroke="#1a7a60" stroke-width="1.4" class="c-flow"/>' +
+          '<path d="M 40 13 L 50 20 L 40 27" fill="none" stroke="#1a7a60" stroke-width="1.4"/>' +
+        '</svg>' +
+      '</div>' +
+      '<div class="shift-card shift-to">' +
+        '<div class="shift-head"><span class="shift-name">Agent</span><span class="shift-sub">Claude Code · Codex</span></div>' +
+        '<div class="shift-rows">' +
+          '<div class="shift-li"><span class="shift-bullet">›</span><span>You state a goal in the project itself</span></div>' +
+          '<div class="shift-li"><span class="shift-bullet">›</span><span>The agent edits your files directly — you review diffs</span></div>' +
+          '<div class="shift-li"><span class="shift-bullet">›</span><span>It runs commands and reads the output</span></div>' +
+          '<div class="shift-li"><span class="shift-bullet">›</span><span>It iterates on errors without you relaying them</span></div>' +
+          '<div class="shift-li"><span class="shift-bullet">›</span><span>It can navigate the whole repository</span></div>' +
+          '<div class="shift-li"><span class="shift-bullet">›</span><span>Context is the live state of your project</span></div>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+    '<span class="routes-note">same models — the difference is access and autonomy</span>';
+
   const MIND_HTML =
     '<div class="routes-head"><span class="label">chat → directory</span>' +
       '<span class="label-mute">same skill, wider aperture</span></div>' +
@@ -356,7 +350,7 @@ EXAMPLE every statistical analysis emits a PDF explaining the test, its paramete
     { n: '00', title: 'Reset the mental model', one: 'You are a reviewer now, not a typist.',
       body: 'The instinct from chat is to read every line as it is written and approve it word by word. Drop that. The agent will produce more code, faster, than you can read that way. Your leverage moves up a level: you frame the task well, then you review the result against what you actually wanted. The skills you built in chat — knowing what to ask for, smelling a wrong answer — all transfer. What changes is scope.',
       watch: 'The failure here is passivity: letting the agent run because reviewing feels slow. Reviewing IS the work now.',
-      extra: MIND_HTML },
+      extra: SHIFT_HTML },
     { n: '01', title: 'Set up the environment', one: 'A terminal or an editor, git, the agent, an account.',
       body: 'There are two ways to run the agent (shown below): from a terminal, or right inside an editor like VS Code or Cursor with no command line at all. Either way you need git installed, the tool installed and authenticated, and an account. If the terminal feels foreign coming from chat, start with the GUI route — it looks much more like the chat you already know. Budget an afternoon.',
       watch: 'Whichever route you pick, do not skip git. It is the undo button that makes everything else safe to try.',
