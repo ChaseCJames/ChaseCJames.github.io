@@ -184,10 +184,11 @@ const ENSEMBLES = {
   },
 };
 
-let active            = 'hypo';
-let selectedAgent     = -1;
-let hoveredAgent      = -1;
-let selectedPipeStage = -1;
+let active             = 'hypo';
+let selectedAgent      = -1;
+let hoveredAgent       = -1;
+let selectedPipeStage  = -1;
+let hoveredPipeStage   = -1;
 
 const PIPE_STAGE_DESC = [
   { name: 'Sample intake',  desc: 'Per-sample IDs and cryptographic hashes are recorded at ingest. The provenance chain starts here — no sample enters without a logged identifier and a baseline hash.' },
@@ -230,11 +231,12 @@ function ensembleSVG(phase) {
   xs.forEach((x, i) => {
     if (i > 0) inner += dashedPath(`M ${xs[i-1]+44} ${cy} L ${x-44} ${cy}`);
     const sel = i === selectedAgent;
-    const fillC   = sel ? marine    : paper;
-    const strokeC = sel ? marine2   : ink;
-    const strokeW = sel ? '2'       : '1.2';
-    const numCol  = sel ? '#fff'    : amber2;
-    const nameCol = sel ? '#fff'    : ink;
+    const hov = !sel && i === hoveredAgent;
+    const fillC   = sel ? marine  : hov ? '#d4ede8' : paper;
+    const strokeC = sel ? marine2 : hov ? marine    : ink;
+    const strokeW = sel || hov ? '2' : '1.2';
+    const numCol  = sel ? '#fff'  : hov ? marine    : amber2;
+    const nameCol = sel ? '#fff'  : hov ? marine    : ink;
     inner += `<g onclick="selectAgent(${i})" onmouseover="previewAgent(${i})" onmouseout="clearAgentPreview()" style="cursor:pointer" role="button">
       <circle cx="${x}" cy="${cy}" r="44" fill="${fillC}" stroke="${strokeC}" stroke-width="${strokeW}"/>
       <text x="${x}" y="${cy-8}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="${numCol}" letter-spacing=".08em">${String(i+1).padStart(2,'0')}</text>
@@ -269,9 +271,11 @@ function ensembleSVG(phase) {
 }
 
 function pipeStageHTML() {
-  if (selectedPipeStage < 0 || selectedPipeStage >= PIPE_STAGE_DESC.length) return '';
-  const s = PIPE_STAGE_DESC[selectedPipeStage];
-  return `<div class="pipe-stage-panel">
+  const i = selectedPipeStage >= 0 ? selectedPipeStage : hoveredPipeStage;
+  if (i < 0 || i >= PIPE_STAGE_DESC.length) return '';
+  const s = PIPE_STAGE_DESC[i];
+  const pinned = selectedPipeStage >= 0;
+  return `<div class="pipe-stage-panel" style="${pinned ? '' : 'opacity:.85'}">
     <div class="pipe-stage-name">${s.name.toUpperCase()}</div>
     <div class="pipe-stage-desc">${s.desc}</div>
   </div>`;
@@ -320,7 +324,7 @@ function pipelineSVG() {
     const strokeC = sel ? amber : strokeFor(s.type);
     const strokeW = sel ? '2.2' : '1.2';
     if (next) inner += `<line x1="${s.x+s.w}" y1="${yMain}" x2="${next.x-2}" y2="${yMain}" stroke="${marine}" stroke-width="1.2" marker-end="url(#aS)"/>`;
-    inner += `<g onclick="selectPipeStage(${i})" style="cursor:pointer">
+    inner += `<g onclick="selectPipeStage(${i})" onmouseover="previewPipeStage(${i})" onmouseout="clearPipeStagePreview()" style="cursor:pointer">
       <rect x="${s.x}" y="${yMain-22}" width="${s.w}" height="44" fill="${fillFor(s.type)}" stroke="${strokeC}" stroke-width="${strokeW}"/>
       <text x="${s.x+s.w/2}" y="${yMain-4}" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="12.5" font-weight="600" fill="${ink}">${s.label}</text>
       <text x="${s.x+s.w/2}" y="${yMain+12}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="${s.type==='ag'?amber2:mute}" letter-spacing=".04em">${s.sub}</text>
@@ -332,7 +336,7 @@ function pipelineSVG() {
   inner += `<text x="464" y="${yMain-42}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="${marine}" letter-spacing=".08em">PASS</text>
     <path d="M 408 ${yMain+22} L 408 190 L 508 190" fill="none" stroke="#b73d28" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#aR)"/>
     <text x="420" y="${yMain+50}" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#b73d28" letter-spacing=".08em">FAIL</text>
-    <g onclick="selectPipeStage(6)" style="cursor:pointer">
+    <g onclick="selectPipeStage(6)" onmouseover="previewPipeStage(6)" onmouseout="clearPipeStagePreview()" style="cursor:pointer">
       <rect x="514" y="175" width="130" height="36" fill="#efd9d2" stroke="${selectedPipeStage===6?'#7a2418':'#b73d28'}" stroke-width="${selectedPipeStage===6?'2.5':'1.2'}"/>
       <text x="579" y="191" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="11.5" font-weight="600" fill="#7a2418">Quarantine</text>
       <text x="579" y="203" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#7a2418">+ alert human</text>
@@ -390,12 +394,28 @@ function renderDiagram() {
 
 function previewAgent(i) {
   if (selectedAgent >= 0) return;
+  if (hoveredAgent === i) return;
   hoveredAgent = i;
+  document.getElementById('svg-area').innerHTML = ensembleSVG(active);
   updateDetail();
 }
 function clearAgentPreview() {
   if (selectedAgent >= 0) return;
+  if (hoveredAgent < 0) return;
   hoveredAgent = -1;
+  document.getElementById('svg-area').innerHTML = ensembleSVG(active);
+  updateDetail();
+}
+function previewPipeStage(i) {
+  if (selectedPipeStage >= 0) return;
+  if (hoveredPipeStage === i) return;
+  hoveredPipeStage = i;
+  updateDetail();
+}
+function clearPipeStagePreview() {
+  if (selectedPipeStage >= 0) return;
+  if (hoveredPipeStage < 0) return;
+  hoveredPipeStage = -1;
   updateDetail();
 }
 
@@ -408,15 +428,17 @@ function selectAgent(i) {
 
 function selectPipeStage(i) {
   selectedPipeStage = (selectedPipeStage === i) ? -1 : i;
+  hoveredPipeStage  = -1;
   updateDetail();
   document.getElementById('svg-area').innerHTML = pipelineSVG();
 }
 
 function select(id) {
-  active            = id;
-  selectedAgent     = -1;
-  hoveredAgent      = -1;
-  selectedPipeStage = -1;
+  active             = id;
+  selectedAgent      = -1;
+  hoveredAgent       = -1;
+  selectedPipeStage  = -1;
+  hoveredPipeStage   = -1;
   renderPhaseRow();
   renderDiagram();
 }
