@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Where to start · AI Protocols</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    /* ── The shift band (chat vs agent) ── */
+    .shift-band { display: grid; grid-template-columns: 1fr 56px 1fr; align-items: stretch; gap: 0; }
+    .shift-card { padding: 12px 14px; }
+    .shift-from { border: 1px solid var(--rule); background: var(--paper2); }
+    .shift-to   { border: 1.4px solid var(--ink); background: var(--paper); }
+    .shift-head { display: flex; align-items: baseline; justify-content: space-between; }
+    .shift-name { font-family: var(--ff-display); font-size: 18px; font-weight: 700; }
+    .shift-from .shift-name { color: var(--mute); }
+    .shift-to   .shift-name { color: var(--marine); }
+    .shift-sub  { font-family: var(--ff-mono); font-size: 10px; letter-spacing: .06em; }
+    .shift-from .shift-sub { color: var(--mute); }
+    .shift-to   .shift-sub { color: var(--amber2); }
+    .shift-rows { margin-top: 6px; display: grid; gap: 3px; }
+    .shift-li   { display: grid; grid-template-columns: 14px 1fr; gap: 6px; font-size: 11.5px; line-height: 1.35; }
+    .shift-from .shift-li { color: var(--ink2); }
+    .shift-to   .shift-li { color: var(--ink); }
+    .shift-bullet { font-family: var(--ff-mono); font-size: 10px; }
+    .shift-from .shift-bullet { color: var(--mute); }
+    .shift-to   .shift-bullet { color: var(--marine); }
+    .shift-arrow { display: flex; align-items: center; justify-content: center; }
+
+    /* ── On-ramp stage selector ── */
+    .stage-rail { display: flex; gap: 4px; margin-top: 8px; }
+    .stage-btn  {
+      flex: 1; text-align: left;
+      border: 1px solid var(--rule); background: var(--paper); color: var(--ink);
+      padding: 7px 8px;
+      transition: background .1s, color .1s, border-color .1s;
+    }
+    .stage-btn:hover { border-color: var(--ink); }
+    .stage-btn.active { background: #1a5040; color: var(--paper); border-color: #1a5040; }
+    .stage-btn:focus-visible { outline: 2px solid var(--marine); outline-offset: 2px; }
+    .stage-btn-n { font-family: var(--ff-mono); font-size: 10px; color: var(--amber2); }
+    .stage-btn.active .stage-btn-n { color: var(--amber); }
+    .stage-btn-t { font-family: var(--ff-display); font-size: 11.5px; font-weight: 600; letter-spacing: -0.01em; line-height: 1.1; margin-top: 2px; }
+
+    .stage-progress { margin-top: 8px; height: 4px; background: var(--rule2); position: relative; }
+    .stage-progress-fill { position: absolute; left: 0; top: 0; bottom: 0; background: var(--marine); transition: width .2s ease; }
+
+    .stage-detail { margin-top: 10px; padding: 14px; background: var(--paper2); border: 1px dashed var(--rule); }
+    .stage-detail-head { display: flex; align-items: flex-start; gap: 10px; }
+    .stage-num   { font-family: var(--ff-mono); font-size: 22px; font-weight: 600; color: var(--marine); line-height: 1.12; flex-shrink: 0; }
+    .stage-title { font-family: var(--ff-display); font-size: 19px; font-weight: 700; letter-spacing: -0.018em; line-height: 1.15; }
+    .stage-one   { font-family: var(--ff-display); font-style: italic; font-size: 12.5px; color: var(--marine); margin-top: 6px; }
+    .stage-body  { margin-top: 10px; font-size: 12.5px; line-height: 1.55; color: var(--ink2); }
+    .stage-watch { margin-top: 10px; display: flex; gap: 10px; align-items: flex-start; background: var(--paper); border: 1px solid var(--amber); border-left: 3px solid var(--amber); padding: 8px 10px; }
+    .stage-watch-label { font-family: var(--ff-mono); font-size: 9.5px; color: var(--amber2); letter-spacing: .1em; flex-shrink: 0; padding-top: 1px; }
+    .stage-watch-text  { font-size: 11.5px; color: var(--ink2); line-height: 1.4; }
+
+    /* ── Right rail ── */
+    .check-row { display: grid; grid-template-columns: 22px 1fr; gap: 8px; padding: 5px 6px; border-top: 1px solid var(--rule); align-items: baseline; transition: background .12s; }
+    .check-row:first-of-type { border-top: none; }
+    .check-row:hover { background: var(--paper); }
+    .check-n { font-family: var(--ff-mono); font-size: 10px; color: var(--amber2); letter-spacing: .04em; }
+    .check-item { font-family: var(--ff-display); font-size: 12.5px; font-weight: 600; }
+    .check-note { font-family: var(--ff-mono); font-size: 10px; color: var(--mute); margin-left: 6px; }
+
+    .habit-row { display: grid; grid-template-columns: 120px 1fr; gap: 10px; padding: 6px; border-top: 1px solid var(--rule); transition: background .12s; }
+    .habit-row:hover { background: var(--paper2); }
+    .habit-k { font-family: var(--ff-display); font-size: 12.5px; font-weight: 600; color: var(--marine); }
+    .habit-v { font-size: 11px; color: var(--ink2); line-height: 1.4; }
+    .habit-eg { margin-top: 4px; font-size: 10.5px; color: var(--mute); line-height: 1.4; }
+    .habit-eg b { font-family: var(--ff-mono); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; color: var(--amber2); margin-right: 5px; }
+
+    /* ── Two ways in (CLI vs GUI routes) ── */
+    .routes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .route-card { border: 1px solid var(--rule); background: var(--paper); padding: 12px 14px; }
+    .route-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 7px; }
+    .route-name { font-family: var(--ff-display); font-size: 16px; font-weight: 700; letter-spacing: -0.012em; }
+    .route-tag  { font-family: var(--ff-mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--amber2); background: var(--paper2); border: 1px solid var(--rule); padding: 2px 6px; }
+    .route-tools { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+    .route-li { display: grid; grid-template-columns: 14px 1fr; gap: 6px; font-size: 11.5px; color: var(--ink2); line-height: 1.4; padding: 2px 0; }
+    .route-li .b { color: var(--marine); font-family: var(--ff-mono); font-size: 10px; }
+    .route-best { margin-top: 6px; font-size: 11px; color: var(--ink2); line-height: 1.4; }
+    .route-best b { font-family: var(--ff-mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--amber2); margin-right: 5px; }
+
+    /* routes nested inside a stage detail */
+    .stage-detail .routes { margin-top: 10px; }
+    .routes-head { display: flex; justify-content: space-between; align-items: baseline; margin-top: 12px; }
+    .routes-note { display: block; margin-top: 8px; font-family: var(--ff-mono); font-size: 10px; color: var(--mute); line-height: 1.5; }
+
+    /* terminal-style snippet (examples inside a stage detail) */
+    .snippet { margin-top: 10px; background: var(--paper); border: 1px solid var(--rule); color: var(--ink2); font-family: var(--ff-mono); font-size: 11px; line-height: 1.6; padding: 10px 12px; overflow-x: auto; white-space: pre; }
+    .snippet .pr  { color: var(--marine); }
+    .snippet .tag { color: var(--amber2); }
+    .snippet .hd  { color: var(--ink); font-weight: 700; }
+    .snippet .dim { color: var(--mute); }
+
+    /* mental-model mini graphic (chat vs directory) */
+    .mind-fig { margin-top: 10px; background: var(--paper); border: 1px solid var(--rule); padding: 12px; }
+    .mind-fig svg { width: 100%; height: auto; display: block; }
+
+    @media (max-width: 900px) {
+      .shift-band { grid-template-columns: 1fr; }
+      .shift-arrow { transform: rotate(90deg); padding: 6px 0; }
+      .stage-rail { flex-wrap: wrap; }
+      .stage-btn  { flex: 1 1 40%; }
+      .habit-row  { grid-template-columns: 1fr; gap: 2px; }
+      .routes     { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="ap-nav" aria-label="AI Protocols sections">
+  <a href="index.html" class="ap-nav-brand" title="AI Protocols · framework">
+    <svg width="26" height="26" viewBox="0 0 28 28" aria-hidden="true">
+      <rect x="1" y="1" width="26" height="26" fill="none" stroke="#13201a" stroke-width="1.3"/>
+      <line x1="14" y1="1" x2="14" y2="27" stroke="#1a7a60" stroke-width="1"/>
+      <line x1="1"  y1="14" x2="27" y2="14" stroke="#1a7a60" stroke-width="1"/>
+      <circle cx="14" cy="14" r="4" fill="#b8741c"/>
+    </svg>
+    <span class="ap-brand-text">ai-protocols<span>/v0.1</span></span>
+  </a>
+  <div class="ap-nav-tabs" role="list">
+    <a href="index.html"          class="ap-nav-tab">00_framework</a>
+    <a href="standards.html"      class="ap-nav-tab">01_standards</a>
+    <a href="workflows.html"      class="ap-nav-tab">02_workflows</a>
+    <a href="ethics.html"         class="ap-nav-tab">03_ethics</a>
+    <a href="teaching.html"       class="ap-nav-tab">04_teaching</a>
+    <a href="example.html"        class="ap-nav-tab">05_example</a>
+    <a href="where-to-start.html" class="ap-nav-tab active" aria-current="page">06_where-to-start</a>
+  </div>
+  <div class="ap-nav-meta">Dr. James · 2026</div>
+</nav>
+
+<header class="ap-header">
+  <div class="ap-eyebrow">06 · where to start</div>
+  <h1>From the chat window <span class="accent">to full agentic coding.</span></h1>
+  <p class="lede">If your AI use so far has been a chat window — paste a question, copy back an answer — agentic coding is a different relationship with the same models. The agent operates within a given directory: reads your actual files, runs commands, and iterates on its own while you review. Your job shifts from typist to director. This page is the on-ramp.</p>
+</header>
+
+<!-- THE SHIFT -->
+<div style="padding:14px 40px 0">
+  <div class="fig-head">
+    <span class="label">Fig 6.1 · the shift</span>
+    <span class="label-mute">same models — the difference is access and autonomy</span>
+  </div>
+  <div class="shift-band">
+    <div class="shift-card shift-from">
+      <div class="shift-head">
+        <span class="shift-name">Chat</span>
+        <span class="shift-sub">Claude.ai · ChatGPT</span>
+      </div>
+      <div class="shift-rows">
+        <div class="shift-li"><span class="shift-bullet">·</span><span>You describe the problem in a text box</span></div>
+        <div class="shift-li"><span class="shift-bullet">·</span><span>The model returns code as text</span></div>
+        <div class="shift-li"><span class="shift-bullet">·</span><span>You copy-paste into your editor by hand</span></div>
+        <div class="shift-li"><span class="shift-bullet">·</span><span>You run it, then paste errors back</span></div>
+        <div class="shift-li"><span class="shift-bullet">·</span><span>The model never sees your files or terminal</span></div>
+        <div class="shift-li"><span class="shift-bullet">·</span><span>Context is only what you remember to paste</span></div>
+      </div>
+    </div>
+
+    <div class="shift-arrow">
+      <svg width="56" height="40" viewBox="0 0 56 40" aria-hidden="true">
+        <line x1="6" y1="20" x2="44" y2="20" stroke="#1a7a60" stroke-width="1.4" class="c-flow"/>
+        <path d="M 40 13 L 50 20 L 40 27" fill="none" stroke="#1a7a60" stroke-width="1.4"/>
+      </svg>
+    </div>
+
+    <div class="shift-card shift-to">
+      <div class="shift-head">
+        <span class="shift-name">Agent</span>
+        <span class="shift-sub">Claude Code · Codex</span>
+      </div>
+      <div class="shift-rows">
+        <div class="shift-li"><span class="shift-bullet">›</span><span>You state a goal in the project itself</span></div>
+        <div class="shift-li"><span class="shift-bullet">›</span><span>The agent edits your files directly — you review diffs</span></div>
+        <div class="shift-li"><span class="shift-bullet">›</span><span>It runs commands and reads the output</span></div>
+        <div class="shift-li"><span class="shift-bullet">›</span><span>It iterates on errors without you relaying them</span></div>
+        <div class="shift-li"><span class="shift-bullet">›</span><span>It can navigate the whole repository</span></div>
+        <div class="shift-li"><span class="shift-bullet">›</span><span>Context is the live state of your project</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="ap-cols ap-cols--wide">
+
+  <!-- LEFT: interactive on-ramp -->
+  <div class="panel">
+    <div class="fig-head">
+      <span class="label">Fig 6.2 · the on-ramp</span>
+      <span class="label-mute">click a stage →</span>
+    </div>
+
+    <div class="stage-rail" id="stage-rail" role="group" aria-label="On-ramp stages"></div>
+    <div class="stage-progress"><div class="stage-progress-fill" id="stage-progress-fill"></div></div>
+
+    <div class="stage-detail c-grid" id="stage-detail"></div>
+  </div>
+
+  <!-- RIGHT: setup + habits + reassurance -->
+  <div style="display:flex;flex-direction:column;gap:12px">
+
+    <div class="panel-light">
+      <div class="label">Setup checklist:</div>
+      <div style="margin-top:6px">
+        <div class="check-row"><span class="check-n">01</span><div><span class="check-item">A terminal or an editor</span><span class="check-note">— Terminal / iTerm · or VS Code / Cursor</span></div></div>
+        <div class="check-row"><span class="check-n">02</span><div><span class="check-item">Get comfortable: command line or GUI</span><span class="check-note">— ~30 min in a terminal, or just open the editor</span></div></div>
+        <div class="check-row"><span class="check-n">03</span><div><span class="check-item">git installed</span><span class="check-note">— the safety net for everything else</span></div></div>
+        <div class="check-row"><span class="check-n">04</span><div><span class="check-item">The agent</span><span class="check-note">— Claude Code / Codex: CLI or editor extension</span></div></div>
+        <div class="check-row"><span class="check-n">05</span><div><span class="check-item">An account / API access</span><span class="check-note">— subscription or API key</span></div></div>
+        <div class="check-row"><span class="check-n">06</span><div><span class="check-item">A workspace folder</span><span class="check-note">— a git repo the agent operates inside</span></div></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="fig-head"><span class="label">Bring these from day one</span><span class="label-mute">hover to highlight · expandable in full build</span></div>
+      <div class="habit-row"><div class="habit-k">Read the diff</div><div class="habit-v">Be critical when reading and reviewing the diff. The diff is the agent's actual proposal. 
+Note: In a science context it helps to hardwire a summary separate from the simple summary the agent provides.
+EXAMPLE every statistical analysis emits a PDF explaining the test, its parameters, and which were user-specified vs. agent-chosen.</div></div>
+      <div class="habit-row"><div class="habit-k">Work under git</div><div class="habit-v">Branch for anything real. Commit small. Always be one command from undoing the last hour.</div></div>
+      <div class="habit-row"><div class="habit-k">Sandbox first</div><div class="habit-v">New capability gets tried in a throwaway folder, not on data or code you cannot afford to break.</div></div>
+      <div class="habit-row"><div class="habit-k">Distrust confidence</div><div class="habit-v">Confident output is the default, not a signal of correctness. Never accept what you cannot evaluate.</div></div>
+      <div class="habit-row"><div class="habit-k">Keep the judgment</div><div class="habit-v">Delegate execution, not decisions. What is worth doing and what counts as evidence stay yours.</div></div>
+    </div>
+
+    <div class="panel-dark" style="padding:10px 12px">
+      <div style="font-family:var(--ff-mono);font-size:10px;color:var(--amber);letter-spacing:.12em;text-transform:uppercase;font-weight:700">You are not starting over</div>
+      <p style="font-size:12.5px;margin-top:4px;font-style:italic;font-family:var(--ff-display);line-height:1.45;color:var(--paper)">Everything you learned getting good at chat — how to frame a question, when an answer smells wrong, how to push back — is exactly what makes you good at directing an agent. You are not starting over. You are widening the aperture.</p>
+    </div>
+
+  </div>
+</div>
+
+<footer class="ap-footer">
+  <span>← <a href="example.html">example</a></span>
+  <span><a href="index.html">framework ↑</a></span>
+</footer>
+
+<script>
+  const ROUTES_HTML =
+    '<div class="routes-head"><span class="label">two ways in</span>' +
+      '<span class="label-mute">pick the one that lowers the barrier</span></div>' +
+    '<div class="routes">' +
+      '<div class="route-card">' +
+        '<div class="route-head"><span class="route-name">Terminal / CLI</span><span class="route-tag">power · remote</span></div>' +
+        '<div class="route-tools"><span class="chip">Claude Code</span><span class="chip">Codex CLI</span></div>' +
+        '<div class="route-li"><span class="b">›</span><span>Runs in any terminal; works over SSH and on HPC login nodes</span></div>' +
+        '<div class="route-li"><span class="b">›</span><span>Scriptable and composable with the shell tools you already use</span></div>' +
+        '<div class="route-li"><span class="b">›</span><span>Minimal install — nothing sits between you and the agent</span></div>' +
+        '<div class="route-best"><b>Best if</b> you work on remote servers, automate runs, or already live in a terminal.</div>' +
+        '<div class="route-best" style="color:var(--mute)"><b>Trade-off</b> assumes basic command-line comfort.</div>' +
+      '</div>' +
+      '<div class="route-card">' +
+        '<div class="route-head"><span class="route-name">GUI / in your editor</span><span class="route-tag">familiar · visual</span></div>' +
+        '<div class="route-tools"><span class="chip">Claude Code for VS Code</span><span class="chip">Codex in VS Code</span><span class="chip">Cursor</span><span class="chip">Windsurf</span></div>' +
+        '<div class="route-li"><span class="b">›</span><span>Point-and-click; inline diffs and a file tree, no terminal required</span></div>' +
+        '<div class="route-li"><span class="b">›</span><span>Cross-platform (macOS · Windows · Linux); looks like the chat you know</span></div>' +
+        '<div class="route-li"><span class="b">›</span><span>Review and accept changes visually, file by file</span></div>' +
+        '<div class="route-best"><b>Best if</b> you are coming straight from a chat tool and want the gentlest on-ramp.</div>' +
+        '<div class="route-best" style="color:var(--mute)"><b>Trade-off</b> one more app to install; less direct for remote HPC work.</div>' +
+      '</div>' +
+    '</div>' +
+    '<span class="routes-note">Many people use both — the GUI to learn and review, the CLI for remote and repetitive work. Same model; the habits on the right apply to either.</span>';
+
+  const PLAN_HTML =
+    '<div class="routes-head"><span class="label">try: plan mode</span>' +
+      '<span class="label-mute">see the intent before any file changes</span></div>' +
+    '<div class="stage-body" style="margin-top:8px">Most agents can plan before they touch anything. In Claude Code, <b>Shift+Tab</b> cycles into Plan Mode: it explores read-only, proposes a plan, and waits for your approval before editing or running anything — ideal when you point it at a new dataset. (Codex has an equivalent ask-before-acting mode.)</div>' +
+    '<div class="snippet">' +
+      '<span class="pr">&gt;</span> explore samples.csv, run a PCA, and plot it  <span class="tag">[plan mode]</span>\n' +
+      '\n' +
+      '<span class="hd">  Plan</span>\n' +
+      '  1. Load samples.csv; report shape, dtypes, missing values\n' +
+      '  2. Standardize the numeric feature columns (z-score)\n' +
+      '  3. Fit PCA(n_components=2); report explained variance\n' +
+      '  4. Scatter PC1 vs PC2:\n' +
+      '       <span class="dim">color =</span> treatment    <span class="dim">shape =</span> genotype\n' +
+      '  5. Save pca.png (300 dpi) + pca_loadings.csv\n' +
+      '\n' +
+      '<span class="dim">  proceed?  ⏎ approve · e edit plan · esc cancel</span>' +
+    '</div>' +
+    '<span class="routes-note">Read the plan, not just the result. Approving a wrong plan early is cheaper to catch than a wrong diff later.</span>';
+
+  const GIT_HTML =
+    '<div class="routes-head"><span class="label">try: branch · review · commit</span>' +
+      '<span class="label-mute">stay one command from undo</span></div>' +
+    '<div class="stage-body" style="margin-top:8px">The whole guardrail is git. Work on a branch (never on <b>main</b>), let the agent make its changes, then read the diff hunk by hunk and commit in small steps. If anything goes sideways, one command takes you back.</div>' +
+    '<div class="snippet">' +
+      '<span class="pr">$</span> git switch -c agent/clean-loader   <span class="tag">[new branch]</span>\n' +
+      '\n' +
+      '<span class="dim">  # let the agent make its changes, then review:</span>\n' +
+      '<span class="pr">$</span> git diff --stat\n' +
+      '  loader.py        | 42 ++++++------\n' +
+      '  tests/test_io.py | 18 +++++\n' +
+      '\n' +
+      '<span class="pr">$</span> git add -p            <span class="dim"># review &amp; stage each hunk</span>\n' +
+      '<span class="pr">$</span> git commit -m "refactor loader; add provenance tags"\n' +
+      '\n' +
+      '<span class="dim">  # regret it?</span>  <span class="pr">$</span> git restore . <span class="dim">/</span> git revert HEAD' +
+    '</div>' +
+    '<span class="routes-note">Small commits mean any single change is one <span style="color:var(--amber)">git revert</span> away. That safety net is what makes it safe to move fast.</span>';
+
+  const FILES_HTML =
+    '<div class="routes-head"><span class="label">try: a context file</span>' +
+      '<span class="label-mute">the same files the Standards tab describes</span></div>' +
+    '<div class="stage-body" style="margin-top:8px">The habits become concrete as plain-text files the agent reads before it acts. Start with one <b>AGENTS.md</b> (Claude Code also reads <b>CLAUDE.md</b>) in your project root, add a <b>STYLE.md</b> for conventions, and let dated notes accumulate under <b>docs/</b>.</div>' +
+    '<div class="snippet">' +
+      '<span class="hd">my-project/</span>\n' +
+      '├── <span class="tag">AGENTS.md</span>     <span class="dim"># read first: reasoning + reproducibility defaults</span>\n' +
+      '├── <span class="tag">STYLE.md</span>      <span class="dim"># plotting + code conventions</span>\n' +
+      '├── .claude/      <span class="dim"># skills + hooks — the machinery</span>\n' +
+      '└── docs/\n' +
+      '    ├── planning/2026-05-28_loader.md\n' +
+      '    └── lab_notebook/2026-05-28.md' +
+    '</div>' +
+    '<span class="routes-note"><span style="color:var(--amber)">AGENTS.md</span> (or CLAUDE.md) is the same governance layer the <a href="standards.html" style="color:var(--marine);text-decoration:underline">Standards</a> tab describes — plain text the agent reads before acting. Writing your first one is how the framework becomes real in your project.</span>';
+
+  const MIND_HTML =
+    '<div class="routes-head"><span class="label">chat → directory</span>' +
+      '<span class="label-mute">same skill, wider aperture</span></div>' +
+    '<div class="mind-fig"><svg viewBox="0 0 560 170" role="img" aria-label="A chat window on the left, an arrow, and a project directory the agent works inside on the right">' +
+      '<rect x="12" y="18" width="210" height="120" rx="6" fill="#ece6d6" stroke="#13201a" stroke-width="1.3"/>' +
+      '<circle cx="26" cy="32" r="2.2" fill="#6a7468"/><circle cx="34" cy="32" r="2.2" fill="#6a7468"/><circle cx="42" cy="32" r="2.2" fill="#6a7468"/>' +
+      '<text x="60" y="35" font-family="JetBrains Mono, monospace" font-size="9" fill="#6a7468">Claude.ai</text>' +
+      '<line x1="12" y1="44" x2="222" y2="44" stroke="#cfc6b0" stroke-width="1"/>' +
+      '<rect x="26" y="54" width="124" height="30" rx="5" fill="#f4f1e8" stroke="#cfc6b0" stroke-width="1"/>' +
+      '<line x1="34" y1="65" x2="138" y2="65" stroke="#6a7468" stroke-width="1.5"/>' +
+      '<line x1="34" y1="73" x2="112" y2="73" stroke="#6a7468" stroke-width="1.5"/>' +
+      '<rect x="84" y="92" width="122" height="26" rx="5" fill="#1a7a60"/>' +
+      '<line x1="92" y1="101" x2="196" y2="101" stroke="#f4f1e8" stroke-width="1.5" opacity="0.85"/>' +
+      '<line x1="92" y1="109" x2="168" y2="109" stroke="#f4f1e8" stroke-width="1.5" opacity="0.85"/>' +
+      '<text x="117" y="156" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#13201a" letter-spacing="1">CHAT · you relay</text>' +
+      '<line x1="234" y1="78" x2="318" y2="78" stroke="#1a7a60" stroke-width="1.6" class="c-flow"/>' +
+      '<path d="M 312 71 L 322 78 L 312 85" fill="none" stroke="#1a7a60" stroke-width="1.6"/>' +
+      '<rect x="338" y="18" width="210" height="120" rx="6" fill="#f4f1e8" stroke="#13201a" stroke-width="1.3"/>' +
+      '<text x="352" y="37" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" fill="#13201a">project/</text>' +
+      '<line x1="338" y1="44" x2="548" y2="44" stroke="#cfc6b0" stroke-width="1"/>' +
+      '<text x="352" y="61" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#243a30">├─ data.csv</text>' +
+      '<rect x="346" y="69" width="184" height="13" fill="#1a7a60" opacity="0.12"/>' +
+      '<text x="352" y="79" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#243a30">├─ analysis.py</text>' +
+      '<rect x="460" y="71" width="5" height="10" fill="#1a7a60" class="c-blink"/>' +
+      '<text x="352" y="97" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#6a7468">├─ figs/pca.png</text>' +
+      '<text x="352" y="115" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#b8741c">└─ AGENTS.md</text>' +
+      '<text x="443" y="156" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="8.5" fill="#13201a" letter-spacing="0.4">DIRECTORY · agent works internally</text>' +
+    '</svg></div>' +
+    '<span class="routes-note">In chat you relay text back and forth. An agent works <span style="color:var(--amber)">inside the directory</span> — reading, editing, and running files while you review.</span>';
+
+  const STAGES = [
+    { n: '00', title: 'Reset the mental model', one: 'You are a reviewer now, not a typist.',
+      body: 'The instinct from chat is to read every line as it is written and approve it word by word. Drop that. The agent will produce more code, faster, than you can read that way. Your leverage moves up a level: you frame the task well, then you review the result against what you actually wanted. The skills you built in chat — knowing what to ask for, smelling a wrong answer — all transfer. What changes is scope.',
+      watch: 'The failure here is passivity: letting the agent run because reviewing feels slow. Reviewing IS the work now.',
+      extra: MIND_HTML },
+    { n: '01', title: 'Set up the environment', one: 'A terminal or an editor, git, the agent, an account.',
+      body: 'There are two ways to run the agent (shown below): from a terminal, or right inside an editor like VS Code or Cursor with no command line at all. Either way you need git installed, the tool installed and authenticated, and an account. If the terminal feels foreign coming from chat, start with the GUI route — it looks much more like the chat you already know. Budget an afternoon.',
+      watch: 'Whichever route you pick, do not skip git. It is the undo button that makes everything else safe to try.',
+      extra: ROUTES_HTML },
+    { n: '02', title: 'Run a throwaway first task', one: 'Build something disposable in a scratch folder.',
+      body: 'Make an empty folder, initialize git, and give the agent a small, self-contained task you could check by eye — "write a script that reads this CSV and plots column A against column B," or "make a small command-line tool that renames these files." The point is not the output. The point is to watch the loop: it proposes, edits, runs, sees the result, fixes. Do this two or three times until the rhythm stops feeling strange.',
+      watch: 'Keep it disposable. Your dissertation repository is not where you learn what the agent does when it is wrong.',
+      extra: PLAN_HTML },
+    { n: '03', title: 'Move to real work, with guardrails', one: 'Branch, review every diff, commit often.',
+      body: 'Now point it at real code — but on a git branch, never on main, and read every diff before you accept it. Commit in small steps so any single change is easy to undo. Run the tests yourself. This is exactly the chat habit of "check the answer before you trust it," scaled up to a directory of changes instead of a single snippet.',
+      watch: 'A 400-line diff you skimmed is not a reviewed diff. If it is too big to read, ask for smaller steps.',
+      extra: GIT_HTML },
+    { n: '04', title: 'Adopt the framework habits', one: 'Provenance, pre-flight, disclosure — from the start.',
+      body: 'Once the mechanics are comfortable, fold in the rest of this framework: parameter provenance tags so you know where every number came from; a pre-flight pause before any expensive or irreversible run; disclosure of agent involvement written as you go, not retrofitted at submission. These feel like overhead on day one and disappear into habit by month two — and they are what separates an excellent tool operator from an independent scientist.',
+      watch: 'The habits are easiest to build now, while everything is new. Retrofitting them later is much harder.',
+      extra: FILES_HTML },
+  ];
+
+  const rail   = document.getElementById('stage-rail');
+  const detail = document.getElementById('stage-detail');
+  const fill   = document.getElementById('stage-progress-fill');
+
+  STAGES.forEach((s, i) => {
+    const b = document.createElement('button');
+    b.className = 'stage-btn' + (i === 0 ? ' active' : '');
+    b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+    b.innerHTML = '<div class="stage-btn-n">' + s.n + '</div><div class="stage-btn-t">' + s.title + '</div>';
+    b.addEventListener('click', () => selectStage(i));
+    rail.appendChild(b);
+  });
+
+  function selectStage(i) {
+    const s = STAGES[i];
+    [...rail.children].forEach((b, j) => {
+      b.classList.toggle('active', j === i);
+      b.setAttribute('aria-pressed', j === i ? 'true' : 'false');
+    });
+    fill.style.width = (((i + 1) / STAGES.length) * 100) + '%';
+    detail.innerHTML =
+      '<div class="stage-detail-head">' +
+        '<div class="stage-num">' + s.n + '</div>' +
+        '<div class="stage-title">' + s.title + '</div>' +
+      '</div>' +
+      '<div class="stage-one">' + s.one + '</div>' +
+      '<p class="stage-body">' + s.body + '</p>' +
+      '<div class="stage-watch"><span class="stage-watch-label">WATCH</span>' +
+        '<span class="stage-watch-text">' + s.watch + '</span></div>' +
+      (s.extra || '');
+  }
+
+  selectStage(0);
+</script>
+
+</body>
+</html>
