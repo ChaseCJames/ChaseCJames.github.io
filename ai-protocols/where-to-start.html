@@ -106,13 +106,14 @@
       .shift-section { padding: 12px 20px 0 !important; }
       .shift-band { grid-template-columns: 1fr; }
       .shift-arrow { transform: rotate(90deg); padding: 4px 0; }
-      .stage-rail { flex-wrap: wrap; }
-      .stage-btn  { flex: 1 1 44%; }
+      .stage-rail { overflow-x: auto; scrollbar-width: none; flex-wrap: nowrap; }
+      .stage-rail::-webkit-scrollbar { display: none; }
+      .stage-btn  { flex: 0 0 auto; }
       .habit-row  { grid-template-columns: 1fr; gap: 2px; }
       .routes     { grid-template-columns: 1fr; }
+      .rhs-col    { min-width: 0; overflow: hidden; }
     }
     @media (max-width: 480px) {
-      .stage-btn  { flex: 1 1 100%; }
       .snippet    { font-size: 10px; }
       .shift-name { font-size: 16px; }
     }
@@ -211,7 +212,7 @@
   </div>
 
   <!-- RIGHT: setup + habits + reassurance -->
-  <div style="display:flex;flex-direction:column;gap:12px">
+  <div class="rhs-col" style="display:flex;flex-direction:column;gap:12px">
 
     <div class="panel-light">
       <div class="label">Setup checklist:</div>
