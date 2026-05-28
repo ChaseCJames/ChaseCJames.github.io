@@ -22,6 +22,17 @@
     .loop-node:hover text:last-child { font-weight: 700; }
     /* Fig 0.1 label larger */
     .home-right-head .label-mute { font-size: 13px; }
+    /* start-here CTA */
+    .start-cta {
+      display: block; margin-top: 18px; padding: 10px 14px;
+      border: 1.5px solid var(--marine); background: var(--paper);
+      text-decoration: none; color: inherit;
+      transition: background .15s, transform .15s, box-shadow .15s;
+    }
+    .start-cta:hover { background: rgba(26,122,96,.08); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(13,32,26,.14); }
+    .start-cta-eyebrow { font-family: var(--ff-mono); font-size: 10px; color: var(--marine); letter-spacing: .12em; text-transform: uppercase; }
+    .start-cta-text { font-family: var(--ff-display); font-size: 16px; font-weight: 700; color: var(--ink); margin-top: 3px; letter-spacing: -.01em; }
+
     /* cap arch diagram to viewport on desktop */
     @media (min-width: 901px) {
       .home-right { display: flex; flex-direction: column; }
@@ -48,7 +59,8 @@
     <a href="workflows.html" class="ap-nav-tab">02_workflows</a>
     <a href="ethics.html"    class="ap-nav-tab">03_ethics</a>
     <a href="teaching.html"  class="ap-nav-tab">04_teaching</a>
-    <a href="example.html"   class="ap-nav-tab">05_example</a>
+    <a href="example.html"        class="ap-nav-tab">05_example</a>
+    <a href="where-to-start.html" class="ap-nav-tab">06_where-to-start</a>
   </div>
   <div class="ap-nav-meta">Dr. James · 2026</div>
 </nav>
@@ -135,6 +147,12 @@
         </div>
       </div>
     </div>
+
+    <!-- CTA → where-to-start -->
+    <a href="where-to-start.html" class="start-cta">
+      <div class="start-cta-eyebrow">06 · new to agentic coding?</div>
+      <div class="start-cta-text">Start here →</div>
+    </a>
 
   </div>
 
