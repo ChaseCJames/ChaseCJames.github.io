@@ -283,7 +283,8 @@ button { font-family: inherit; cursor: pointer; }
 
 .ensemble-fig { margin: 16px 40px 0; border: 1px solid var(--ink); background: var(--paper); padding: 14px 16px 4px; }
 .ensemble-fighead { display: flex; justify-content: space-between; font-family: var(--ff-mono); font-size: 10.5px; color: var(--mute); margin-bottom: 8px; }
-#detail-area { min-height: 92px; }
+#svg-area    { min-height: 268px; }
+#detail-area { height: 140px; overflow-y: auto; }
 .ensemble-svg { width: 100%; height: 220px; }
 .pipeline-svg { width: 100%; height: 260px; }
 
