@@ -39,7 +39,7 @@ button { font-family: inherit; cursor: pointer; }
 @keyframes cFlow  { 0% { stroke-dashoffset: 80; } 100% { stroke-dashoffset: 0; } }
 @keyframes cBlink { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
 @media (prefers-reduced-motion: no-preference) {
-  .c-flow  { animation: cFlow  3s  linear     infinite; }
+  .c-flow  { animation: cFlow  8s  linear     infinite; }
   .c-blink { animation: cBlink 2.4s ease-in-out infinite; }
 }
 .c-flow { stroke-dasharray: 4 4; }

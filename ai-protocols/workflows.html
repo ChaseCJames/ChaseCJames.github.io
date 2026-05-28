@@ -349,24 +349,31 @@ function pipelineSVG() {
   const marine = '#1a7a60', ink = '#13201a', amber = '#b8741c', amber2 = '#8a4f0d',
         paper = '#f4f1e8', paper2 = '#ece6d6', mute = '#6a7468', marine2 = '#0a4535';
   const yMain = 90;
-  const leftHumanX = 35, rightHumanX = 652;
+  const leftHumanX = 35, rightHumanX = 715;
 
+  // kind:'circ' → circle with cx/r; kind:'rect' → rectangle with x/w
   const stages = [
-    { x: 70,  w: 78,  label: 'Sample intake', sub: 'IDs + hashes',     type: 'data' },
-    { x: 158, w: 78,  label: 'Metadata',       sub: 'deterministic',    type: 'det'  },
-    { x: 246, w: 96,  label: 'Orchestrator',   sub: 'transforms run',   type: 'det'  },
-    { x: 352, w: 86,  label: 'QC reviewer',    sub: 'agentic · branch', type: 'ag'   },
-    { x: 448, w: 82,  label: 'Validator',      sub: 'agentic',          type: 'ag'   },
-    { x: 540, w: 72,  label: 'Release',        sub: 'to downstream',    type: 'out'  },
+    { x: 76,   w: 84, label: 'Sample intake', sub: 'IDs + hashes',  type: 'data', kind: 'rect' },
+    { x: 175,  w: 84, label: 'Metadata',       sub: 'deterministic', type: 'det',  kind: 'rect' },
+    { x: 274,  w: 96, label: 'Orchestrator',   sub: 'transforms',    type: 'det',  kind: 'rect' },
+    { cx: 429, r: 44, label: 'QC reviewer',    sub: 'agentic',       type: 'ag',   kind: 'circ' },
+    { cx: 532, r: 44, label: 'Validator',       sub: 'agentic',       type: 'ag',   kind: 'circ' },
+    { x: 591,  w: 84, label: 'Release',         sub: 'to downstream', type: 'out',  kind: 'rect' },
   ];
+
+  const sLeft  = s => s.kind === 'circ' ? s.cx - s.r : s.x;
+  const sRight = s => s.kind === 'circ' ? s.cx + s.r : s.x + s.w;
+  const sCX    = s => s.kind === 'circ' ? s.cx       : s.x + s.w / 2;
+
   const fillFor   = t => t === 'ag' ? '#f1dec2' : t === 'out' ? '#e6efe2' : t === 'data' ? paper2 : paper;
   const strokeFor = t => t === 'ag' ? amber2    : t === 'out' ? '#3a8f5a' : ink;
 
-  const qcCX  = stages[3].x + 43;              // 395
-  const orchL = stages[2].x;                   // 246
-  const relR  = stages[5].x + stages[5].w;     // 612
-  const qtX = 360, qtY = 186, qtW = 116, qtH = 44, qtCY = qtY + 22;  // quarantine center (418, 208)
-  const hqX = 546, hqY = qtCY;                 // HUMAN-after-quarantine center
+  const qcS  = stages[3];
+  const orchS = stages[2];
+  const relS  = stages[5];
+
+  const qtX = qcS.cx - 60, qtY = 170, qtW = 120, qtH = 44, qtCY = qtY + 22;
+  const hqX = 570, hqY = qtCY;
 
   let inner = `<defs>
     <marker id="aS" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="${marine}"/></marker>
@@ -374,9 +381,12 @@ function pipelineSVG() {
     <marker id="aR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#b73d28"/></marker>
   </defs>`;
 
-  // REPROCESS arc (QC reviewer right → up → Orchestrator left)
-  inner += `<path d="M ${stages[3].x+stages[3].w} ${yMain-22} Q ${stages[3].x+stages[3].w} 14 ${(stages[3].x+stages[3].w+orchL)/2} 14 Q ${orchL} 14 ${orchL} ${yMain-22}" fill="none" stroke="${amber2}" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#aA)"/>
-  <text x="${(stages[3].x+stages[3].w+orchL)/2}" y="9" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="${amber2}" letter-spacing=".06em">REPROCESS · adjust params</text>`;
+  // REPROCESS arc: QC right → up → Orchestrator left
+  const qcRight  = sRight(qcS);   // 473
+  const orchLeft = sLeft(orchS);  // 274
+  const arcMidX  = (qcRight + orchLeft) / 2;
+  inner += `<path d="M ${qcRight} ${yMain} C ${qcRight} 14 ${orchLeft} 14 ${orchLeft} ${yMain-22}" fill="none" stroke="${amber2}" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#aA)"/>
+  <text x="${arcMidX}" y="9" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="${amber2}" letter-spacing=".06em">REPROCESS · adjust params</text>`;
 
   // Left HUMAN
   inner += `<rect x="${leftHumanX-26}" y="${yMain-26}" width="52" height="52" fill="${marine}" stroke="${marine2}" stroke-width="1.4"/>
@@ -384,47 +394,66 @@ function pipelineSVG() {
   <text x="${leftHumanX}" y="${yMain+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">HUMAN</text>
   <text x="${leftHumanX}" y="${yMain+38}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="${mute}">sets QC criteria</text>`;
 
-  // Arrow left HUMAN → first stage
-  inner += `<line x1="${leftHumanX+26}" y1="${yMain}" x2="${stages[0].x-2}" y2="${yMain}" stroke="${marine}" stroke-width="1.2" marker-end="url(#aS)"/>`;
+  // Arrow: left HUMAN → first stage
+  inner += `<line x1="${leftHumanX+26}" y1="${yMain}" x2="${sLeft(stages[0])-2}" y2="${yMain}" stroke="${marine}" stroke-width="1.2" marker-end="url(#aS)"/>`;
 
   // Pipeline stages
   stages.forEach((s, i) => {
     const next = stages[i + 1];
     const sel  = i === selectedPipeStage;
-    const strokeC = sel ? amber : strokeFor(s.type);
-    const strokeW = sel ? '2.2' : '1.2';
-    if (next) inner += `<line x1="${s.x+s.w}" y1="${yMain}" x2="${next.x-2}" y2="${yMain}" stroke="${marine}" stroke-width="1.2" marker-end="url(#aS)"/>`;
-    inner += `<g onclick="selectPipeStage(${i})" onmouseover="previewPipeStage(${i})" onmouseout="clearPipeStagePreview()" style="cursor:pointer">
-      <rect x="${s.x}" y="${yMain-22}" width="${s.w}" height="44" fill="${fillFor(s.type)}" stroke="${strokeC}" stroke-width="${strokeW}"/>
-      <text x="${s.x+s.w/2}" y="${yMain-5}" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="12" font-weight="600" fill="${ink}">${s.label}</text>
-      <text x="${s.x+s.w/2}" y="${yMain+11}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="${s.type==='ag'?amber2:mute}" letter-spacing=".04em">${s.sub}</text>
-    </g>`;
+    const hov  = !sel && i === hoveredPipeStage;
+    const sc   = sel ? amber : hov ? marine : strokeFor(s.type);
+    const sw   = (sel || hov) ? '2.2' : '1.2';
+    const subc = s.type === 'ag' ? amber2 : mute;
+    const cx   = sCX(s);
+
+    // Inter-stage arrows (QC→Validator drawn separately as PASS arrow)
+    if (next && i !== 3) {
+      inner += `<line x1="${sRight(s)}" y1="${yMain}" x2="${sLeft(next)-2}" y2="${yMain}" stroke="${marine}" stroke-width="1.2" marker-end="url(#aS)"/>`;
+    }
+
+    if (s.kind === 'circ') {
+      inner += `<g onclick="selectPipeStage(${i})" onmouseover="previewPipeStage(${i})" onmouseout="clearPipeStagePreview()" style="cursor:pointer">
+        <circle cx="${s.cx}" cy="${yMain}" r="${s.r}" fill="${fillFor(s.type)}" stroke="${sc}" stroke-width="${sw}"/>
+        <text x="${s.cx}" y="${yMain-4}" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="12" font-weight="600" fill="${ink}">${s.label}</text>
+        <text x="${s.cx}" y="${yMain+11}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="${subc}" letter-spacing=".04em">${s.sub}</text>
+      </g>`;
+    } else {
+      inner += `<g onclick="selectPipeStage(${i})" onmouseover="previewPipeStage(${i})" onmouseout="clearPipeStagePreview()" style="cursor:pointer">
+        <rect x="${s.x}" y="${yMain-22}" width="${s.w}" height="44" fill="${fillFor(s.type)}" stroke="${sc}" stroke-width="${sw}"/>
+        <text x="${cx}" y="${yMain-5}" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="12" font-weight="600" fill="${ink}">${s.label}</text>
+        <text x="${cx}" y="${yMain+11}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="${subc}" letter-spacing=".04em">${s.sub}</text>
+      </g>`;
+    }
   });
 
-  // Arrow Release → right HUMAN
-  inner += `<line x1="${relR}" y1="${yMain}" x2="${rightHumanX-26}" y2="${yMain}" stroke="${marine}" stroke-width="1.2" marker-end="url(#aS)"/>`;
+  // PASS arrow (QC → Validator)
+  inner += `<line x1="${sRight(stages[3])}" y1="${yMain}" x2="${sLeft(stages[4])-2}" y2="${yMain}" stroke="${marine}" stroke-width="1.2" marker-end="url(#aS)"/>`;
+  inner += `<text x="${(sRight(stages[3])+sLeft(stages[4]))/2}" y="${yMain-28}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="${marine}" letter-spacing=".08em">PASS</text>`;
 
-  // Right HUMAN (after Release)
+  // Arrow: Release → right HUMAN
+  inner += `<line x1="${sRight(relS)}" y1="${yMain}" x2="${rightHumanX-26}" y2="${yMain}" stroke="${marine}" stroke-width="1.2" marker-end="url(#aS)"/>`;
+
+  // Right HUMAN
   inner += `<rect x="${rightHumanX-26}" y="${yMain-26}" width="52" height="52" fill="${marine}" stroke="${marine2}" stroke-width="1.4"/>
   <rect x="${rightHumanX-18}" y="${yMain-18}" width="36" height="36" fill="none" stroke="#fff" stroke-width="1"/>
   <text x="${rightHumanX}" y="${yMain+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">HUMAN</text>
   <text x="${rightHumanX}" y="${yMain+38}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="${mute}">reviews output</text>`;
 
-  // PASS label
-  inner += `<text x="${(stages[3].x+stages[3].w+stages[4].x)/2}" y="${yMain-28}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="${marine}" letter-spacing=".08em">PASS</text>`;
-
-  // FAIL branch (QC reviewer → down → quarantine top)
-  inner += `<path d="M ${qcCX} ${yMain+22} L ${qcCX} ${qtY}" fill="none" stroke="#b73d28" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#aR)"/>
-  <text x="${qcCX+6}" y="${yMain+42}" font-family="JetBrains Mono,monospace" font-size="9" fill="#b73d28" letter-spacing=".08em">FAIL</text>`;
+  // FAIL branch: QC bottom → quarantine top
+  inner += `<path d="M ${qcS.cx} ${yMain+qcS.r} L ${qcS.cx} ${qtY}" fill="none" stroke="#b73d28" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#aR)"/>
+  <text x="${qcS.cx+6}" y="${yMain+qcS.r+18}" font-family="JetBrains Mono,monospace" font-size="9" fill="#b73d28" letter-spacing=".08em">FAIL</text>`;
 
   // Quarantine box
+  const qtSel = selectedPipeStage === 6;
+  const qtHov = !qtSel && hoveredPipeStage === 6;
   inner += `<g onclick="selectPipeStage(6)" onmouseover="previewPipeStage(6)" onmouseout="clearPipeStagePreview()" style="cursor:pointer">
-    <rect x="${qtX}" y="${qtY}" width="${qtW}" height="${qtH}" fill="#efd9d2" stroke="${selectedPipeStage===6?'#7a2418':'#b73d28'}" stroke-width="${selectedPipeStage===6?'2.5':'1.2'}"/>
+    <rect x="${qtX}" y="${qtY}" width="${qtW}" height="${qtH}" fill="#efd9d2" stroke="${qtSel?'#7a2418':qtHov?marine:'#b73d28'}" stroke-width="${qtSel?'2.5':qtHov?'2':'1.2'}"/>
     <text x="${qtX+qtW/2}" y="${qtCY-2}" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="12" font-weight="600" fill="#7a2418">Quarantine</text>
     <text x="${qtX+qtW/2}" y="${qtCY+12}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#7a2418">human decides</text>
   </g>`;
 
-  // Arrow Quarantine → HUMAN (after quarantine)
+  // Arrow: Quarantine → HUMAN after quarantine
   inner += `<line x1="${qtX+qtW}" y1="${qtCY}" x2="${hqX-26}" y2="${hqY}" stroke="${amber}" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#aA)"/>`;
 
   // HUMAN after quarantine
@@ -443,9 +472,9 @@ function pipelineSVG() {
     <text x="178" y="2" font-family="JetBrains Mono,monospace" font-size="9" fill="${mute}">output</text>
   </g>`;
 
-  inner += `<text x="400" y="260" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#9aa7a0" letter-spacing=".06em">click a stage to learn its role</text>`;
+  inner += `<text x="375" y="260" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#9aa7a0" letter-spacing=".06em">click a stage to learn its role</text>`;
 
-  return `<svg viewBox="0 0 700 268" style="width:100%;height:268px">${inner}</svg>`;
+  return `<svg viewBox="0 0 750 268" style="width:100%;height:268px">${inner}</svg>`;
 }
 
 function renderPhaseRow() {
@@ -499,12 +528,14 @@ function previewPipeStage(i) {
   if (selectedPipeStage >= 0) return;
   if (hoveredPipeStage === i) return;
   hoveredPipeStage = i;
+  document.getElementById('svg-area').innerHTML = pipelineSVG();
   updateDetail();
 }
 function clearPipeStagePreview() {
   if (selectedPipeStage >= 0) return;
   if (hoveredPipeStage < 0) return;
   hoveredPipeStage = -1;
+  document.getElementById('svg-area').innerHTML = pipelineSVG();
   updateDetail();
 }
 
