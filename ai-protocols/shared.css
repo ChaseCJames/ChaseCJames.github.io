@@ -10,8 +10,8 @@
   --mute:    #6a7468;
   --rule:    #cfc6b0;
   --rule2:   #e3dcc7;
-  --marine:  #0d5a4a;
-  --marine2: #062f26;
+  --marine:  #1a7a60;
+  --marine2: #0a4535;
   --amber:   #b8741c;
   --amber2:  #8a4f0d;
   --ff-display: "Inter Tight", -apple-system, sans-serif;
@@ -275,7 +275,7 @@ button { font-family: inherit; cursor: pointer; }
 
 .workflow-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; padding: 14px 40px 0; }
 .wf-card { border: 1px solid var(--rule); padding: 12px 14px; }
-.wf-card-against { background: var(--paper2); }
+.wf-card-against { background: var(--paper); }
 .wf-card h3 { font-family: var(--ff-mono); font-size: 10.5px; color: var(--amber2); letter-spacing: .14em; text-transform: uppercase; margin-bottom: 6px; }
 .wf-card-body { font-size: 13px; line-height: 1.5; color: var(--ink2); }
 .wf-card-sub { font-family: var(--ff-mono); font-size: 10.5px; color: var(--mute); margin-top: 8px; font-style: italic; }

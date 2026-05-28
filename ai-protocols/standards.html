@@ -29,10 +29,11 @@
     .scope-tag { font-family: var(--ff-mono); font-size: 10px; letter-spacing: .16em; font-weight: 700; }
 
     /* scope level interactivity */
-    .scope-clickable { cursor: pointer; transition: transform .15s, box-shadow .15s, background .15s, outline .15s; border-radius: 3px; }
+    .scope-clickable { cursor: pointer; transition: transform .15s, box-shadow .15s, background .15s, outline .15s, border-color .15s; border-radius: 3px; }
     .scope-clickable:hover:not(.active-scope):not(.has-active-child) {
-      background: rgba(13,90,74,.09);
-      outline: 1.5px solid rgba(13,90,74,.28);
+      background: rgba(26,122,96,.09);
+      outline: 1.5px solid rgba(26,122,96,.28);
+      transform: translateY(-1px);
     }
     .scope-clickable.active-scope {
       background: var(--ink);
@@ -45,8 +46,47 @@
     .scope-clickable.active-scope .scope-title { color: var(--paper); }
     .scope-clickable.active-scope .scope-desc  { color: #c8d2ca; }
     .scope-clickable.active-scope .scope-file  { color: #c8d2ca; }
-    /* suppress outer-box hover when inner scope is active */
-    .scope-clickable.has-active-child:hover { background: none !important; outline: none !important; }
+    /* when outer (lab) is active, fade inner boxes so only lab reads as selected */
+    .scope-clickable.active-scope .scope-project {
+      border-color: rgba(200,210,202,.3) !important;
+      background: rgba(255,255,255,.06) !important;
+    }
+    .scope-clickable.active-scope .scope-project .scope-title,
+    .scope-clickable.active-scope .scope-project .scope-desc,
+    .scope-clickable.active-scope .scope-project .scope-file,
+    .scope-clickable.active-scope .scope-project .scope-tag { color: #9aa7a0 !important; }
+    .scope-clickable.active-scope .scope-tool {
+      border-color: rgba(200,210,202,.15) !important;
+      background: rgba(255,255,255,.03) !important;
+    }
+    .scope-clickable.active-scope .scope-tool .scope-title,
+    .scope-clickable.active-scope .scope-tool .scope-desc,
+    .scope-clickable.active-scope .scope-tool .scope-file,
+    .scope-clickable.active-scope .scope-tool .scope-tag { color: #6a8478 !important; }
+    /* suppress hover and de-emphasise border when ancestor has active child */
+    .scope-clickable.has-active-child { border-color: var(--rule2) !important; }
+    .scope-clickable.has-active-child:hover { background: none !important; outline: none !important; transform: none !important; }
+
+    /* compact scope hierarchy on desktop so the whole diagram fits in viewport */
+    @media (min-width: 901px) {
+      .scope-nest { padding: 10px; }
+      .scope-outer { padding: 7px 10px 8px; }
+      .scope-outer > .scope-title { font-size: 15px; }
+      .scope-outer > .scope-desc  { font-size: 11.5px; margin-top: 1px; }
+      .scope-project { margin-top: 7px; margin-left: 12px; padding: 7px 10px; }
+      .scope-project > .scope-title { font-size: 14px; }
+      .scope-project > .scope-desc  { font-size: 11px; }
+      .scope-tool { margin-top: 5px; margin-left: 12px; padding: 6px 10px; }
+      .scope-tool > .scope-title { font-size: 12.5px; }
+      .scope-tool > .scope-desc  { font-size: 11px; }
+      .scope-file { font-size: 9.5px; }
+    }
+    /* slightly more generous on mobile */
+    @media (max-width: 900px) {
+      .scope-outer > .scope-title { font-size: 18px; }
+      .scope-project > .scope-title { font-size: 16px; }
+      .scope-tool > .scope-title { font-size: 14px; }
+    }
 
     /* scope detail snippet */
     .scope-detail { margin-top: 12px; min-height: 100px; }
@@ -63,8 +103,8 @@
   <a href="index.html" class="ap-nav-brand" title="AI Protocols · framework">
     <svg width="26" height="26" viewBox="0 0 28 28" aria-hidden="true">
       <rect x="1" y="1" width="26" height="26" fill="none" stroke="#13201a" stroke-width="1.3"/>
-      <line x1="14" y1="1" x2="14" y2="27" stroke="#0d5a4a" stroke-width="1"/>
-      <line x1="1"  y1="14" x2="27" y2="14" stroke="#0d5a4a" stroke-width="1"/>
+      <line x1="14" y1="1" x2="14" y2="27" stroke="#1a7a60" stroke-width="1"/>
+      <line x1="1"  y1="14" x2="27" y2="14" stroke="#1a7a60" stroke-width="1"/>
       <circle cx="14" cy="14" r="4" fill="#b8741c"/>
     </svg>
     <span class="ap-brand-text">ai-protocols<span>/v0.1</span></span>
@@ -262,7 +302,7 @@ figures: 300 dpi · colour-blind-safe palette · ISO 8601 dates`
   },
   project: {
     file: 'calcofi-plankton-microbiome/AGENTS.md  (project-level)',
-    color: '#0d5a4a',
+    color: '#1a7a60',
     text: `<span class="hl"># Project: calcofi-plankton-microbiome</span>
 <span class="cm"># Inherits all lab-wide standards. Overrides noted explicitly.</span>
 

@@ -61,7 +61,8 @@
     <span id="fig-label">Fig 2.1 · ensemble</span>
     <span id="flow-label">flow: —</span>
   </div>
-  <div id="diagram-area"></div>
+  <div id="svg-area"></div>
+  <div id="detail-area"></div>
 </div>
 
 <!-- Bottom cards -->
@@ -185,6 +186,7 @@ const ENSEMBLES = {
 
 let active            = 'hypo';
 let selectedAgent     = -1;
+let hoveredAgent      = -1;
 let selectedPipeStage = -1;
 
 const PIPE_STAGE_DESC = [
@@ -209,8 +211,8 @@ function ensembleSVG(phase) {
 
   const leftHumanX  = 60;
   const rightHumanX = 640;
-  const marine = '#0d5a4a', ink = '#13201a', amber = '#b8741c', amber2 = '#8a4f0d',
-        paper = '#f4f1e8', marine2 = '#062f26';
+  const marine = '#1a7a60', ink = '#13201a', amber = '#b8741c', amber2 = '#8a4f0d',
+        paper = '#f4f1e8', marine2 = '#0a4535';
 
   const dashedPath = d =>
     `<path d="${d}" fill="none" stroke="${marine}" stroke-width="1.2" stroke-dasharray="4 4" class="c-flow"/>`;
@@ -233,7 +235,7 @@ function ensembleSVG(phase) {
     const strokeW = sel ? '2'       : '1.2';
     const numCol  = sel ? '#fff'    : amber2;
     const nameCol = sel ? '#fff'    : ink;
-    inner += `<g onclick="selectAgent(${i})" style="cursor:pointer" role="button">
+    inner += `<g onclick="selectAgent(${i})" onmouseover="previewAgent(${i})" onmouseout="clearAgentPreview()" style="cursor:pointer" role="button">
       <circle cx="${x}" cy="${cy}" r="44" fill="${fillC}" stroke="${strokeC}" stroke-width="${strokeW}"/>
       <text x="${x}" y="${cy-8}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="${numCol}" letter-spacing=".08em">${String(i+1).padStart(2,'0')}</text>
       <text x="${x}" y="${cy+10}" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="13" font-weight="600" fill="${nameCol}">${e.agents[i]}</text>
@@ -277,12 +279,11 @@ function pipeStageHTML() {
 
 function agentRolesHTML(phase) {
   const e = ENSEMBLES[phase];
-  if (selectedAgent < 0 || selectedAgent >= e.agents.length) {
-    return '';
-  }
-  const i = selectedAgent;
+  const i = selectedAgent >= 0 ? selectedAgent : hoveredAgent;
+  if (i < 0 || i >= e.agents.length) return '';
+  const pinned = selectedAgent >= 0;
   return `<div class="agent-roles">
-    <div class="agent-role-card selected">
+    <div class="agent-role-card${pinned ? ' selected' : ''}" style="${pinned ? '' : 'opacity:.85'}">
       <div class="agent-role-name">${e.agents[i].toUpperCase()}</div>
       <div class="agent-role-desc">${e.agentRoles[i]}</div>
     </div>
@@ -290,7 +291,7 @@ function agentRolesHTML(phase) {
 }
 
 function pipelineSVG() {
-  const marine = '#0d5a4a', ink = '#13201a', amber = '#b8741c', amber2 = '#8a4f0d',
+  const marine = '#1a7a60', ink = '#13201a', amber = '#b8741c', amber2 = '#8a4f0d',
         paper = '#f4f1e8', paper2 = '#ece6d6', mute = '#6a7468', ink2 = '#243a30';
   const yMain = 120;
   const stages = [
@@ -365,6 +366,11 @@ function renderPhaseRow() {
   ).join('');
 }
 
+function updateDetail() {
+  document.getElementById('detail-area').innerHTML =
+    active === 'pipe' ? pipeStageHTML() : agentRolesHTML(active);
+}
+
 function renderDiagram() {
   const idx = MATRIX.findIndex(m => m.id === active);
   const m   = MATRIX[idx];
@@ -372,10 +378,9 @@ function renderDiagram() {
 
   document.getElementById('fig-label').textContent  = `Fig 2.${idx+1} · ${m.phase.toLowerCase()} ensemble`;
   document.getElementById('flow-label').textContent = `flow: ${e.flow}`;
-  document.getElementById('diagram-area').innerHTML =
-    active === 'pipe'
-      ? pipelineSVG() + pipeStageHTML()
-      : ensembleSVG(active) + agentRolesHTML(active);
+  document.getElementById('svg-area').innerHTML =
+    active === 'pipe' ? pipelineSVG() : ensembleSVG(active);
+  updateDetail();
   document.getElementById('card-against').textContent = e.against;
   document.getElementById('card-concern').textContent = `concern: ${m.concern.toLowerCase()}`;
   document.getElementById('card-human').innerHTML =
@@ -383,19 +388,34 @@ function renderDiagram() {
   document.getElementById('card-notes').innerHTML = e.notes.map(n => `<li>${n}</li>`).join('');
 }
 
+function previewAgent(i) {
+  if (selectedAgent >= 0) return;
+  hoveredAgent = i;
+  updateDetail();
+}
+function clearAgentPreview() {
+  if (selectedAgent >= 0) return;
+  hoveredAgent = -1;
+  updateDetail();
+}
+
 function selectAgent(i) {
   selectedAgent = (selectedAgent === i) ? -1 : i;
-  renderDiagram();
+  hoveredAgent  = -1;
+  updateDetail();
+  document.getElementById('svg-area').innerHTML = ensembleSVG(active);
 }
 
 function selectPipeStage(i) {
   selectedPipeStage = (selectedPipeStage === i) ? -1 : i;
-  renderDiagram();
+  updateDetail();
+  document.getElementById('svg-area').innerHTML = pipelineSVG();
 }
 
 function select(id) {
   active            = id;
   selectedAgent     = -1;
+  hoveredAgent      = -1;
   selectedPipeStage = -1;
   renderPhaseRow();
   renderDiagram();
