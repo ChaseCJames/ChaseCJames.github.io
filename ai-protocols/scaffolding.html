@@ -142,7 +142,7 @@
 <header class="ap-header">
   <div class="ap-eyebrow">03 · scaffolding</div>
   <h1>One plan. <span class="accent">Rules, structure, and validation at every level.</span></h1>
-  <p class="lede">A real project is too large to implement in a single pass. You decompose it into components: the core project, phases (data processing, primary + secondary analyses), and specific tests (with specific rules). The individual units. You can create scaffolding for each level, with its own governance and its own kind of validation. Markdown files carry the plan, skills carry repeatable procedures, hooks enforce the fine rules, tests prove the individual pieces. The master plan is necessary but never sufficient: like any complex build, it takes specialists at every level who know the plan yet follow rules specific to their role.</p>
+  <p class="lede">A real project is too large to implement in a single pass. You break it down into components: the core project, phases (data processing, primary + secondary analyses), and specific tests (with specific rules). The individual units. You can create scaffolding for each level, with its own governance and its own kind of validation. Markdown files carry the plan, skills carry repeatable procedures, hooks enforce the fine rules, tests prove the individual pieces. The master plan is necessary but never sufficient: like any complex build, it takes specialists at every level who know the plan yet follow rules specific to their role.</p>
 </header>
 
 <!-- MAIN -->
@@ -171,42 +171,46 @@
         <text x="130" y="66" font-family="Inter Tight,sans-serif" font-size="13" fill="#243a30">the whole project, end to end</text>
         <text x="24" y="90" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a7468">root AGENTS.md · STYLE.md · stage map</text>
 
-        <!-- Inverted pyramid: 1 project → 3 modules → 2 unit tests each, centered -->
+        <!-- Pyramid from index-updated.html scaffolding block, exact copy scaled to fit -->
         <g style="pointer-events:none">
-          <!-- L1 label -->
-          <text x="366" y="41" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="8" fill="#8a4f0d">L1</text>
-          <!-- L1: one project -->
-          <rect x="396" y="29" width="112" height="18" rx="3" fill="#1a5040"/>
-          <text x="452" y="42" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#f4f1e8">1 project</text>
-          <!-- fan to modules -->
-          <line x1="452" y1="47" x2="400" y2="59" stroke="#cfc6b0" stroke-width="0.8"/>
-          <line x1="452" y1="47" x2="452" y2="59" stroke="#cfc6b0" stroke-width="0.8"/>
-          <line x1="452" y1="47" x2="504" y2="59" stroke="#cfc6b0" stroke-width="0.8"/>
-          <!-- L2 label -->
-          <text x="366" y="72" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="8" fill="#8a4f0d">L2</text>
-          <!-- L2: 3 modules -->
-          <rect x="372" y="59" width="56" height="18" rx="3" fill="#1f6040"/>
-          <text x="400" y="72" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#f4f1e8">mod 01</text>
-          <rect x="424" y="59" width="56" height="18" rx="3" fill="#1f6040"/>
-          <text x="452" y="72" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#f4f1e8">mod 02</text>
-          <rect x="476" y="59" width="56" height="18" rx="3" fill="#1f6040"/>
-          <text x="504" y="72" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#f4f1e8">mod 03</text>
-          <!-- fan to units -->
-          <line x1="400" y1="77" x2="388" y2="90" stroke="#cfc6b0" stroke-width="0.7"/>
-          <line x1="400" y1="77" x2="412" y2="90" stroke="#cfc6b0" stroke-width="0.7"/>
-          <line x1="452" y1="77" x2="440" y2="90" stroke="#cfc6b0" stroke-width="0.7"/>
-          <line x1="452" y1="77" x2="464" y2="90" stroke="#cfc6b0" stroke-width="0.7"/>
-          <line x1="504" y1="77" x2="492" y2="90" stroke="#cfc6b0" stroke-width="0.7"/>
-          <line x1="504" y1="77" x2="516" y2="90" stroke="#cfc6b0" stroke-width="0.7"/>
-          <!-- L3 label -->
-          <text x="366" y="103" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="8" fill="#8a4f0d">L3</text>
-          <!-- L3: 2 unit chips per module -->
-          <rect x="380" y="90" width="16" height="14" rx="2" fill="#2a7050"/>
-          <rect x="398" y="90" width="16" height="14" rx="2" fill="#2a7050"/>
-          <rect x="432" y="90" width="16" height="14" rx="2" fill="#2a7050"/>
-          <rect x="450" y="90" width="16" height="14" rx="2" fill="#2a7050"/>
-          <rect x="484" y="90" width="16" height="14" rx="2" fill="#2a7050"/>
-          <rect x="502" y="90" width="16" height="14" rx="2" fill="#2a7050"/>
+          <svg x="328" y="19" width="208" height="82" viewBox="378 268 284 98" preserveAspectRatio="xMidYMid meet">
+            <!-- L1: 1 project -->
+            <rect x="509" y="278" width="80" height="20" rx="3" fill="#1a5040"/>
+            <text x="549" y="292" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#f4f1e8">Project</text>
+            <!-- fan lines to modules -->
+            <line x1="549" y1="298" x2="471" y2="310" stroke="#cfc6b0" stroke-width="0.8"/>
+            <line x1="549" y1="298" x2="549" y2="310" stroke="#cfc6b0" stroke-width="0.8"/>
+            <line x1="549" y1="298" x2="627" y2="310" stroke="#cfc6b0" stroke-width="0.8"/>
+            <!-- L2: Modules label + 3 analysis blocks -->
+            <text x="398" y="325" font-family="JetBrains Mono,monospace" font-size="7" fill="#8a4f0d">Modules</text>
+            <rect x="436" y="310" width="70" height="20" rx="3" fill="#1f6040"/>
+            <text x="471" y="324" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#f4f1e8">Analysis 1</text>
+            <rect x="514" y="310" width="70" height="20" rx="3" fill="#1f6040"/>
+            <text x="549" y="324" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#f4f1e8">Analysis 2</text>
+            <rect x="592" y="310" width="70" height="20" rx="3" fill="#1f6040"/>
+            <text x="627" y="324" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#f4f1e8">Analysis 3</text>
+            <!-- fan lines to units -->
+            <line x1="471" y1="330" x2="460" y2="342" stroke="#cfc6b0" stroke-width="0.7"/>
+            <line x1="471" y1="330" x2="482" y2="342" stroke="#cfc6b0" stroke-width="0.7"/>
+            <line x1="549" y1="330" x2="538" y2="342" stroke="#cfc6b0" stroke-width="0.7"/>
+            <line x1="549" y1="330" x2="560" y2="342" stroke="#cfc6b0" stroke-width="0.7"/>
+            <line x1="627" y1="330" x2="616" y2="342" stroke="#cfc6b0" stroke-width="0.7"/>
+            <line x1="627" y1="330" x2="638" y2="342" stroke="#cfc6b0" stroke-width="0.7"/>
+            <!-- L3: Unit Tests label + U1-U6 chips -->
+            <text x="398" y="356" font-family="JetBrains Mono,monospace" font-size="7" fill="#8a4f0d">Unit Tests</text>
+            <rect x="451" y="342" width="18" height="14" rx="2" fill="#2a7050"/>
+            <text x="460" y="353" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#f4f1e8">U1</text>
+            <rect x="473" y="342" width="18" height="14" rx="2" fill="#2a7050"/>
+            <text x="482" y="353" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#f4f1e8">U2</text>
+            <rect x="529" y="342" width="18" height="14" rx="2" fill="#2a7050"/>
+            <text x="538" y="353" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#f4f1e8">U3</text>
+            <rect x="551" y="342" width="18" height="14" rx="2" fill="#2a7050"/>
+            <text x="560" y="353" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#f4f1e8">U4</text>
+            <rect x="607" y="342" width="18" height="14" rx="2" fill="#2a7050"/>
+            <text x="616" y="353" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#f4f1e8">U5</text>
+            <rect x="629" y="342" width="18" height="14" rx="2" fill="#2a7050"/>
+            <text x="638" y="353" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#f4f1e8">U6</text>
+          </svg>
         </g>
       </g>
 
@@ -286,7 +290,7 @@
       </div>
       <div class="vmatrix-row">
         <div class="vt-tier">L1<b>Project</b></div>
-        <div><div class="vt-kind">Does it all run and reproduce?</div><div class="vt-desc">Run the whole project start to finish. Does it rebuild every result? Do the components work together?</div></div>
+        <div><div class="vt-kind">Does it run and is it reproducible?</div><div class="vt-desc">Run the whole project start to finish. Does it rebuild every result? Do the components work together?</div></div>
       </div>
       <div class="vmatrix-row">
         <div class="vt-tier">L2<b>Module</b></div>
@@ -302,8 +306,8 @@
       <div class="label">Scaffolding = defining the specialist's toolkit</div>
       <div style="margin-top:6px">
         <div class="scaf-row"><span class="scaf-k">markdown</span><span class="scaf-v">the plan each specialist reads before acting</span></div>
-        <div class="scaf-row"><span class="scaf-k">skills</span><span class="scaf-v">a specialist's repeatable, named procedure</span></div>
-        <div class="scaf-row"><span class="scaf-k">hooks</span><span class="scaf-v">small rules that run on their own, on every save</span></div>
+        <div class="scaf-row"><span class="scaf-k">skills</span><span class="scaf-v">a specialized task defined as a named, repeatable procedure</span></div>
+        <div class="scaf-row"><span class="scaf-k">hooks</span><span class="scaf-v">small rules that run automatically and produce defined behaviors</span></div>
         <div class="scaf-row"><span class="scaf-k">tests</span><span class="scaf-v">a readable report showing the pieces still fit</span></div>
       </div>
     </div>
@@ -324,7 +328,7 @@
       </button>
       <button class="impl-card" data-modal="ex-contract" type="button">
         <div class="impl-kind">L2 · the hand-off</div>
-        <div class="impl-name">A hand-off check (R)</div>
+        <div class="impl-name">A hand-off check</div>
         <div class="impl-sub">Confirms one module gives the next exactly what it needs.</div>
         <div class="impl-open">open ↗</div>
       </button>
@@ -380,7 +384,7 @@
           '<div><span class="mm-k">Scaffolding</span><span class="mm-v">root AGENTS.md · STYLE.md · the list of stages</span></div>' +
           '<div><span class="mm-k">Check</span><span class="mm-v">Does it all run and reproduce?</span></div>' +
         '</div>' +
-        '<p class="modal-p">The project level holds the overall plan — the question, the list of stages, and what counts as done. Every module below inherits this context, but each one is focused on its own specific job. The check at this level is the broadest: does the whole thing run start to finish and answer the question?</p>' +
+        '<p class="modal-p">The project level holds the overall plan — the question, the list of stages, overarching guidelines and rules, and what counts as done. Every module below inherits this context, but each one is focused on its own specific job. The check at this level is the broadest: does the whole thing run start to finish and answer the question?</p>' +
         '<div class="modal-fig-label">project/AGENTS.md</div>' +
         '<div class="snippet">' +
           '<span class="hd"># AGENTS.md — project root</span>\n\n' +
@@ -429,7 +433,7 @@
           'CHECKED  every column in range · no missing depths\n' +
           '         before anything downstream runs' +
         '</div>' +
-        '<p class="modal-note">The thing that does the module is a <b>skill</b>; the proof it did it right is a <b>hand-off check</b> — and that check renders a short report a person can read.</p>' +
+        '<p class="modal-note">Skills and curated sessions are the driver behind the module; the proof it did it right is a <b>hand-off check</b> — and that check renders a short report a person can read.</p>' +
         '<div class="modal-actions">' +
           '<button class="modal-link-btn" data-modal="ex-skill" type="button">see the skill →</button>' +
           '<button class="modal-link-btn" data-modal="ex-contract" type="button">see the hand-off check →</button>' +
@@ -446,7 +450,7 @@
           '<div><span class="mm-k">Scaffolding</span><span class="mm-v">local rules · hooks · a tag on every number</span></div>' +
           '<div><span class="mm-k">Check</span><span class="mm-v">Small tests · ranges · provenance · sign-off</span></div>' +
         '</div>' +
-        '<p class="modal-p">At the smallest level, checking is constant and varied. Every hard-coded number carries a tag saying where it came from. A hook runs on save to check style, tags, and that no raw ID slips out. A small test pins the behaviour. And before anything slow or hard to undo runs, it pauses for a person to sign off.</p>' +
+        '<p class="modal-p">At the smallest level, checking is constant and varied. Every hard-coded number carries a tag saying where it came from. A hook runs on save to check style, tags, and that no raw ID is missed. A small test pins the behavior. And before anything slow or hard to undo runs, it pauses for a person to sign off.</p>' +
         '<div class="modal-fig-label">one number, fully checked</div>' +
         '<div class="snippet">' +
           'salinity_max &lt;- 42.0   <span class="tag">[literature]</span>  <span class="cm"># CalCOFI Data Portal</span>\n\n' +
@@ -519,7 +523,7 @@
       eyebrow: 'Example · a small automatic check',
       title: 'An on-save hook',
       body:
-        '<p class="modal-p">Hooks are small checks that run on their own — nothing to remember. This one runs whenever the agent writes a file in the data-processing module: it tidies the style, makes sure every number is tagged with where it came from, and refuses to let a raw ID into a saved file.</p>' +
+        '<p class="modal-p">This example hook runs whenever the agent writes a file in the data-processing module: it tidies the style, makes sure every number is tagged with where it came from, and refuses to let a raw ID into a saved file.</p>' +
         '<div class="modal-fig-label">.claude/hooks/on_save_check.sh</div>' +
         '<div class="snippet">' +
           '<span class="cm">#!/usr/bin/env bash</span>\n' +
@@ -545,7 +549,7 @@
       eyebrow: 'Example · the hand-off',
       title: 'A hand-off check (R)',
       body:
-        '<p class="modal-p">This checks the hand-off between two modules — the columns and ranges the next module relies on — without caring how the first module made them. If data processing changes inside but still hands over the same table, this passes. If it breaks the hand-off, this catches it before the analysis ever runs.</p>' +
+        '<p class="modal-p">This checks the hand-off between two modules — the columns and ranges the next module relies on — while also providing an opportunity to verify how that output was produced. Meeting the specification the next module expects is the primary concern, but tracing how it was made is part of the review. If the hand-off is broken, this catches it before the analysis ever runs.</p>' +
         '<div class="modal-fig-label">tests/test-clean-output.R</div>' +
         '<div class="snippet">' +
           '<span class="cm"># Does data processing give analysis what it needs?</span>\n' +
@@ -574,7 +578,7 @@
       eyebrow: 'Example · readable output',
       title: 'A validation report',
       body:
-        '<p class="modal-p">A check that only prints "pass" is hard to trust and hard to learn from. Render it instead as a short report — the code, a small results table, and a plot — so anyone can see what was checked and what the data look like. In Quarto, the code chunk stays visible above its output.</p>' +
+        '<p class="modal-p">A check that only prints "pass" is hard to trust and hard to learn from. Render it instead as a short report — the code, a small results table, and a plot — so anyone can see what was checked and what the data look like. In R Markdown, the code chunk stays visible above its output.</p>' +
         '<div class="modal-fig-label">qc-report.Rmd</div>' +
         '<div class="snippet">' +
           '<span class="cm">---</span>\n' +
@@ -583,7 +587,7 @@
           '<span class="cm">---</span>\n\n' +
           '```{r qc-report, echo=TRUE}\n' +
           'd &lt;- read_csv("data/clean/CTD_007.csv")\n\n' +
-          'ranges &lt;- d |&gt; summarise(\n' +
+          'ranges &lt;- d %>% summarise(\n' +
           '  depth_ok    = all(between(depth_m, 0, 11000)),\n' +
           '  temp_ok     = all(between(temp_c, -2, 40)),\n' +
           '  salinity_ok = all(between(salinity, 0, 42))\n' +
@@ -694,7 +698,7 @@
     if (footer) footer.classList.remove('visible');
     document.body.style.overflow = '';
     modalStack = [];
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    if (lastFocus && lastFocus.focus) { lastFocus.focus(); lastFocus.blur(); }
   }
 
   // Wire cross-links inside modal body — pass the current modal id as origin

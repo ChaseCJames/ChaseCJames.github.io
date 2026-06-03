@@ -49,9 +49,9 @@
 <header class="ap-header">
   <div style="display:flex;align-items:baseline;gap:14px">
     <div class="ap-eyebrow">02 · workflows</div>
-    <span class="label-mute">pick a phase →</span>
+    <span class="label-mute">pick an objective →</span>
   </div>
-  <h1>Different phases need <span class="accent">different structures.</span></h1>
+  <h1>Different objectives need <span class="accent">different structures.</span></h1>
 </header>
 
 <!-- Phase selector -->
@@ -72,10 +72,9 @@
   <div class="wf-card wf-card-against">
     <h3>Designed against</h3>
     <p class="wf-card-body" id="card-against"></p>
-    <p class="wf-card-sub" id="card-concern"></p>
   </div>
   <div class="wf-card">
-    <h3>Human role</h3>
+    <h3>User role</h3>
     <p class="wf-card-body" id="card-human"></p>
   </div>
   <div class="wf-card">
@@ -110,20 +109,20 @@ const ENSEMBLES = {
       'Checks mechanistic plausibility; flags hypotheses with no testable observational signature.'
     ],
     human: 'iterates on paths forward, brings domain intuition and scientific judgment agents lack, and selects what is genuinely worth testing — the novel choice that drives the work',
-    against: 'AI-flavored hypotheses — plausible rearrangements of known ideas with no genuine novelty.',
+    against: 'Delegation of scientific judgment — agents driving the generation of questions, the design of the pipeline, or the interpretation of results. This phase is most productive as a structured ideation space: a way to surface possibilities, stress-test assumptions, and organize thinking at the earliest stage of project design. Scientific rigor begins here, not downstream.',
     flow: 'series',
-    notes: ['variety > polish at this stage', 'no shared chain-of-thought between agents', 'every citation unverified until human reads it']
+    notes: ['agents run in sequence — Generator → Contrarian → Grounder — then deliver a consolidated plan, outline, or set of candidate hypotheses to the user', 'the user ideates on this output, redirects as needed, and re-runs the loop until satisfied with the direction', 'every citation unverified until user reads it', 'treat this phase as a think tank: a structured space to surface possibilities, challenge assumptions, and organize scientific thinking before committing to a direction']
   },
   exp: {
     agents: ['Designer', 'Reviewer'],
     agentRoles: [
-      'Proposes experimental design: variables, controls, sample size, timeline, and predicted outcomes.',
+      'Takes inputs from the user and organizes them into a structured experimental design: variables, controls, sample size, timeline, and a resources and materials list.',
       'Checks feasibility, identifies confounders, tests alignment with the original hypothesis.'
     ],
-    human: 'the architect — has the conceptual plan and the scientific intuition behind it; tests the plan against the Designer\'s feasibility analysis; commits to the experiment and its constraints',
+    human: 'the scientific expert — holds the domain knowledge and research intuition that defines what a valid experiment looks like; evaluates the Designer\'s proposal against the original hypothesis and commits to the design before any resources are committed',
     against: 'Designs that look plausible on paper but cannot actually test the hypothesis.',
     flow: 'pair',
-    notes: ['alignment table required before moving forward', 'feasibility before novelty', 'human signs off before any resource commitment']
+    notes: ['provides a road map to planned analyses and pipelines', 'surfaces supplementary resources and citations for any element of the design the user may need to consult', 'user signs off before any resource commitment']
   },
   stats: {
     agents: ['Implementer', 'Reviewer', 'Reconciler'],
@@ -132,10 +131,10 @@ const ENSEMBLES = {
       'Checks code against the model spec; tests edge cases and boundary conditions independently.',
       'Compares Implementer and Reviewer outputs; flags load-bearing disagreements for human review.'
     ],
-    human: 'reads the pre-flight summary, brings scientific judgment to flagged assumptions, and signs off — no long-running job starts without human approval',
-    against: 'Parameter choices without provenance; results a fresh reader cannot reconstruct from the script header.',
+    human: 'reads the pre-flight summary, brings scientific judgment to flagged assumptions, and signs off — no long-running job starts without user approval',
+    against: 'Parameter choices without provenance; workflows that won\'t produce results a reader cannot reconstruct from the script.',
     flow: 'series',
-    notes: ['per-parameter provenance tags required', 'pre-flight gate before any HPC submit', 'human sees [assumed] flag count before approving']
+    notes: ['per-parameter provenance tags required', 'pre-flight gate before any critical decisions or actions (e.g. HPC submission)', 'user sees [assumed] flag count before approving']
   },
   debug: {
     agents: ['Diagnostician', 'Fresh-context'],
@@ -143,7 +142,7 @@ const ENSEMBLES = {
       'Diagnoses root cause: reads the error, traces execution, forms and tests a hypothesis. Hard limit: 2 iterations.',
       'Restarts from a clean slate — different model family preferred. No access to prior chain-of-thought, to avoid anchoring on failed attempts.'
     ],
-    human: 'enforces the two-iteration rule; after 2 passes → Fresh-context agent (different model family); if still unresolved after fresh context: human steps in directly to trace root cause',
+    human: 'provides context at the outset of the debugging session; if attempts fail, receives a summary of what was tried and why it did not resolve the issue, then supplies additional context to guide the next pass',
     against: 'Symptom-patching — fixes that make the error disappear without explaining why.',
     flow: 'escalation',
     notes: ['max 2 iterations per agent before escalating', 'fresh-context agent uses a different model family', 'if still unresolved: human steps in directly', 'root cause must be stated before any fix is accepted']
@@ -153,24 +152,24 @@ const ENSEMBLES = {
     agentRoles: [
       'Reads results with the primary hypothesis in mind. Summarizes what the data show.',
       'Reads results without seeing Reviewer output. Finds weaknesses, alternative explanations, and what the data fail to show.',
-      'Reads both above; identifies load-bearing disagreements; ignores stylistic ones.',
+      'Reads both above; separates substantive disagreements that affect the conclusion from presentational ones.',
       'Checks every citation, every claim, and every figure label against the source data.'
     ],
-    human: 'decides what is actually claimable — novel interpretive judgment requiring domain expertise that cannot be delegated; the human draws the scientific conclusion',
-    against: 'Confirmation-shaped review — agents that find ways to read results as supportive.',
+    human: 'decides what is actually claimable, providing judgment grounded in domain expertise that cannot be delegated; the user draws the scientific conclusion',
+    against: 'Confirmation bias in review — the natural tendency of AI models to support user findings, validate stated conclusions, and avoid challenging results even when the evidence warrants scrutiny. This phase is explicitly structured to counter that tendency.',
     flow: 'adversarial',
-    notes: ['Contrarian sees no primary output', 'Synthesizer ignores stylistic disagreement, names load-bearing ones', 'every claim human-verified before submission']
+    notes: ['Contrarian reviews results independently with no access to the primary Reviewer output', 'Synthesizer separates substantive disagreements that affect the conclusion from presentational ones', 'every claim user-verified before submission']
   },
   write: {
     agents: ['Drafter', 'Auditor'],
     agentRoles: [
-      'Drafts figures or assists with organizational structure of the manuscript; works from the human\'s notes, code, and outline — not methods or results sections.',
-      'Checks every citation, claim, and figure against the source. Flags unsupported or overstated statements.'
+      'Assists with organizational structure of the manuscript and implements figures from the user\'s specifications; works from the user\'s notes, code, outline, and figure descriptions — does not draft conclusions or determine how data are visually framed.',
+      'Checks every citation, claim, and figure against the source data; flags unsupported or overstated statements and any visual representation that misrepresents the underlying data.'
     ],
-    human: 'drives the narrative: writes abstract, intro framing, and discussion unaided first — then brings in the agent as an assistant for structure and audit; the human owns the argument',
-    against: 'Confident-sounding prose that smooths over what the data actually show.',
+    human: 'drives the narrative: writes the abstract, intro framing, and discussion first — the user owns the argument; for figures, the user sets the style, structure, and how the data are presented before the Drafter assists with implementation',
+    against: 'Confident-sounding prose that smooths over what the data actually show; for figures, selective or misleading presentation of data designed to conform with a hypothesis rather than represent it faithfully.',
     flow: 'pair',
-    notes: ['human writes key sections unaided first, no agent', 'every citation verified by hand', 'discussion is the human\'s voice — agent edits, does not draft']
+    notes: ['user writes key sections first; AI assists with refinement and clarity, not initial drafting of conclusions', 'every citation verified by hand', 'discussion is the user\'s voice — agent edits, does not draft', 'figure style and data representation are decided by the user before agent assistance', 'agent does not determine what data to show or how to frame visual comparisons']
   },
   pipe: {
     agents: ['Tracker', 'Orchestrator', 'QC reviewer', 'Validator'],
@@ -180,10 +179,10 @@ const ENSEMBLES = {
       'Branches on QC results: PASS continues to Validator; FAIL → quarantine + alert human.',
       'Final check before release: confirms all samples have valid outputs and complete manifests.'
     ],
-    human: 'writes QC criteria before the run; reviews edge cases; data stays agent-readable, not agent-writable',
+    human: 'writes QC criteria before the run; reviews edge cases; data is read-only to agents — they assess but do not modify it',
     against: 'Per-sample drift; pipelines that complete without anyone reading the QC; sample swaps.',
     flow: 'branching pipeline',
-    notes: ['deterministic per-sample transforms', 'agentic only at parameter and QC stages', 'every transform preserves sample ID and a hash check']
+    notes: ['deterministic per-sample transforms', 'agentic decision-making only at the QC stage', 'every transform preserves sample ID and a hash check']
   },
 };
 
@@ -195,12 +194,12 @@ let hoveredPipeStage   = -1;
 
 const PIPE_STAGE_DESC = [
   { name: 'Sample intake',  desc: 'Per-sample IDs and hashes are recorded at ingest. The provenance chain starts here — no sample enters without a logged identifier and a baseline hash.' },
-  { name: 'Metadata',       desc: 'Deterministic annotation: cruise ID, station number, cast depth, and sampling date-time attached to each sample record. No agentic decisions at this stage.' },
-  { name: 'Orchestrator',   desc: 'Applies the transform sequence defined by the human before the run. Logs every parameter choice and its provenance tag as it executes — decisions are traceable end-to-end.' },
-  { name: 'QC reviewer',    desc: 'Agentic branch point. Evaluates each sample against pre-written QC criteria. PASS advances to Validator; FAIL quarantines the sample and alerts the human immediately. Criteria written before the run, not after seeing the data.' },
+  { name: 'Metadata',       desc: 'Deterministic annotation: for example, cruise ID, station number, cast depth, and sampling date-time attached to each sample record. No agentic decisions at this stage.' },
+  { name: 'Orchestrator',   desc: 'Applies the transform sequence defined by the user before the run. Logs every parameter choice and its provenance tag as it executes — decisions are traceable end-to-end. For example: applying a salinity correction across all casts using a [literature]-tagged conversion factor, logging the source and value before each sample advances.' },
+  { name: 'QC reviewer',    desc: 'Agentic branch point. Evaluates each sample against pre-written QC criteria. PASS advances to Validator; FAIL quarantines the sample and alerts the user immediately. Criteria written before the run, not after seeing the data.' },
   { name: 'Validator',      desc: 'Final check before release. Confirms all samples have valid outputs, complete manifests, and consistent IDs and hashes end-to-end. Nothing ships without a clean Validator pass.' },
   { name: 'Release',        desc: 'Downstream-ready output with full manifest. Data becomes read-only from this point; any reprocessing requires a new dated run with versioned outputs.' },
-  { name: 'Quarantine',     desc: 'Samples that fail QC are isolated here — no further transforms applied. The human reviews each quarantined sample and decides: reprocess with adjusted parameters, or discard. The quarantine log is preserved as part of the run manifest.' },
+  { name: 'Quarantine',     desc: 'Samples that fail QC are isolated here — no further transforms applied. The user reviews each quarantined sample and decides: reprocess with adjusted parameters, or discard. The quarantine log is preserved as part of the run manifest.' },
 ];
 
 function debugEnsembleSVG() {
@@ -233,7 +232,7 @@ function debugEnsembleSVG() {
   // Left HUMAN
   inner += `<rect x="${leftHumanX-26}" y="${cy-26}" width="52" height="52" fill="${marine}" stroke="${marine2}" stroke-width="1.4"/>
     <rect x="${leftHumanX-18}" y="${cy-18}" width="36" height="36" fill="none" stroke="#fff" stroke-width="1"/>
-    <text x="${leftHumanX}" y="${cy+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">HUMAN</text>`;
+    <text x="${leftHumanX}" y="${cy+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">USER</text>`;
 
   // Main flow: left HUMAN → Diagnostician → right HUMAN
   inner += dashed(`M ${leftHumanX+26} ${cy} L ${diagX-r-2} ${cy}`);
@@ -243,7 +242,7 @@ function debugEnsembleSVG() {
   // Right HUMAN
   inner += `<rect x="${rightHumanX-26}" y="${cy-26}" width="52" height="52" fill="${marine}" stroke="${marine2}" stroke-width="1.4"/>
     <rect x="${rightHumanX-18}" y="${cy-18}" width="36" height="36" fill="none" stroke="#fff" stroke-width="1"/>
-    <text x="${rightHumanX}" y="${cy+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">HUMAN</text>`;
+    <text x="${rightHumanX}" y="${cy+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">USER</text>`;
 
   // Escalation: Diagnostician bottom → down → right → Fresh-context
   inner += `<path d="M ${diagX} ${cy+r} L ${diagX} ${fcY} L ${fcX-fcR-8} ${fcY}" fill="none" stroke="${amber}" stroke-width="1.2" stroke-dasharray="2 3"/>`;
@@ -283,7 +282,7 @@ function ensembleSVG(phase) {
   // Left HUMAN box
   inner += `<rect x="${leftHumanX-26}" y="${cy-26}" width="52" height="52" fill="${marine}" stroke="${marine2}" stroke-width="1.4"/>
     <rect x="${leftHumanX-18}" y="${cy-18}" width="36" height="36" fill="none" stroke="#fff" stroke-width="1"/>
-    <text x="${leftHumanX}" y="${cy+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">HUMAN</text>`;
+    <text x="${leftHumanX}" y="${cy+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">USER</text>`;
 
   inner += dashedPath(`M ${leftHumanX+26} ${cy} L ${xs[0]-44} ${cy}`);
 
@@ -309,15 +308,26 @@ function ensembleSVG(phase) {
   // Right HUMAN box
   inner += `<rect x="${rightHumanX-26}" y="${cy-26}" width="52" height="52" fill="${marine}" stroke="${marine2}" stroke-width="1.4"/>
     <rect x="${rightHumanX-18}" y="${cy-18}" width="36" height="36" fill="none" stroke="#fff" stroke-width="1"/>
-    <text x="${rightHumanX}" y="${cy+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">HUMAN</text>`;
+    <text x="${rightHumanX}" y="${cy+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">USER</text>`;
 
-  // Hint text inside diagram
-  inner += `<text x="${w/2}" y="${h-8}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#9aa7a0" letter-spacing=".06em">click each agent to see their role</text>`;
+  // Hint text inside diagram (skipped for hypo — loop arc carries it instead)
+  if (phase !== 'hypo') {
+    inner += `<text x="${w/2}" y="${h-8}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#9aa7a0" letter-spacing=".06em">click each agent to see their role</text>`;
+  }
 
   // Adversarial annotation (rev)
   if (phase === 'rev' && n > 1) {
     inner += `<path d="M ${xs[0]} ${cy-44} Q ${xs[0]} 28 ${xs[1]} 28 T ${xs[1]} ${cy-44}" fill="none" stroke="${amber}" stroke-width="1" stroke-dasharray="2 3"/>
       <text x="${(xs[0]+xs[1])/2}" y="20" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="${amber2}">no shared context</text>`;
+  }
+
+  // Loop-back arc for hypo (iterate until direction is set)
+  if (phase === 'hypo') {
+    inner = `<defs><marker id="iterBack" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 10 0 L 0 5 L 10 10 z" fill="${marine}"/></marker></defs>` + inner;
+    inner += `<text x="${w/2}" y="168" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#9aa7a0" letter-spacing=".06em">click each agent to see their role</text>`;
+    inner += `<path d="M ${rightHumanX} ${cy+27} Q ${w/2} 265 ${leftHumanX} ${cy+26}" fill="none" stroke="${marine}" stroke-width="1.2" stroke-dasharray="4 4" marker-end="url(#iterBack)"/>`;
+    inner += `<text x="${w/2}" y="222" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="${marine}" letter-spacing=".06em">← iterate + ideate until direction is set</text>`;
+    return `<svg viewBox="0 0 ${w} 238" style="width:100%;height:238px">${inner}</svg>`;
   }
 
   return `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:220px">${inner}</svg>`;
@@ -393,7 +403,7 @@ function pipelineSVG() {
   // Left HUMAN
   inner += `<rect x="${leftHumanX-26}" y="${yMain-26}" width="52" height="52" fill="${marine}" stroke="${marine2}" stroke-width="1.4"/>
   <rect x="${leftHumanX-18}" y="${yMain-18}" width="36" height="36" fill="none" stroke="#fff" stroke-width="1"/>
-  <text x="${leftHumanX}" y="${yMain+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">HUMAN</text>
+  <text x="${leftHumanX}" y="${yMain+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">USER</text>
   <text x="${leftHumanX}" y="${yMain+38}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="${mute}">sets QC criteria</text>`;
 
   // Arrow: left HUMAN → first stage
@@ -439,7 +449,7 @@ function pipelineSVG() {
   // Right HUMAN
   inner += `<rect x="${rightHumanX-26}" y="${yMain-26}" width="52" height="52" fill="${marine}" stroke="${marine2}" stroke-width="1.4"/>
   <rect x="${rightHumanX-18}" y="${yMain-18}" width="36" height="36" fill="none" stroke="#fff" stroke-width="1"/>
-  <text x="${rightHumanX}" y="${yMain+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">HUMAN</text>
+  <text x="${rightHumanX}" y="${yMain+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">USER</text>
   <text x="${rightHumanX}" y="${yMain+38}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="${mute}">reviews output</text>`;
 
   // FAIL branch: QC bottom → quarantine top
@@ -461,7 +471,7 @@ function pipelineSVG() {
   // HUMAN after quarantine
   inner += `<rect x="${hqX-26}" y="${hqY-26}" width="52" height="52" fill="${marine}" stroke="${marine2}" stroke-width="1.4"/>
   <rect x="${hqX-18}" y="${hqY-18}" width="36" height="36" fill="none" stroke="#fff" stroke-width="1"/>
-  <text x="${hqX}" y="${hqY+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">HUMAN</text>
+  <text x="${hqX}" y="${hqY+4}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#fff" letter-spacing="1.2">USER</text>
   <text x="${hqX}" y="${hqY+38}" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="${mute}">reprocess / discard</text>`;
 
   // Legend
@@ -506,9 +516,7 @@ function renderDiagram() {
     active === 'pipe' ? pipelineSVG() : ensembleSVG(active);
   updateDetail();
   document.getElementById('card-against').textContent = e.against;
-  document.getElementById('card-concern').textContent = `concern: ${m.concern.toLowerCase()}`;
-  document.getElementById('card-human').innerHTML =
-    `<span style="font-family:var(--ff-mono);font-size:11px;color:var(--marine)">›</span> ${e.human}.`;
+  document.getElementById('card-human').innerHTML = `${e.human}.`;
   document.getElementById('card-notes').innerHTML = e.notes.map(n => `<li>${n}</li>`).join('');
 }
 

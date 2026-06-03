@@ -147,7 +147,7 @@
 <header class="ap-header">
   <div class="ap-eyebrow">06 · where to start</div>
   <h1>From the chat window <span class="accent">to full agentic coding.</span></h1>
-  <p class="lede">If your AI use so far has been a chat window, agentic coding is a different relationship with the same models — same tools, different access and autonomy. The on-ramp below walks you through the shift.</p>
+  <p class="lede">If your AI use so far has been a chat window, agentic coding is a different relationship with the same models, same tools; different access and autonomy. The on-ramp below walks you through the shift.</p>
 </header>
 
 <!-- MAIN -->
@@ -172,7 +172,7 @@
     <div class="panel-light">
       <div class="label">Setup checklist:</div>
       <div style="margin-top:6px">
-        <div class="check-row"><span class="check-n">01</span><div><span class="check-item">A terminal or an editor</span><span class="check-note">— Terminal / iTerm · or VS Code / Cursor</span></div></div>
+        <div class="check-row"><span class="check-n">01</span><div><span class="check-item">A terminal or an editor</span><span class="check-note">— Terminal · or VS Code / Cursor</span></div></div>
         <div class="check-row"><span class="check-n">02</span><div><span class="check-item">Get comfortable: command line or GUI</span><span class="check-note">— ~30 min in a terminal, or just open the editor</span></div></div>
         <div class="check-row"><span class="check-n">03</span><div><span class="check-item">git installed</span><span class="check-note">— the safety net for everything else</span></div></div>
         <div class="check-row"><span class="check-n">04</span><div><span class="check-item">The agent</span><span class="check-note">— Claude Code / Codex: CLI or editor extension</span></div></div>
@@ -194,7 +194,7 @@ EXAMPLE every statistical analysis emits a PDF explaining the test, its paramete
 
     <div class="panel-dark" style="padding:10px 12px">
       <div style="font-family:var(--ff-mono);font-size:10px;color:var(--amber);letter-spacing:.12em;text-transform:uppercase;font-weight:700">You are not starting over</div>
-      <p style="font-size:12.5px;margin-top:4px;font-style:italic;font-family:var(--ff-display);line-height:1.45;color:var(--paper)">Everything you learned getting good at chat — how to frame a question, when an answer smells wrong, how to push back — is exactly what makes you good at directing an agent. You are not starting over. You are widening the aperture.</p>
+      <p style="font-size:12.5px;margin-top:4px;font-style:italic;font-family:var(--ff-display);line-height:1.45;color:var(--paper)">Everything you have already learned from AI chat interfaces applies in this framework. The skills you built — how to frame a question, how to identify when something is off, how to push back — are exactly what makes you effective at directing an agent. You are not starting over. You are scaling up — not to move faster, but to build scientific rigor into every step of the work.</p>
     </div>
 
   </div>
@@ -369,9 +369,9 @@ EXAMPLE every statistical analysis emits a PDF explaining the test, its paramete
     '<span class="routes-note">In chat you relay text back and forth. An agent works <span style="color:var(--amber)">inside the directory</span> — reading, editing, and running files while you review.</span>';
 
   const STAGES = [
-    { n: '00', title: 'Reset the mental model', one: 'You are a reviewer now, not a typist.',
-      body: 'The instinct from chat is to read every line as it is written and approve it word by word. Drop that. The agent will produce more code, faster, than you can read that way. Your leverage moves up a level: you frame the task well, then you review the result against what you actually wanted. The skills you built in chat — knowing what to ask for, smelling a wrong answer — all transfer. What changes is scope.',
-      watch: 'The failure here is passivity: letting the agent run because reviewing feels slow. Reviewing IS the work now.',
+    { n: '00', title: 'Reset the mental model', one: 'You are an active participant — ideate, review, and be critical at every step.',
+      body: 'The instinct from chat is to read every line as it is written and approve it word by word. Drop that. The agent will produce more code, faster, than you can read that way. Your leverage moves up a level: you frame the task well, then you review the result against what you actually wanted. The skills you\'ve developed as a scientist — critically thinking about a problem, identifying issues in the pipeline, exploring results from all angles — all transfer. What changes is scope.',
+      watch: 'The failure here is passivity: letting the agent run because reviewing feels slow. Active engagement at every step is what separates good science from fast science.',
       extra: SHIFT_HTML },
     { n: '01', title: 'Set up the environment', one: 'A terminal or an editor, git, the agent, an account.',
       body: 'There are two ways to run the agent (shown below): from a terminal, or right inside an editor like VS Code or Cursor with no command line at all. Either way you need git installed, the tool installed and authenticated, and an account. If the terminal feels foreign coming from chat, start with the GUI route — it looks much more like the chat you already know. Budget an afternoon.',
@@ -379,7 +379,7 @@ EXAMPLE every statistical analysis emits a PDF explaining the test, its paramete
       extra: ROUTES_HTML },
     { n: '02', title: 'Run a throwaway first task', one: 'Build something disposable in a scratch folder.',
       body: 'Make an empty folder, initialize git, and give the agent a small, self-contained task you could check by eye — "write a script that reads this CSV and plots column A against column B," or "make a small command-line tool that renames these files." The point is not the output. The point is to watch the loop: it proposes, edits, runs, sees the result, fixes. Do this two or three times until the rhythm stops feeling strange.',
-      watch: 'Keep it disposable. Your dissertation repository is not where you learn what the agent does when it is wrong.',
+      watch: 'Keep it disposable. Your project repository is not where you learn what the agent does when it is wrong.',
       extra: PLAN_HTML },
     { n: '03', title: 'Move to real work, with guardrails', one: 'Branch, review every diff, commit often.',
       body: 'Now point it at real code — but on a git branch, never on main, and read every diff before you accept it. Commit in small steps so any single change is easy to undo. Run the tests yourself. This is exactly the chat habit of "check the answer before you trust it," scaled up to a directory of changes instead of a single snippet.',
