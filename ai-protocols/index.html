@@ -56,11 +56,12 @@
   <div class="ap-nav-tabs" role="list">
     <a href="index.html"     class="ap-nav-tab active" aria-current="page">00_framework</a>
     <a href="standards.html" class="ap-nav-tab">01_standards</a>
-    <a href="workflows.html" class="ap-nav-tab">02_workflows</a>
-    <a href="ethics.html"    class="ap-nav-tab">03_ethics</a>
-    <a href="teaching.html"  class="ap-nav-tab">04_teaching</a>
-    <a href="example.html"        class="ap-nav-tab">05_example</a>
-    <a href="where-to-start.html" class="ap-nav-tab">06_where-to-start</a>
+    <a href="workflows.html"    class="ap-nav-tab">02_workflows</a>
+    <a href="scaffolding.html" class="ap-nav-tab">03_scaffolding</a>
+    <a href="ethics.html"      class="ap-nav-tab">04_ethics</a>
+    <a href="teaching.html"    class="ap-nav-tab">05_teaching</a>
+    <a href="example.html"     class="ap-nav-tab">06_example</a>
+    <a href="where-to-start.html" class="ap-nav-tab">07_where-to-start</a>
   </div>
   <div class="ap-nav-meta">Dr. James · 2026</div>
 </nav>
@@ -79,12 +80,15 @@
     </div>
 
     <p class="home-lede">
-      AI tools let scientists streamline tasks that don't need to be hands-on — efficiently prepping model runs for HPC, generating figures during research and for publication, the kind of work that takes time but can be managed rather than done directly. This frees scientists up to focus on the parts that always mattered most: choosing the question, designing the test, reading the data, deciding what it means. This framework is for doing that deliberately, not by accident.
+      AI tools enable scientists to delegate procedural tasks that require coordination rather than judgment: preparing model runs for HPC, generating and formatting figures, the kind of work that consumes time without advancing scientific understanding. This delegation frees attention for the tasks that define the science: formulating the question, designing the experiment, interpreting the data, and determining what the result means.
+    </p>
+    <p class="home-lede">
+      This framework establishes a common language and organizational structure for AI-assisted scientific work, one that upholds the same diligence any scientist would bring to their projects. It makes available to individual scientists and small groups a degree of structured oversight previously difficult to sustain: the capacity to validate results more rigorously, to question assumptions systematically, and to defend the reproducibility and falsifiability of work at every stage — ensuring that what is being done is actually what was intended.
     </p>
 
     <!-- CTA → where-to-start -->
     <a href="where-to-start.html" class="start-cta">
-      <div class="start-cta-eyebrow">06 · new to agentic coding?</div>
+      <div class="start-cta-eyebrow">07 · new to agentic coding?</div>
       <div class="start-cta-text">Start here →</div>
     </a>
 
@@ -149,7 +153,7 @@
         <div class="constraint">
           <div class="constraint-n">03</div>
           <div class="constraint-label">Credit</div>
-          <div class="constraint-note">Authorship is a moral claim about who did the work. When agents contribute, the lab needs an explicit way to document the human contribution.</div>
+          <div class="constraint-note">Authorship is a claim about who did the work. When agents contribute, the lab needs an explicit way to document the human contribution.</div>
         </div>
       </div>
     </div>
@@ -169,7 +173,7 @@
       .arch-link:hover rect.arch-bg { stroke: #1a7a60; stroke-width: 2.8; }
       .arch-link:active { filter: drop-shadow(0 2px 6px rgba(13,32,26,.3)); }
     </style>
-    <svg viewBox="0 0 760 610" class="arch-svg" aria-label="Framework architecture">
+    <svg viewBox="0 0 760 580" class="arch-svg" aria-label="Framework architecture">
       <defs>
         <pattern id="cHatch" patternUnits="userSpaceOnUse" width="10" height="10" patternTransform="rotate(45)">
           <line x1="0" y1="0" x2="0" y2="10" stroke="#1a7a60" stroke-width="0.6" opacity="0.3"/>
@@ -179,66 +183,107 @@
         </marker>
       </defs>
 
-      <!-- Standards block -->
+      <!-- Standards (full width) -->
       <a href="standards.html" class="arch-link">
-        <rect class="arch-bg" x="40" y="40" width="680" height="120" fill="#f4f1e8" stroke="#13201a" stroke-width="1.4"/>
-        <rect x="40" y="40" width="680" height="120" fill="url(#cHatch)" opacity="0.4" style="pointer-events:none"/>
+        <rect class="arch-bg" x="40" y="40" width="680" height="110" fill="#f4f1e8" stroke="#13201a" stroke-width="1.4"/>
+        <rect x="40" y="40" width="680" height="110" fill="url(#cHatch)" opacity="0.4" style="pointer-events:none"/>
         <text x="58" y="66"  font-family="JetBrains Mono,monospace" font-size="11" fill="#8a4f0d" letter-spacing="2">01 / GOVERNANCE</text>
         <text x="58" y="98"  font-family="Inter Tight,sans-serif" font-size="28" font-weight="700" fill="#13201a">Standards</text>
-        <text x="58" y="120" font-family="Inter Tight,sans-serif" font-size="13" fill="#243a30">lab-wide → project → tool · hooks · skills · API workflows · memory</text>
-        <text x="58" y="142" font-family="JetBrains Mono,monospace" font-size="11" fill="#6a7468" font-style="italic">what every session inherits before it does anything</text>
+        <text x="58" y="118" font-family="Inter Tight,sans-serif" font-size="13" fill="#243a30">lab-wide → project → tool · hooks · skills · API workflows · memory</text>
+        <text x="58" y="138" font-family="JetBrains Mono,monospace" font-size="11" fill="#6a7468" font-style="italic">what every session inherits before it does anything</text>
       </a>
 
-      <line x1="380" y1="160" x2="380" y2="195" stroke="#1a7a60" stroke-width="1.4" marker-end="url(#cArrow)"/>
+      <!-- Arrow down to Workflows + Scaffolding -->
+      <line x1="200" y1="150" x2="200" y2="178" stroke="#1a7a60" stroke-width="1.4" marker-end="url(#cArrow)"/>
+      <line x1="560" y1="150" x2="560" y2="178" stroke="#1a7a60" stroke-width="1.4" marker-end="url(#cArrow)"/>
 
-      <!-- Workflows block -->
+      <!-- Workflows (left half) -->
       <a href="workflows.html" class="arch-link">
-        <rect class="arch-bg" x="40" y="205" width="680" height="240" fill="#f4f1e8" stroke="#13201a" stroke-width="1.4"/>
-        <text x="58"  y="231" font-family="JetBrains Mono,monospace" font-size="11" fill="#8a4f0d" letter-spacing="2">02 / PRACTICE</text>
-        <text x="58"  y="263" font-family="Inter Tight,sans-serif" font-size="28" font-weight="700" fill="#13201a">Workflows</text>
-        <text x="296" y="263" font-family="Inter Tight,sans-serif" font-size="13" fill="#243a30">7 research phases, multi-agent ensembles, human in every one</text>
-        <rect x="58"  y="285" width="320" height="24" fill="#f4f1e8" stroke="#cfc6b0" stroke-width="0.8"/>
-        <text x="66"  y="301" font-family="JetBrains Mono,monospace" font-size="10.5" fill="#1a7a60">01</text>
-        <text x="90"  y="301" font-family="Inter Tight,sans-serif" font-size="12.5" font-weight="500" fill="#13201a">Hypothesis generation</text>
-        <rect x="390" y="285" width="320" height="24" fill="#ece6d6" stroke="#cfc6b0" stroke-width="0.8"/>
-        <text x="398" y="301" font-family="JetBrains Mono,monospace" font-size="10.5" fill="#1a7a60">02</text>
-        <text x="422" y="301" font-family="Inter Tight,sans-serif" font-size="12.5" font-weight="500" fill="#13201a">Experimental design</text>
-        <rect x="58"  y="315" width="320" height="24" fill="#ece6d6" stroke="#cfc6b0" stroke-width="0.8"/>
-        <text x="66"  y="331" font-family="JetBrains Mono,monospace" font-size="10.5" fill="#1a7a60">03</text>
-        <text x="90"  y="331" font-family="Inter Tight,sans-serif" font-size="12.5" font-weight="500" fill="#13201a">Model development &amp; stats</text>
-        <rect x="390" y="315" width="320" height="24" fill="#f4f1e8" stroke="#cfc6b0" stroke-width="0.8"/>
-        <text x="398" y="331" font-family="JetBrains Mono,monospace" font-size="10.5" fill="#1a7a60">04</text>
-        <text x="422" y="331" font-family="Inter Tight,sans-serif" font-size="12.5" font-weight="500" fill="#13201a">Debugging</text>
-        <rect x="58"  y="345" width="320" height="24" fill="#f4f1e8" stroke="#cfc6b0" stroke-width="0.8"/>
-        <text x="66"  y="361" font-family="JetBrains Mono,monospace" font-size="10.5" fill="#1a7a60">05</text>
-        <text x="90"  y="361" font-family="Inter Tight,sans-serif" font-size="12.5" font-weight="500" fill="#13201a">Results review &amp; contrarian</text>
-        <rect x="390" y="345" width="320" height="24" fill="#ece6d6" stroke="#cfc6b0" stroke-width="0.8"/>
-        <text x="398" y="361" font-family="JetBrains Mono,monospace" font-size="10.5" fill="#1a7a60">06</text>
-        <text x="422" y="361" font-family="Inter Tight,sans-serif" font-size="12.5" font-weight="500" fill="#13201a">Writing &amp; figures</text>
-        <rect x="58"  y="375" width="320" height="24" fill="#ece6d6" stroke="#cfc6b0" stroke-width="0.8"/>
-        <text x="66"  y="391" font-family="JetBrains Mono,monospace" font-size="10.5" fill="#1a7a60">07</text>
-        <text x="90"  y="391" font-family="Inter Tight,sans-serif" font-size="12.5" font-weight="500" fill="#13201a">High-throughput data</text>
+        <rect class="arch-bg" x="40" y="180" width="330" height="238" fill="#f4f1e8" stroke="#13201a" stroke-width="1.4"/>
+        <text x="58"  y="206" font-family="JetBrains Mono,monospace" font-size="11" fill="#8a4f0d" letter-spacing="2">02 / PRACTICE</text>
+        <text x="58"  y="234" font-family="Inter Tight,sans-serif" font-size="22" font-weight="700" fill="#13201a">Workflows</text>
+        <text x="58"  y="252" font-family="Inter Tight,sans-serif" font-size="11.5" fill="#243a30">multi-agent workflows · a human in every one</text>
+        <!-- 3 example phases + ellipsis -->
+        <rect x="58" y="268" width="296" height="26" fill="#f4f1e8" stroke="#cfc6b0" stroke-width="0.8"/>
+        <text x="66" y="285" font-family="JetBrains Mono,monospace" font-size="10" fill="#1a7a60">01</text>
+        <text x="86" y="285" font-family="Inter Tight,sans-serif" font-size="12" font-weight="500" fill="#13201a">Hypothesis generation</text>
+        <rect x="58" y="298" width="296" height="26" fill="#ece6d6" stroke="#cfc6b0" stroke-width="0.8"/>
+        <text x="66" y="315" font-family="JetBrains Mono,monospace" font-size="10" fill="#1a7a60">03</text>
+        <text x="86" y="315" font-family="Inter Tight,sans-serif" font-size="12" font-weight="500" fill="#13201a">Model development &amp; stats</text>
+        <rect x="58" y="328" width="296" height="26" fill="#f4f1e8" stroke="#cfc6b0" stroke-width="0.8"/>
+        <text x="66" y="345" font-family="JetBrains Mono,monospace" font-size="10" fill="#1a7a60">07</text>
+        <text x="86" y="345" font-family="Inter Tight,sans-serif" font-size="12" font-weight="500" fill="#13201a">High-throughput data</text>
+        <text x="206" y="374" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="14" fill="#cfc6b0">· · ·</text>
+        <text x="206" y="392" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a7468" font-style="italic">see workflows tab for a full example list</text>
       </a>
 
-      <line x1="40" y1="475" x2="720" y2="475" stroke="#cfc6b0" stroke-width="0.8" stroke-dasharray="3 3"/>
-      <text x="380" y="471" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a7468" letter-spacing="1">ADDITIONAL TOPICS</text>
+      <!-- Scaffolding (right half) -->
+      <a href="scaffolding.html" class="arch-link">
+        <rect class="arch-bg" x="380" y="180" width="340" height="238" fill="#f4f1e8" stroke="#13201a" stroke-width="1.4"/>
+        <text x="398" y="206" font-family="JetBrains Mono,monospace" font-size="11" fill="#8a4f0d" letter-spacing="2">03 / STRUCTURE</text>
+        <text x="398" y="234" font-family="Inter Tight,sans-serif" font-size="22" font-weight="700" fill="#13201a">Scaffolding</text>
+        <text x="398" y="252" font-family="Inter Tight,sans-serif" font-size="11.5" fill="#243a30">rules · validation · hand-offs at every level</text>
 
-      <!-- Ethics block -->
+        <!-- inverted tree: 1 project → 3 modules → 6 unit chips -->
+        <!-- L1: 1 project (narrow, top) -->
+        <rect x="509" y="278" width="80" height="20" rx="3" fill="#1a5040"/>
+        <text x="549" y="292" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#f4f1e8">Project</text>
+        <!-- fan lines to modules -->
+        <line x1="549" y1="298" x2="471" y2="310" stroke="#cfc6b0" stroke-width="0.8"/>
+        <line x1="549" y1="298" x2="549" y2="310" stroke="#cfc6b0" stroke-width="0.8"/>
+        <line x1="549" y1="298" x2="627" y2="310" stroke="#cfc6b0" stroke-width="0.8"/>
+        <!-- L2: 3 modules -->
+        <text x="398" y="325" font-family="JetBrains Mono,monospace" font-size="7" fill="#8a4f0d">Modules</text>
+        <rect x="436" y="310" width="70" height="20" rx="3" fill="#1f6040"/>
+        <text x="471" y="324" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#f4f1e8">Analysis 1</text>
+        <rect x="514" y="310" width="70" height="20" rx="3" fill="#1f6040"/>
+        <text x="549" y="324" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#f4f1e8">Analysis 2</text>
+        <rect x="592" y="310" width="70" height="20" rx="3" fill="#1f6040"/>
+        <text x="627" y="324" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#f4f1e8">Analysis 3</text>
+        <!-- fan lines to units -->
+        <line x1="471" y1="330" x2="460" y2="342" stroke="#cfc6b0" stroke-width="0.7"/>
+        <line x1="471" y1="330" x2="482" y2="342" stroke="#cfc6b0" stroke-width="0.7"/>
+        <line x1="549" y1="330" x2="538" y2="342" stroke="#cfc6b0" stroke-width="0.7"/>
+        <line x1="549" y1="330" x2="560" y2="342" stroke="#cfc6b0" stroke-width="0.7"/>
+        <line x1="627" y1="330" x2="616" y2="342" stroke="#cfc6b0" stroke-width="0.7"/>
+        <line x1="627" y1="330" x2="638" y2="342" stroke="#cfc6b0" stroke-width="0.7"/>
+        <!-- L3: 2 unit chips per module -->
+        <text x="398" y="356" font-family="JetBrains Mono,monospace" font-size="7" fill="#8a4f0d">Unit Tests</text>
+        <rect x="451" y="342" width="18" height="14" rx="2" fill="#2a7050"/>
+        <text x="460" y="353" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#f4f1e8">U1</text>
+        <rect x="473" y="342" width="18" height="14" rx="2" fill="#2a7050"/>
+        <text x="482" y="353" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#f4f1e8">U2</text>
+        <rect x="529" y="342" width="18" height="14" rx="2" fill="#2a7050"/>
+        <text x="538" y="353" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#f4f1e8">U3</text>
+        <rect x="551" y="342" width="18" height="14" rx="2" fill="#2a7050"/>
+        <text x="560" y="353" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#f4f1e8">U4</text>
+        <rect x="607" y="342" width="18" height="14" rx="2" fill="#2a7050"/>
+        <text x="616" y="353" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#f4f1e8">U5</text>
+        <rect x="629" y="342" width="18" height="14" rx="2" fill="#2a7050"/>
+        <text x="638" y="353" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7" fill="#f4f1e8">U6</text>
+        <text x="549" y="376" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a7468" font-style="italic">each level: its own rules + its own check</text>
+      </a>
+
+      <!-- Dashed separator -->
+      <line x1="40" y1="446" x2="720" y2="446" stroke="#cfc6b0" stroke-width="0.8" stroke-dasharray="3 3"/>
+      <text x="380" y="442" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a7468" letter-spacing="1">ADDITIONAL TOPICS</text>
+
+      <!-- Ethics -->
       <a href="ethics.html" class="arch-link">
-        <rect class="arch-bg" x="40"  y="485" width="335" height="105" fill="#f4f1e8" stroke="#13201a" stroke-width="1.4"/>
-        <text x="58"  y="510" font-family="JetBrains Mono,monospace" font-size="11" fill="#8a4f0d" letter-spacing="2">03 / VALUES</text>
-        <text x="58"  y="538" font-family="Inter Tight,sans-serif" font-size="22" font-weight="700" fill="#13201a">Ethics</text>
-        <text x="58"  y="556" font-family="Inter Tight,sans-serif" font-size="11.5" fill="#243a30">disclosure · citation · data boundaries</text>
-        <text x="58"  y="577" font-family="JetBrains Mono,monospace" font-size="10.5" fill="#6a7468" font-style="italic">disclose by default · skeptical by default</text>
+        <rect class="arch-bg" x="40" y="456" width="335" height="105" fill="#f4f1e8" stroke="#13201a" stroke-width="1.4"/>
+        <text x="58" y="481" font-family="JetBrains Mono,monospace" font-size="11" fill="#8a4f0d" letter-spacing="2">04 / VALUES</text>
+        <text x="58" y="509" font-family="Inter Tight,sans-serif" font-size="22" font-weight="700" fill="#13201a">Ethics</text>
+        <text x="58" y="527" font-family="Inter Tight,sans-serif" font-size="11.5" fill="#243a30">disclosure · citation · data boundaries</text>
+        <text x="58" y="548" font-family="JetBrains Mono,monospace" font-size="10.5" fill="#6a7468" font-style="italic">disclose by default · skeptical by default</text>
       </a>
 
-      <!-- Teaching block -->
+      <!-- Teaching -->
       <a href="teaching.html" class="arch-link">
-        <rect class="arch-bg" x="385" y="485" width="335" height="105" fill="#f4f1e8" stroke="#13201a" stroke-width="1.4"/>
-        <text x="403" y="510" font-family="JetBrains Mono,monospace" font-size="11" fill="#8a4f0d" letter-spacing="2">04 / TRAINING</text>
-        <text x="403" y="538" font-family="Inter Tight,sans-serif" font-size="22" font-weight="700" fill="#13201a">Teaching</text>
-        <text x="403" y="556" font-family="Inter Tight,sans-serif" font-size="11.5" fill="#243a30">learning paths · skill preservation</text>
-        <text x="403" y="577" font-family="JetBrains Mono,monospace" font-size="10.5" fill="#6a7468" font-style="italic">AI changes what is easy, not what matters</text>
+        <rect class="arch-bg" x="385" y="456" width="335" height="105" fill="#f4f1e8" stroke="#13201a" stroke-width="1.4"/>
+        <text x="403" y="481" font-family="JetBrains Mono,monospace" font-size="11" fill="#8a4f0d" letter-spacing="2">05 / TRAINING</text>
+        <text x="403" y="509" font-family="Inter Tight,sans-serif" font-size="22" font-weight="700" fill="#13201a">Teaching</text>
+        <text x="403" y="527" font-family="Inter Tight,sans-serif" font-size="11.5" fill="#243a30">learning paths · skill preservation</text>
+        <text x="403" y="548" font-family="JetBrains Mono,monospace" font-size="10.5" fill="#6a7468" font-style="italic">AI changes what is easy, not what matters</text>
       </a>
 
     </svg>

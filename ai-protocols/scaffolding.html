@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Scaffolding · AI Protocols</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    /* ── Central tiered graphic ── */
+    .tier-svg { width: 100%; height: auto; display: block; }
+    .tier-node { cursor: pointer; transition: filter .15s; }
+    .tier-node:focus-visible { outline: 2px solid var(--marine); outline-offset: 2px; }
+    .tier-node rect.tier-bg { transition: stroke .15s, stroke-width .15s; }
+    .tier-node:hover rect.tier-bg { stroke: #1a7a60; stroke-width: 2.6; }
+    .tier-node:hover { filter: drop-shadow(0 6px 14px rgba(13,32,26,.16)); }
+
+    /* ── Validation-by-tier matrix ── */
+    .vmatrix-row { display: grid; grid-template-columns: 84px 1fr; gap: 10px; padding: 8px 0; border-top: 1px solid var(--rule); cursor: default; transition: background .12s; border-radius: 2px; }
+    .vmatrix-row:first-child { border-top: none; }
+    .vmatrix-row:hover { background: var(--paper2); }
+    .vt-tier { font-family: var(--ff-mono); font-size: 10px; color: var(--amber2); letter-spacing: .06em; }
+    .vt-tier b { display: block; font-family: var(--ff-display); font-size: 13px; color: var(--ink); font-weight: 600; letter-spacing: -0.01em; margin-top: 2px; }
+    .vt-kind { font-family: var(--ff-display); font-size: 13px; font-weight: 600; color: var(--marine); letter-spacing: -0.01em; }
+    .vt-desc { font-size: 11.5px; color: var(--ink2); line-height: 1.4; margin-top: 2px; }
+
+    /* ── Scaffolding toolkit rows ── */
+    .scaf-row { display: grid; grid-template-columns: 78px 1fr; gap: 10px; padding: 5px 0; border-top: 1px solid var(--rule); cursor: default; transition: background .12s; border-radius: 2px; }
+    .scaf-row:first-of-type { border-top: none; }
+    .scaf-row:hover { background: var(--paper); }
+    .scaf-k { font-family: var(--ff-mono); font-size: 11px; color: var(--marine); }
+    .scaf-v { font-size: 11.5px; color: var(--ink2); line-height: 1.4; }
+
+    /* ── Implementation example cards ── */
+    .impl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .impl-card { border: 1px solid var(--rule); background: var(--paper); padding: 12px 14px; text-align: left; transition: border-color .12s, background .12s; }
+    .impl-card:hover { border-color: var(--ink); background: var(--paper2); }
+    .impl-card:focus-visible { outline: 2px solid var(--marine); outline-offset: 2px; }
+    .impl-kind { font-family: var(--ff-mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--amber2); }
+    .impl-name { font-family: var(--ff-display); font-size: 14.5px; font-weight: 700; letter-spacing: -0.012em; margin-top: 4px; line-height: 1.15; }
+    .impl-sub { font-size: 11.5px; color: var(--ink2); line-height: 1.4; margin-top: 4px; }
+    .impl-open { font-family: var(--ff-mono); font-size: 9.5px; color: var(--marine); margin-top: 9px; display: flex; align-items: center; gap: 5px; }
+
+    /* ── Snippet block ── */
+    .snippet { background: var(--paper); border: 1px solid var(--rule); color: var(--ink2); font-family: var(--ff-mono); font-size: 11px; line-height: 1.6; padding: 10px 12px; overflow-x: auto; white-space: pre; }
+    .snippet .pr  { color: var(--marine); }
+    .snippet .tag { color: var(--amber2); }
+    .snippet .hd  { color: var(--ink); font-weight: 700; }
+    .snippet .dim, .snippet .cm { color: var(--mute); }
+    .snippet .ok  { color: var(--marine); }
+    .snippet .no  { color: #b23b2e; }
+
+    /* ── Rendered-report preview (inside a modal) ── */
+    .report-cap { font-family: var(--ff-mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--marine); margin: 12px 0 5px; }
+    .report-out { border: 1px solid var(--rule); background: var(--paper2); padding: 10px 12px; }
+    .report-table { width: 100%; border-collapse: collapse; font-family: var(--ff-mono); font-size: 11px; margin-bottom: 10px; }
+    .report-table th, .report-table td { border: 1px solid var(--rule); padding: 4px 8px; text-align: left; }
+    .report-table th { background: var(--paper); color: var(--ink); font-weight: 700; }
+    .report-table .ok  { color: var(--marine); font-weight: 700; }
+    .report-table .no  { color: #b23b2e; font-weight: 700; }
+    .report-plot { width: 100%; height: auto; display: block; background: var(--paper); border: 1px solid var(--rule); }
+
+    /* ── Modal footer / back button (only shown for nested navigation) ── */
+    .modal-footer { padding: 9px 16px; border-top: 1px solid var(--rule); display: none; align-items: center; justify-content: space-between; flex-shrink: 0; }
+    .modal-footer.visible { display: flex; }
+    .modal-back-btn { font-family: var(--ff-mono); font-size: 10.5px; color: var(--mute); border: 1px solid var(--rule); background: var(--paper2); padding: 5px 10px; }
+    .modal-back-btn:hover { color: var(--ink); border-color: var(--ink); background: var(--paper); }
+    .modal-back-btn:focus-visible { outline: 2px solid var(--marine); outline-offset: 2px; }
+
+    /* ── Modal ── */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(19,32,26,.55); display: none; align-items: center; justify-content: center; z-index: 300; padding: 24px; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--paper); border: 1.4px solid var(--ink); max-width: 660px; width: 100%; max-height: 86vh; display: flex; flex-direction: column; box-shadow: 0 24px 70px rgba(13,32,26,.35); }
+    .modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--rule); }
+    .modal-eyebrow { font-family: var(--ff-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--amber2); }
+    .modal-title { font-family: var(--ff-display); font-size: 19px; font-weight: 700; letter-spacing: -0.018em; margin-top: 3px; line-height: 1.1; }
+    .modal-close { flex-shrink: 0; border: 1px solid var(--rule); background: var(--paper2); width: 30px; height: 30px; font-size: 17px; line-height: 1; color: var(--ink); display: flex; align-items: center; justify-content: center; }
+    .modal-close:hover { background: var(--ink); color: var(--paper); }
+    .modal-close:focus-visible { outline: 2px solid var(--marine); outline-offset: 2px; }
+    .modal-body { padding: 14px 16px; overflow-y: auto; }
+
+    .modal-meta { display: grid; gap: 6px; margin-bottom: 10px; padding: 10px 12px; background: var(--paper2); border: 1px solid var(--rule); }
+    .modal-meta > div { display: grid; grid-template-columns: 92px 1fr; gap: 10px; align-items: baseline; }
+    .mm-k { font-family: var(--ff-mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--amber2); }
+    .mm-v { font-size: 12.5px; color: var(--ink2); line-height: 1.4; }
+    .modal-p { font-size: 13px; line-height: 1.55; color: var(--ink2); margin-bottom: 10px; }
+    .modal-fig-label { font-family: var(--ff-mono); font-size: 10px; letter-spacing: .06em; color: var(--marine); margin-bottom: 5px; }
+    .modal-note { font-family: var(--ff-mono); font-size: 10.5px; color: var(--mute); line-height: 1.5; margin-top: 8px; }
+    .modal-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .modal-link-btn { font-family: var(--ff-mono); font-size: 10.5px; color: var(--marine); border: 1px solid var(--rule); background: var(--paper); padding: 6px 10px; }
+    .modal-link-btn:hover { background: var(--marine); color: #fff; border-color: var(--marine); }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .modal-overlay.open .modal { animation: modalIn .18s ease both; }
+    }
+    @keyframes modalIn { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
+
+    @media (max-width: 900px) {
+      .impl-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .impl-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="ap-nav" aria-label="AI Protocols sections">
+  <a href="index.html" class="ap-nav-brand" title="AI Protocols · framework">
+    <svg width="26" height="26" viewBox="0 0 28 28" aria-hidden="true">
+      <rect x="1" y="1" width="26" height="26" fill="none" stroke="#13201a" stroke-width="1.3"/>
+      <line x1="14" y1="1" x2="14" y2="27" stroke="#1a7a60" stroke-width="1"/>
+      <line x1="1"  y1="14" x2="27" y2="14" stroke="#1a7a60" stroke-width="1"/>
+      <circle cx="14" cy="14" r="4" fill="#b8741c"/>
+    </svg>
+    <span class="ap-brand-text">ai-protocols<span>/v0.1</span></span>
+  </a>
+  <div class="ap-nav-tabs" role="list">
+    <a href="index.html"          class="ap-nav-tab">00_framework</a>
+    <a href="standards.html"      class="ap-nav-tab">01_standards</a>
+    <a href="workflows.html"      class="ap-nav-tab">02_workflows</a>
+    <a href="scaffolding.html"    class="ap-nav-tab active" aria-current="page">03_scaffolding</a>
+    <a href="ethics.html"         class="ap-nav-tab">04_ethics</a>
+    <a href="teaching.html"       class="ap-nav-tab">05_teaching</a>
+    <a href="example.html"        class="ap-nav-tab">06_example</a>
+    <a href="where-to-start.html" class="ap-nav-tab">07_where-to-start</a>
+  </div>
+  <div class="ap-nav-meta">Dr. James · 2026</div>
+</nav>
+
+<header class="ap-header">
+  <div class="ap-eyebrow">03 · scaffolding</div>
+  <h1>One plan. <span class="accent">Rules, structure, and validation at every level.</span></h1>
+  <p class="lede">A real project is too large to implement in a single pass. You decompose it into components: the core project, phases (data processing, primary + secondary analyses), and specific tests (with specific rules). The individual units. You can create scaffolding for each level, with its own governance and its own kind of validation. Markdown files carry the plan, skills carry repeatable procedures, hooks enforce the fine rules, tests prove the individual pieces. The master plan is necessary but never sufficient: like any complex build, it takes specialists at every level who know the plan yet follow rules specific to their role.</p>
+</header>
+
+<!-- MAIN -->
+<div class="ap-cols ap-cols--wide">
+
+  <!-- LEFT: the central tiered graphic -->
+  <div class="panel">
+    <div class="fig-head">
+      <span class="label">Fig 3.1 · the levels</span>
+      <span class="label-mute">click a level →</span>
+    </div>
+
+    <svg viewBox="0 0 560 460" class="tier-svg c-grid" aria-label="Project broken into three clickable levels: L1 Project, L2 Modules, L3 Units.">
+      <defs>
+        <pattern id="tHatch" patternUnits="userSpaceOnUse" width="10" height="10" patternTransform="rotate(45)">
+          <line x1="0" y1="0" x2="0" y2="10" stroke="#1a7a60" stroke-width="0.6" opacity="0.3"/>
+        </pattern>
+      </defs>
+
+      <!-- L1 · PROJECT -->
+      <g class="tier-node" data-modal="tier-project" role="button" tabindex="0" aria-label="Project level — the whole project. Click to read more.">
+        <rect class="tier-bg" x="8" y="10" width="544" height="108" fill="#f4f1e8" stroke="#13201a" stroke-width="1.4"/>
+        <rect x="8" y="10" width="544" height="108" fill="url(#tHatch)" opacity="0.4" style="pointer-events:none"/>
+        <text x="24" y="36" font-family="JetBrains Mono,monospace" font-size="10.5" fill="#8a4f0d" letter-spacing="2">L1 / PROJECT</text>
+        <text x="24" y="66" font-family="Inter Tight,sans-serif" font-size="22" font-weight="700" fill="#13201a">Project</text>
+        <text x="130" y="66" font-family="Inter Tight,sans-serif" font-size="13" fill="#243a30">the whole project, end to end</text>
+        <text x="24" y="90" font-family="JetBrains Mono,monospace" font-size="10" fill="#6a7468">root AGENTS.md · STYLE.md · stage map</text>
+
+        <!-- Inverted pyramid: 1 project → 3 modules → 2 unit tests each, centered -->
+        <g style="pointer-events:none">
+          <!-- L1 label -->
+          <text x="366" y="41" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="8" fill="#8a4f0d">L1</text>
+          <!-- L1: one project -->
+          <rect x="396" y="29" width="112" height="18" rx="3" fill="#1a5040"/>
+          <text x="452" y="42" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#f4f1e8">1 project</text>
+          <!-- fan to modules -->
+          <line x1="452" y1="47" x2="400" y2="59" stroke="#cfc6b0" stroke-width="0.8"/>
+          <line x1="452" y1="47" x2="452" y2="59" stroke="#cfc6b0" stroke-width="0.8"/>
+          <line x1="452" y1="47" x2="504" y2="59" stroke="#cfc6b0" stroke-width="0.8"/>
+          <!-- L2 label -->
+          <text x="366" y="72" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="8" fill="#8a4f0d">L2</text>
+          <!-- L2: 3 modules -->
+          <rect x="372" y="59" width="56" height="18" rx="3" fill="#1f6040"/>
+          <text x="400" y="72" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#f4f1e8">mod 01</text>
+          <rect x="424" y="59" width="56" height="18" rx="3" fill="#1f6040"/>
+          <text x="452" y="72" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#f4f1e8">mod 02</text>
+          <rect x="476" y="59" width="56" height="18" rx="3" fill="#1f6040"/>
+          <text x="504" y="72" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#f4f1e8">mod 03</text>
+          <!-- fan to units -->
+          <line x1="400" y1="77" x2="388" y2="90" stroke="#cfc6b0" stroke-width="0.7"/>
+          <line x1="400" y1="77" x2="412" y2="90" stroke="#cfc6b0" stroke-width="0.7"/>
+          <line x1="452" y1="77" x2="440" y2="90" stroke="#cfc6b0" stroke-width="0.7"/>
+          <line x1="452" y1="77" x2="464" y2="90" stroke="#cfc6b0" stroke-width="0.7"/>
+          <line x1="504" y1="77" x2="492" y2="90" stroke="#cfc6b0" stroke-width="0.7"/>
+          <line x1="504" y1="77" x2="516" y2="90" stroke="#cfc6b0" stroke-width="0.7"/>
+          <!-- L3 label -->
+          <text x="366" y="103" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="8" fill="#8a4f0d">L3</text>
+          <!-- L3: 2 unit chips per module -->
+          <rect x="380" y="90" width="16" height="14" rx="2" fill="#2a7050"/>
+          <rect x="398" y="90" width="16" height="14" rx="2" fill="#2a7050"/>
+          <rect x="432" y="90" width="16" height="14" rx="2" fill="#2a7050"/>
+          <rect x="450" y="90" width="16" height="14" rx="2" fill="#2a7050"/>
+          <rect x="484" y="90" width="16" height="14" rx="2" fill="#2a7050"/>
+          <rect x="502" y="90" width="16" height="14" rx="2" fill="#2a7050"/>
+        </g>
+      </g>
+
+      <!-- connector -->
+      <line x1="280" y1="118" x2="280" y2="138" stroke="#cfc6b0" stroke-width="1" stroke-dasharray="3 3"/>
+
+      <!-- L2 · MODULE -->
+      <g class="tier-node" data-modal="tier-module" role="button" tabindex="0" aria-label="Module level — major stages. Click to read more.">
+        <rect class="tier-bg" x="8" y="140" width="544" height="148" fill="#f4f1e8" stroke="#13201a" stroke-width="1.4"/>
+        <text x="24" y="166" font-family="JetBrains Mono,monospace" font-size="10.5" fill="#8a4f0d" letter-spacing="2">L2 / MODULE</text>
+        <text x="24" y="196" font-family="Inter Tight,sans-serif" font-size="20" font-weight="700" fill="#13201a">Modules</text>
+        <text x="136" y="196" font-family="Inter Tight,sans-serif" font-size="13" fill="#243a30">major stages — each with its own rules</text>
+        <rect x="356" y="148" width="184" height="30" rx="4" fill="#1a5040" stroke="none"/>
+        <text text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#f4f1e8">
+          <tspan x="448" y="160">task specific rules</tspan>
+          <tspan x="448" dy="12">+ hand-off instructions</tspan>
+        </text>
+        <!-- module sub-boxes -->
+        <g style="pointer-events:none">
+          <rect x="24"  y="212" width="118" height="60" fill="#ece6d6" stroke="#cfc6b0" stroke-width="0.9"/>
+          <text x="83" y="238" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#1a7a60">01</text>
+          <text x="83" y="255" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="11" font-weight="600" fill="#13201a">Data processing</text>
+          <rect x="152" y="212" width="118" height="60" fill="#ece6d6" stroke="#cfc6b0" stroke-width="0.9"/>
+          <text x="211" y="238" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#1a7a60">02</text>
+          <text x="211" y="255" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="12" font-weight="600" fill="#13201a">Model</text>
+          <rect x="280" y="212" width="118" height="60" fill="#ece6d6" stroke="#cfc6b0" stroke-width="0.9"/>
+          <text x="339" y="238" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#1a7a60">03</text>
+          <text x="339" y="255" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="12" font-weight="600" fill="#13201a">Analysis</text>
+          <rect x="408" y="212" width="118" height="60" fill="#ece6d6" stroke="#cfc6b0" stroke-width="0.9"/>
+          <text x="467" y="238" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#1a7a60">04</text>
+          <text x="467" y="255" text-anchor="middle" font-family="Inter Tight,sans-serif" font-size="12" font-weight="600" fill="#13201a">Figures</text>
+        </g>
+      </g>
+
+      <!-- zoom funnel from Data processing into L3 -->
+      <line x1="24"  y1="272" x2="16"  y2="308" stroke="#b8741c" stroke-width="1" stroke-dasharray="2 3"/>
+      <line x1="142" y1="272" x2="340" y2="308" stroke="#b8741c" stroke-width="1" stroke-dasharray="2 3"/>
+      <text x="38" y="302" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#8a4f0d" font-style="italic">zoom: one module → its units</text>
+
+      <!-- L3 · UNIT -->
+      <g class="tier-node" data-modal="tier-unit" role="button" tabindex="0" aria-label="Unit level — functions, parameters, transforms. Click to read more.">
+        <rect class="tier-bg" x="8" y="310" width="544" height="138" fill="#f4f1e8" stroke="#13201a" stroke-width="1.4"/>
+        <text x="24" y="336" font-family="JetBrains Mono,monospace" font-size="10.5" fill="#8a4f0d" letter-spacing="2">L3 / UNIT</text>
+        <text x="24" y="362" font-family="Inter Tight,sans-serif" font-size="20" font-weight="700" fill="#13201a">Units</text>
+        <text x="118" y="362" font-family="Inter Tight,sans-serif" font-size="13" fill="#243a30">functions, parameters, transforms</text>
+        <rect x="356" y="318" width="184" height="30" rx="4" fill="#1a5040" stroke="none"/>
+        <text text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#f4f1e8">
+          <tspan x="448" y="330">✓ unit + provenance</tspan>
+          <tspan x="448" dy="12">tests</tspan>
+        </text>
+        <!-- unit chips -->
+        <g style="pointer-events:none">
+          <rect x="24"  y="382" width="66" height="22" fill="#ece6d6" stroke="#cfc6b0" stroke-width="0.9"/>
+          <text x="57" y="397" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#243a30">parse</text>
+          <rect x="98"  y="382" width="86" height="22" fill="#ece6d6" stroke="#cfc6b0" stroke-width="0.9"/>
+          <text x="141" y="397" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#243a30">flag-drop</text>
+          <rect x="192" y="382" width="82" height="22" fill="#ece6d6" stroke="#cfc6b0" stroke-width="0.9"/>
+          <text x="233" y="397" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#243a30">convert</text>
+          <rect x="282" y="382" width="60" height="22" fill="#ece6d6" stroke="#cfc6b0" stroke-width="0.9"/>
+          <text x="312" y="397" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#243a30">emit</text>
+          <rect x="354" y="382" width="60" height="22" fill="#f4f1e8" stroke="#b8741c" stroke-width="0.9" stroke-dasharray="2 2"/>
+          <text x="384" y="397" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#8a4f0d">⚙ hook</text>
+          <rect x="422" y="382" width="60" height="22" fill="#eef3ec" stroke="#1a7a60" stroke-width="0.9"/>
+          <text x="452" y="397" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" fill="#0a4535">✓ test</text>
+        </g>
+        <text x="24" y="428" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#6a7468">each unit: a hook on save · a test on commit · a provenance tag inline</text>
+      </g>
+    </svg>
+  </div>
+
+  <!-- RIGHT: validation matrix + toolkit + posture -->
+  <div style="display:flex;flex-direction:column;gap:12px">
+
+    <div class="panel">
+      <div class="fig-head">
+        <span class="label">Validation by level</span>
+      </div>
+      <div class="vmatrix-row">
+        <div class="vt-tier">L1<b>Project</b></div>
+        <div><div class="vt-kind">Does it all run and reproduce?</div><div class="vt-desc">Run the whole project start to finish. Does it rebuild every result? Do the components work together?</div></div>
+      </div>
+      <div class="vmatrix-row">
+        <div class="vt-tier">L2<b>Module</b></div>
+        <div><div class="vt-kind">Hand-off checks</div><div class="vt-desc">Does each step give the next the variables/data it needs? Does the quality check pass before moving on?</div></div>
+      </div>
+      <div class="vmatrix-row">
+        <div class="vt-tier">L3<b>Unit</b></div>
+        <div><div class="vt-kind">Tests, ranges, provenance</div><div class="vt-desc">Tests on a single function. Range checks. A tag on every number saying where it came from. A sign-off pause before anything slow or hard to undo.</div></div>
+      </div>
+    </div>
+
+    <div class="panel-dash">
+      <div class="label">Scaffolding = defining the specialist's toolkit</div>
+      <div style="margin-top:6px">
+        <div class="scaf-row"><span class="scaf-k">markdown</span><span class="scaf-v">the plan each specialist reads before acting</span></div>
+        <div class="scaf-row"><span class="scaf-k">skills</span><span class="scaf-v">a specialist's repeatable, named procedure</span></div>
+        <div class="scaf-row"><span class="scaf-k">hooks</span><span class="scaf-v">small rules that run on their own, on every save</span></div>
+        <div class="scaf-row"><span class="scaf-k">tests</span><span class="scaf-v">a readable report showing the pieces still fit</span></div>
+      </div>
+    </div>
+
+    <div class="label" style="margin-bottom:6px">Examples</div>
+    <div class="impl-grid">
+      <button class="impl-card" data-modal="ex-agents" type="button">
+        <div class="impl-kind">L1–L2 · markdown</div>
+        <div class="impl-name">Module-scoped AGENTS.md</div>
+        <div class="impl-sub">The plan, the hand-off, and the local rules for one module.</div>
+        <div class="impl-open">open ↗</div>
+      </button>
+      <button class="impl-card" data-modal="ex-skill" type="button">
+        <div class="impl-kind">L2 · the specialist</div>
+        <div class="impl-name">A reusable QC skill</div>
+        <div class="impl-sub">A named routine the agent runs the same way every time.</div>
+        <div class="impl-open">open ↗</div>
+      </button>
+      <button class="impl-card" data-modal="ex-contract" type="button">
+        <div class="impl-kind">L2 · the hand-off</div>
+        <div class="impl-name">A hand-off check (R)</div>
+        <div class="impl-sub">Confirms one module gives the next exactly what it needs.</div>
+        <div class="impl-open">open ↗</div>
+      </button>
+      <button class="impl-card" data-modal="ex-report" type="button">
+        <div class="impl-kind">readable output</div>
+        <div class="impl-name">A validation report</div>
+        <div class="impl-sub">The check rendered for people: code, a table, and a plot.</div>
+        <div class="impl-open">open ↗</div>
+      </button>
+    </div>
+
+    <div class="panel-dark" style="padding:10px 12px">
+      <div class="posture-label">Validation is not a final step</div>
+      <p class="posture-text">It is a property of every level. A unit test means nothing if the module design is wrong; a passing pipeline means nothing if the units were never checked. You validate at every level and the check is different at each.</p>
+    </div>
+
+  </div>
+</div>
+
+<footer class="ap-footer">
+  <span>← <a href="workflows.html">workflows</a></span>
+  <span><a href="ethics.html">ethics →</a></span>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <div class="modal-eyebrow" id="modal-eyebrow"></div>
+        <div class="modal-title" id="modal-title"></div>
+      </div>
+      <button class="modal-close" id="modal-close" type="button" aria-label="Close">×</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer" id="modal-footer">
+      <button class="modal-back-btn" id="modal-back" type="button"><span id="modal-back-label">← back</span></button>
+      <span style="font-family:var(--ff-mono);font-size:10px;color:var(--mute)">scaffolding / levels</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  const MODALS = {
+
+    'tier-project': {
+      eyebrow: 'L1 · the whole project',
+      title: 'Project level',
+      body:
+        '<div class="modal-meta">' +
+          '<div><span class="mm-k">Covers</span><span class="mm-v">The whole project, start to finish</span></div>' +
+          '<div><span class="mm-k">Scaffolding</span><span class="mm-v">root AGENTS.md · STYLE.md · the list of stages</span></div>' +
+          '<div><span class="mm-k">Check</span><span class="mm-v">Does it all run and reproduce?</span></div>' +
+        '</div>' +
+        '<p class="modal-p">The project level holds the overall plan — the question, the list of stages, and what counts as done. Every module below inherits this context, but each one is focused on its own specific job. The check at this level is the broadest: does the whole thing run start to finish and answer the question?</p>' +
+        '<div class="modal-fig-label">project/AGENTS.md</div>' +
+        '<div class="snippet">' +
+          '<span class="hd"># AGENTS.md — project root</span>\n\n' +
+          '<span class="hd">## Question</span>\n' +
+          'How will phytoplankton community composition change\n' +
+          'in Antarctic waters as the ocean warms?\n\n' +
+          '<span class="hd">## Stages</span>  <span class="cm"># each one is its own level</span>\n' +
+          'data processing → model → analysis → figures\n\n' +
+          '<span class="hd">## Science guidelines</span>  <span class="cm"># every module inherits these</span>\n' +
+          '- statistics: pre-register or label clearly as exploratory\n' +
+          '- mixed-layer depth treated as a continuous variable\n' +
+          '- no parameter enters a script without a where-from tag\n' +
+          '- uncertainty reported for every key result\n\n' +
+          '<span class="hd">## Note to lower levels</span>  <span class="cm"># context for each module</span>\n' +
+          'Read this file first. Your module has its own rules,\n' +
+          'but this is the scientific context you are working within.\n\n' +
+          '<span class="hd">## Key documents</span>  <span class="cm"># inherited by all modules</span>\n' +
+          'see: STYLE.md             <span class="cm"># figure style, colour palette</span>\n' +
+          'see: tools/hpc.md         <span class="cm"># HPC submission rules (Slurm)</span>\n' +
+          'see: tools/r_plotting.md  <span class="cm"># ggplot conventions</span>\n' +
+          'see: docs/lab_notebook/   <span class="cm"># running record of decisions</span>\n\n' +
+          '<span class="hd">## What counts as done</span>\n' +
+          '- one script rebuilds every figure from raw data\n' +
+          '- every function and parameter carries a tag saying where it came from\n' +
+          '- the whole project runs start to finish without errors' +
+        '</div>' +
+        '<p class="modal-note">Everything below inherits this file. The agent working in the data-processing stage reads this first, then its own local rules.</p>',
+    },
+
+    'tier-module': {
+      eyebrow: 'L2 · the modules',
+      title: 'Module level',
+      body:
+        '<div class="modal-meta">' +
+          '<div><span class="mm-k">Covers</span><span class="mm-v">One module: data processing, model, analysis, figures</span></div>' +
+          '<div><span class="mm-k">Scaffolding</span><span class="mm-v">a module AGENTS.md · a skill · a hand-off check</span></div>' +
+          '<div><span class="mm-k">Check</span><span class="mm-v">Does the hand-off give the next module what it needs?</span></div>' +
+        '</div>' +
+        '<p class="modal-p">Each module has its own rules, and it has to hand the next module exactly what that module needs — the right columns, in sensible ranges — so the next one can use it without digging into how it was made. The check here is at the hand-off: are the columns and ranges right, and did the quality check pass before moving on?</p>' +
+        '<div class="modal-fig-label">what data processing hands to analysis</div>' +
+        '<div class="snippet">' +
+          '<span class="hd">## Hands off to the next module</span>  <span class="cm"># processing → analysis</span>\n' +
+          'GIVES    data/clean/{station}.csv\n' +
+          'COLUMNS  station, depth_m (0–11000), temp_c (-2–40),\n' +
+          '         salinity (0–42), ts\n' +
+          'CHECKED  every column in range · no missing depths\n' +
+          '         before anything downstream runs' +
+        '</div>' +
+        '<p class="modal-note">The thing that does the module is a <b>skill</b>; the proof it did it right is a <b>hand-off check</b> — and that check renders a short report a person can read.</p>' +
+        '<div class="modal-actions">' +
+          '<button class="modal-link-btn" data-modal="ex-skill" type="button">see the skill →</button>' +
+          '<button class="modal-link-btn" data-modal="ex-contract" type="button">see the hand-off check →</button>' +
+          '<button class="modal-link-btn" data-modal="ex-report" type="button">see the report →</button>' +
+        '</div>',
+    },
+
+    'tier-unit': {
+      eyebrow: 'L3 · the small details',
+      title: 'Unit level',
+      body:
+        '<div class="modal-meta">' +
+          '<div><span class="mm-k">Covers</span><span class="mm-v">A single function, number, or transform</span></div>' +
+          '<div><span class="mm-k">Scaffolding</span><span class="mm-v">local rules · hooks · a tag on every number</span></div>' +
+          '<div><span class="mm-k">Check</span><span class="mm-v">Small tests · ranges · provenance · sign-off</span></div>' +
+        '</div>' +
+        '<p class="modal-p">At the smallest level, checking is constant and varied. Every hard-coded number carries a tag saying where it came from. A hook runs on save to check style, tags, and that no raw ID slips out. A small test pins the behaviour. And before anything slow or hard to undo runs, it pauses for a person to sign off.</p>' +
+        '<div class="modal-fig-label">one number, fully checked</div>' +
+        '<div class="snippet">' +
+          'salinity_max &lt;- 42.0   <span class="tag">[literature]</span>  <span class="cm"># CalCOFI Data Portal</span>\n\n' +
+          '<span class="cm"># on save, the hook checks: tag present, value in range</span>\n' +
+          '<span class="cm"># a small test:</span>\n' +
+          'expect_true(all(d$salinity &lt;= salinity_max))' +
+        '</div>' +
+        '<p class="modal-note">These checks tie back to the <a href="standards.html" style="color:var(--marine);text-decoration:underline">Standards</a> tab: the where-it-came-from tags and the sign-off pause live here, at the smallest level.</p>' +
+        '<div class="modal-actions">' +
+          '<button class="modal-link-btn" data-modal="ex-hook" type="button">see the hook →</button>' +
+        '</div>',
+    },
+
+    'ex-agents': {
+      eyebrow: 'Example · one module',
+      title: 'A module-scoped AGENTS.md',
+      body:
+        '<p class="modal-p">Sits at the top of one module. It inherits the project plan, then narrows to what this module does, what it must hand to the next module, and the rules that apply only here.</p>' +
+        '<div class="modal-fig-label">processing/AGENTS.md</div>' +
+        '<div class="snippet">' +
+          '<span class="hd"># AGENTS.md — data processing   (one module)</span>\n' +
+          '<span class="cm">inherits: project root AGENTS.md</span>\n\n' +
+          '<span class="hd">## What this module does</span>\n' +
+          'Turn raw instrument files into one clean table the\n' +
+          'analysis module can use. Nothing past that.\n\n' +
+          '<span class="hd">## What it hands to the next module</span>\n' +
+          'GIVES    data/clean/{station}.csv\n' +
+          'COLUMNS  station, depth_m (0–11000), temp_c (-2–40),\n' +
+          '         salinity (0–42), ts\n' +
+          'PROMISE  no missing values in key columns;\n' +
+          '         depth increases down each cast\n\n' +
+          '<span class="hd">## Rules for this module</span>\n' +
+          '- never interpolate across station boundaries\n' +
+          '- note missing data, do not fill in, sensor-flagged rows\n' +
+          '- every unit conversion carries a <span class="tag">[literature]</span> tag\n\n' +
+          '<span class="hd">## Check before handing off</span>\n' +
+          '- every column checked for range\n' +
+          '- row count within ±2% of the raw data' +
+        '</div>' +
+        '<p class="modal-note">Same idea as the lab-wide / project / tool levels on the Standards tab — one level finer.</p>',
+    },
+
+    'ex-skill': {
+      eyebrow: 'Example · the specialist',
+      title: 'A reusable QC skill',
+      body:
+        '<p class="modal-p">A skill is the module written down: a named routine the agent runs the same way every time, with its own firm rules and a refusal to call itself done unless the check passes.</p>' +
+        '<div class="modal-fig-label">.claude/skills/qc_ctd/SKILL.md</div>' +
+        '<div class="snippet">' +
+          '<span class="hd"># .claude/skills/qc_ctd/SKILL.md</span>\n' +
+          'name: qc_ctd\n' +
+          'description: Clean a raw CTD cast into the table the\n' +
+          '  analysis module needs. Use for any *.cnv or *.hex cast.\n\n' +
+          '<span class="hd">## Steps</span>\n' +
+          '1. read the header; record the instrument and\n' +
+          '   calibration date as <span class="tag">[literature]</span>\n' +
+          '2. apply sensor flags; drop flagged rows\n' +
+          '3. convert units to SI; tag each conversion\n' +
+          '4. write data/clean/{station}.csv\n' +
+          '5. run the hand-off check and render its report;\n' +
+          '   do not report done unless the check passes\n\n' +
+          '<span class="hd">## Never</span>\n' +
+          '- interpolate across station boundaries\n' +
+          '- move on if the hand-off check fails' +
+        '</div>' +
+        '<p class="modal-note">Step 5 is the point: the module checks its own work, and leaves a readable report, before handing off.</p>',
+    },
+
+    'ex-hook': {
+      eyebrow: 'Example · a small automatic check',
+      title: 'An on-save hook',
+      body:
+        '<p class="modal-p">Hooks are small checks that run on their own — nothing to remember. This one runs whenever the agent writes a file in the data-processing module: it tidies the style, makes sure every number is tagged with where it came from, and refuses to let a raw ID into a saved file.</p>' +
+        '<div class="modal-fig-label">.claude/hooks/on_save_check.sh</div>' +
+        '<div class="snippet">' +
+          '<span class="cm">#!/usr/bin/env bash</span>\n' +
+          '<span class="cm"># runs after any write under processing/</span>\n' +
+          'set -euo pipefail\n' +
+          'file="$1"\n\n' +
+          '<span class="cm"># 1 · tidy the R style</span>\n' +
+          'Rscript -e "styler::style_file(\'$file\')"\n' +
+          'Rscript -e "lintr::lint(\'$file\')"\n\n' +
+          '<span class="cm"># 2 · every hard-coded number needs a where-from tag</span>\n' +
+          'grep -nE \'&lt;- *-?[0-9]+\\.[0-9]+\' "$file" \\\n' +
+          '  | grep -vE \'\\[(literature|fitted|assumed|agent-chosen)\\]\' \\\n' +
+          '  &amp;&amp; { echo "<span class="no">untagged number</span>"; exit 1; }\n\n' +
+          '<span class="cm"># 3 · never let a raw ID into a saved file</span>\n' +
+          'grep -qiE \'(patient|subject)_id\' "$file" \\\n' +
+          '  &amp;&amp; { echo "<span class="no">ID leak</span>"; exit 1; }\n\n' +
+          'echo "<span class="ok">ok: $file passed the checks</span>"' +
+        '</div>' +
+        '<p class="modal-note">Automatic, cheap, and easy to undo — the kind of rule that belongs in tooling, not in a prompt.</p>',
+    },
+
+    'ex-contract': {
+      eyebrow: 'Example · the hand-off',
+      title: 'A hand-off check (R)',
+      body:
+        '<p class="modal-p">This checks the hand-off between two modules — the columns and ranges the next module relies on — without caring how the first module made them. If data processing changes inside but still hands over the same table, this passes. If it breaks the hand-off, this catches it before the analysis ever runs.</p>' +
+        '<div class="modal-fig-label">tests/test-clean-output.R</div>' +
+        '<div class="snippet">' +
+          '<span class="cm"># Does data processing give analysis what it needs?</span>\n' +
+          'library(testthat)\n' +
+          'library(readr)\n\n' +
+          'test_that("clean table has the right columns and ranges", {\n' +
+          '  d &lt;- read_csv("data/clean/CTD_007.csv", show_col_types = FALSE)\n\n' +
+          '  <span class="cm"># the columns analysis relies on</span>\n' +
+          '  expect_setequal(\n' +
+          '    names(d),\n' +
+          '    c("station", "depth_m", "temp_c", "salinity", "ts")\n' +
+          '  )\n\n' +
+          '  <span class="cm"># values fall in sensible ranges</span>\n' +
+          '  expect_true(all(d$depth_m  &gt;= 0  &amp; d$depth_m  &lt;= 11000))\n' +
+          '  expect_true(all(d$temp_c   &gt;= -2 &amp; d$temp_c   &lt;= 40))\n' +
+          '  expect_true(all(d$salinity &gt;= 0  &amp; d$salinity &lt;= 42))\n\n' +
+          '  <span class="cm"># depth increases down a cast; no missing stations</span>\n' +
+          '  expect_false(is.unsorted(d$depth_m))\n' +
+          '  expect_true(all(!is.na(d$station)))\n' +
+          '})' +
+        '</div>' +
+        '<p class="modal-note">Hand-off checks are what let each module stay simple on its own, instead of one tangled script.</p>',
+    },
+
+    'ex-report': {
+      eyebrow: 'Example · readable output',
+      title: 'A validation report',
+      body:
+        '<p class="modal-p">A check that only prints "pass" is hard to trust and hard to learn from. Render it instead as a short report — the code, a small results table, and a plot — so anyone can see what was checked and what the data look like. In Quarto, the code chunk stays visible above its output.</p>' +
+        '<div class="modal-fig-label">qc-report.Rmd</div>' +
+        '<div class="snippet">' +
+          '<span class="cm">---</span>\n' +
+          '<span class="cm">title: "CTD QC — station 007"</span>\n' +
+          '<span class="cm">output: html_document</span>\n' +
+          '<span class="cm">---</span>\n\n' +
+          '```{r qc-report, echo=TRUE}\n' +
+          'd &lt;- read_csv("data/clean/CTD_007.csv")\n\n' +
+          'ranges &lt;- d |&gt; summarise(\n' +
+          '  depth_ok    = all(between(depth_m, 0, 11000)),\n' +
+          '  temp_ok     = all(between(temp_c, -2, 40)),\n' +
+          '  salinity_ok = all(between(salinity, 0, 42))\n' +
+          ')\n' +
+          'knitr::kable(ranges)              <span class="cm"># table for people</span>\n\n' +
+          'ggplot(d, aes(temp_c, depth_m)) +\n' +
+          '  geom_path() + scale_y_reverse()  <span class="cm"># depth profile</span>\n' +
+          '```' +
+        '</div>' +
+        '<div class="report-cap">rendered output</div>' +
+        '<div class="report-out">' +
+          '<table class="report-table">' +
+            '<thead><tr><th>station</th><th>n</th><th>depth_ok</th><th>temp_ok</th><th>salinity_ok</th><th>flag</th></tr></thead>' +
+            '<tbody>' +
+            '<tr><td>CTD_001</td><td>482</td><td class="ok">TRUE</td><td class="ok">TRUE</td><td class="ok">TRUE</td><td></td></tr>' +
+            '<tr><td>CTD_002</td><td>471</td><td class="ok">TRUE</td><td class="ok">TRUE</td><td class="ok">TRUE</td><td></td></tr>' +
+            '<tr style="background:#fdf3ee"><td>CTD_003</td><td>389</td><td class="ok">TRUE</td><td class="no">FALSE</td><td class="ok">TRUE</td><td style="color:#b23b2e;font-size:10px">missing temp_c</td></tr>' +
+            '<tr><td>CTD_004</td><td>501</td><td class="ok">TRUE</td><td class="ok">TRUE</td><td class="ok">TRUE</td><td></td></tr>' +
+            '<tr><td>CTD_005</td><td>493</td><td class="ok">TRUE</td><td class="ok">TRUE</td><td class="ok">TRUE</td><td></td></tr>' +
+            '</tbody>' +
+          '</table>' +
+          '<svg class="report-plot" viewBox="0 0 320 182" role="img" aria-label="CTD_003 depth profile; missing temp_c values shown as crosses">' +
+            '<text x="166" y="13" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="9" fill="#6a7468">CTD_003 · depth profile</text>' +
+            '<line x1="44" y1="26" x2="44" y2="155" stroke="#cfc6b0" stroke-width="1"/>' +
+            '<line x1="44" y1="155" x2="306" y2="155" stroke="#cfc6b0" stroke-width="1"/>' +
+            '<text x="40" y="29" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="8" fill="#6a7468">0</text>' +
+            '<text x="40" y="79" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="8" fill="#6a7468">200</text>' +
+            '<text x="40" y="130" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="8" fill="#6a7468">400</text>' +
+            '<text x="40" y="157" text-anchor="end" font-family="JetBrains Mono,monospace" font-size="8" fill="#6a7468">500m</text>' +
+            '<text x="14" y="92" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#6a7468" transform="rotate(-90 14 92)">depth_m</text>' +
+            '<line x1="110" y1="155" x2="110" y2="158" stroke="#cfc6b0" stroke-width="1"/>' +
+            '<line x1="175" y1="155" x2="175" y2="158" stroke="#cfc6b0" stroke-width="1"/>' +
+            '<line x1="241" y1="155" x2="241" y2="158" stroke="#cfc6b0" stroke-width="1"/>' +
+            '<text x="44" y="167" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#6a7468">5</text>' +
+            '<text x="110" y="167" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#6a7468">10</text>' +
+            '<text x="175" y="167" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#6a7468">15</text>' +
+            '<text x="241" y="167" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#6a7468">20</text>' +
+            '<text x="306" y="167" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" fill="#6a7468">25</text>' +
+            '<text x="175" y="178" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#6a7468">temp_c (°C)</text>' +
+            '<polyline points="293,26 287,34 280,41 267,49 241,56" fill="none" stroke="#1a7a60" stroke-width="1.8"/>' +
+            '<polyline points="136,76 110,89 83,102 70,114 64,122 57,132 55,142 51,155" fill="none" stroke="#1a7a60" stroke-width="1.8"/>' +
+            '<circle cx="293" cy="26" r="3" fill="#1a7a60"/>' +
+            '<circle cx="287" cy="34" r="3" fill="#1a7a60"/>' +
+            '<circle cx="280" cy="41" r="3" fill="#1a7a60"/>' +
+            '<circle cx="267" cy="49" r="3" fill="#1a7a60"/>' +
+            '<circle cx="241" cy="56" r="3" fill="#1a7a60"/>' +
+            '<text x="214" y="65" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#b8741c" font-weight="bold">×</text>' +
+            '<text x="188" y="69" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#b8741c" font-weight="bold">×</text>' +
+            '<text x="162" y="75" text-anchor="middle" font-family="sans-serif" font-size="11" fill="#b8741c" font-weight="bold">×</text>' +
+            '<circle cx="136" cy="76" r="3" fill="#1a7a60"/>' +
+            '<circle cx="110" cy="89" r="3" fill="#1a7a60"/>' +
+            '<circle cx="83" cy="102" r="3" fill="#1a7a60"/>' +
+            '<circle cx="70" cy="114" r="3" fill="#1a7a60"/>' +
+            '<circle cx="64" cy="122" r="3" fill="#1a7a60"/>' +
+            '<circle cx="57" cy="132" r="3" fill="#1a7a60"/>' +
+            '<circle cx="55" cy="142" r="3" fill="#1a7a60"/>' +
+            '<circle cx="51" cy="155" r="3" fill="#1a7a60"/>' +
+          '</svg>' +
+        '</div>' +
+        '<p class="modal-note">The same habit the framework asks for elsewhere: every analysis leaves behind something a person can read, with the code that made it in plain sight.</p>',
+    },
+
+  };
+
+  const overlay    = document.getElementById('modal-overlay');
+  const elEyebrow  = document.getElementById('modal-eyebrow');
+  const elTitle    = document.getElementById('modal-title');
+  const elBody     = document.getElementById('modal-body');
+  const closeBtn   = document.getElementById('modal-close');
+  const footer     = document.getElementById('modal-footer');
+  const backBtn    = document.getElementById('modal-back');
+  const backLabel  = document.getElementById('modal-back-label');
+  let lastFocus = null;
+  let modalStack = [];   // navigation history for nested opens
+
+  function openModal(id, fromId) {
+    const m = MODALS[id];
+    if (!m) return;
+
+    if (fromId) {
+      // Navigating from another modal — push to stack, show back button
+      modalStack.push(fromId);
+      footer.classList.add('visible');
+      const prev = MODALS[fromId];
+      if (backLabel) backLabel.textContent = '← ' + (prev ? prev.title : 'back');
+    } else {
+      // Top-level open — clear history, hide footer
+      modalStack = [];
+      if (footer) footer.classList.remove('visible');
+    }
+
+    elEyebrow.textContent = m.eyebrow;
+    elTitle.textContent   = m.title;
+    elBody.innerHTML      = m.body;
+    elBody.scrollTop      = 0;
+
+    if (!overlay.classList.contains('open')) {
+      overlay.classList.add('open');
+      lastFocus = document.activeElement;
+      document.body.style.overflow = 'hidden';
+    }
+    closeBtn.focus();
+    wireModalLinks(id);
+  }
+
+  function closeModal() {
+    overlay.classList.remove('open');
+    if (footer) footer.classList.remove('visible');
+    document.body.style.overflow = '';
+    modalStack = [];
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  // Wire cross-links inside modal body — pass the current modal id as origin
+  function wireModalLinks(currentId) {
+    elBody.querySelectorAll('[data-modal]').forEach(function (el) {
+      el.addEventListener('click', function () { openModal(el.dataset.modal, currentId); });
+    });
+  }
+
+  // Top-level triggers (SVG levels + impl cards) — always open without history
+  document.querySelectorAll('.tier-node[data-modal], .impl-card[data-modal]').forEach(function (el) {
+    el.addEventListener('click', function () { openModal(el.dataset.modal, null); });
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(el.dataset.modal, null); }
+    });
+  });
+
+  closeBtn.addEventListener('click', closeModal);
+
+  if (backBtn) {
+    backBtn.addEventListener('click', function () {
+      const prev = modalStack.pop();
+      if (prev) {
+        const parent = modalStack.length > 0 ? modalStack[modalStack.length - 1] : null;
+        openModal(prev, parent);
+        if (!parent && footer) footer.classList.remove('visible');
+      } else {
+        closeModal();
+      }
+    });
+  }
+
+  overlay.addEventListener('click', function (e) { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && overlay.classList.contains('open')) closeModal(); });
+</script>
+
+</body>
+</html>
