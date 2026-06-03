@@ -58,7 +58,10 @@
 
     /* ── Rendered-report preview (inside a modal) ── */
     .report-cap { font-family: var(--ff-mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--marine); margin: 12px 0 5px; }
-    .report-out { border: 1px solid var(--rule); background: var(--paper2); padding: 10px 12px; overflow-x: auto; }
+    .report-out { border: 1px solid var(--rule); background: var(--paper2); padding: 10px 12px; overflow-x: auto; scrollbar-width: thin; scrollbar-color: var(--ink) var(--rule); }
+    .report-out::-webkit-scrollbar { height: 6px; }
+    .report-out::-webkit-scrollbar-track { background: var(--rule); }
+    .report-out::-webkit-scrollbar-thumb { background: var(--ink); border-radius: 0; }
     .report-table { width: 100%; border-collapse: collapse; font-family: var(--ff-mono); font-size: 11px; margin-bottom: 10px; }
     .report-table th, .report-table td { border: 1px solid var(--rule); padding: 4px 8px; text-align: left; }
     .report-table th { background: var(--paper); color: var(--ink); font-weight: 700; }
