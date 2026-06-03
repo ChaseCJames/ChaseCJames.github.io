@@ -36,7 +36,7 @@
 
     /* ── Implementation example cards ── */
     .impl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .impl-card { border: 1px solid var(--rule); background: var(--paper); padding: 12px 14px; text-align: left; transition: border-color .12s, background .12s; }
+    .impl-card { border: 1px solid var(--rule); background: var(--paper); padding: 12px 14px; text-align: left; transition: border-color .12s, background .12s; color: inherit; }
     .impl-card:hover { border-color: var(--ink); background: var(--paper2); }
     .impl-card:focus-visible { outline: 2px solid var(--marine); outline-offset: 2px; }
     .impl-kind { font-family: var(--ff-mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--amber2); }
@@ -55,7 +55,7 @@
 
     /* ── Rendered-report preview (inside a modal) ── */
     .report-cap { font-family: var(--ff-mono); font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--marine); margin: 12px 0 5px; }
-    .report-out { border: 1px solid var(--rule); background: var(--paper2); padding: 10px 12px; }
+    .report-out { border: 1px solid var(--rule); background: var(--paper2); padding: 10px 12px; overflow-x: auto; }
     .report-table { width: 100%; border-collapse: collapse; font-family: var(--ff-mono); font-size: 11px; margin-bottom: 10px; }
     .report-table th, .report-table td { border: 1px solid var(--rule); padding: 4px 8px; text-align: left; }
     .report-table th { background: var(--paper); color: var(--ink); font-weight: 700; }
@@ -73,7 +73,7 @@
     /* ── Modal ── */
     .modal-overlay { position: fixed; inset: 0; background: rgba(19,32,26,.55); display: none; align-items: center; justify-content: center; z-index: 300; padding: 24px; }
     .modal-overlay.open { display: flex; }
-    .modal { background: var(--paper); border: 1.4px solid var(--ink); max-width: 660px; width: 100%; max-height: 86vh; display: flex; flex-direction: column; box-shadow: 0 24px 70px rgba(13,32,26,.35); }
+    .modal { background: var(--paper); border: 1.4px solid var(--ink); max-width: 660px; width: 100%; max-height: 86vh; display: flex; flex-direction: column; box-shadow: 0 24px 70px rgba(13,32,26,.35); overflow: hidden; }
     .modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--rule); }
     .modal-eyebrow { font-family: var(--ff-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--amber2); }
     .modal-title { font-family: var(--ff-display); font-size: 19px; font-weight: 700; letter-spacing: -0.018em; margin-top: 3px; line-height: 1.1; }
@@ -103,6 +103,8 @@
     }
     @media (max-width: 600px) {
       .impl-grid { grid-template-columns: 1fr; }
+      .modal-overlay { padding: 10px; }
+      .modal { max-height: calc(100vh - 20px); }
     }
   </style>
 </head>
@@ -339,6 +341,7 @@
 <footer class="ap-footer">
   <span>← <a href="workflows.html">workflows</a></span>
   <span><a href="ethics.html">ethics →</a></span>
+  <div class="ap-footer-copy">&copy; 2026 Chase James. All rights reserved. Content may not be reproduced without permission.</div>
 </footer>
 
 <!-- MODAL -->

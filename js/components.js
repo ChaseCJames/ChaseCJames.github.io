@@ -83,7 +83,7 @@
     </div>
   </div>
   <div class="footer-bottom">
-    &copy; <span id="footer-year"></span> Chase James
+    &copy; <span id="footer-year"></span> Chase James. All rights reserved. Content may not be reproduced without permission.
   </div>
 </footer>`;
 
